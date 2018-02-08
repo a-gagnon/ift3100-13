@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\app\datApplication.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\datGeometry.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datInputManager.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datButton.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceTextTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datToolManager.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="app">
+      <UniqueIdentifier>{0a1ff77a-af01-4155-8b5a-bd0231811ccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{5c964b3e-0d15-48c9-97b9-237f32ac497b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{708bde26-b00a-4330-ae4c-8fa443fbaf79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{0ee52444-5d94-4692-8019-de58ed9b09e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\app\datApplication.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\datDefinitions.h" />
+    <ClInclude Include="..\src\geometry\datGeometry.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datInputManager.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datInputView.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datButton.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlacePolylineTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceTextTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datToolManager.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

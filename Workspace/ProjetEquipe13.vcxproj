@@ -100,12 +100,31 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\app\datApplication.cpp" />
+    <ClCompile Include="..\src\geometry\datGeometry.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
+    <ClCompile Include="..\src\tools\datPlaceTextTool.cpp" />
+    <ClCompile Include="..\src\tools\datToolManager.cpp" />
+    <ClCompile Include="..\src\ui\datButton.cpp" />
+    <ClCompile Include="..\src\ui\datInputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\libs\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\app\datApplication.h" />
+    <ClInclude Include="..\src\datDefinitions.h" />
+    <ClInclude Include="..\src\geometry\datGeometry.h" />
+    <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
+    <ClInclude Include="..\src\tools\datPlaceTextTool.h" />
+    <ClInclude Include="..\src\tools\datTool.h" />
+    <ClInclude Include="..\src\tools\datToolManager.h" />
+    <ClInclude Include="..\src\ui\datButton.h" />
+    <ClInclude Include="..\src\ui\datInputManager.h" />
+    <ClInclude Include="..\src\ui\datInputView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

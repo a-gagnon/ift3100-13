@@ -2,26 +2,18 @@
 // main.cpp
 // IFT3100-13
 //=======================================================================================
-#include "ofMain.h"
+#include "app/datApplication.h"
 
-//=======================================================================================
-// @class
-//=======================================================================================
-struct myTestApplication : ofBaseApp
-{
-public:
-    myTestApplication() {}
-};
+USING_DAT_NAMESPACE
 
-//---------------------------------------------------------------------------------------
-// @method
-//---------------------------------------------------------------------------------------
-int main()
-    {
+int main() {
+
     ofSetupOpenGL(1024, 768, OF_WINDOW); // setup gl context
+    ofSetWindowTitle("IFT-3100 Equipe 13");
+    ofSetBackgroundColor(ofColor::whiteSmoke);
 
     // Infinite loop!
-    ofRunApp(new myTestApplication());
-
+    std::shared_ptr<datApplication> datApp(new datApplication());//
+    ofRunApp(datApp);
     return 0;
-    }
+}
