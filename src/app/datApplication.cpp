@@ -56,6 +56,19 @@ void datApplication::setup() {
 }
 
 
+
+void datApplication::dragged(ofDragInfo& ev) {
+
+	if (ev.files.size() > 0) {
+		dragPt = ev.position;
+
+		draggedImages.assign(ev.files.size(), ofImage());
+		for (unsigned int k = 0; k < ev.files.size(); k++) {
+			draggedImages[k].load(ev.files[k]);
+		}
+	}
+
+}
 bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
 
     if (GetInputManager().SendMouseEvent(ev))
@@ -81,6 +94,18 @@ void datApplication::draw() {
 
     T_Super::draw();
     GetToolManager().DoDraw();
+	ofSetColor(255);
+
+	float dx = dragPt.x;
+	float dy = dragPt.y;
+
+	for (unsigned int k = 0; k < draggedImages.size(); k++) {
+		draggedImages[k].draw(dx, dy);
+		dy += draggedImages[k].getHeight() + 10;
+	}
+
+	ofSetColor(0);
+	ofDrawBitmapString("drag here", 10, 20);
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {

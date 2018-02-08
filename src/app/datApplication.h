@@ -25,8 +25,10 @@ private:
 protected:
 
     void CreateToolbar();
+	void dragged(ofDragInfo& info);
 
-    bool SendMouseEvent(ofMouseEventArgs& ev);
+
+	bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
     virtual void setup() override;
@@ -38,6 +40,8 @@ protected:
 
 
 public:
+	vector <ofImage> draggedImages;
+	ofPoint dragPt;
     datApplication();
     virtual ~datApplication();
 
