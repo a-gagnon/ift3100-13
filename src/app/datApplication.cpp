@@ -12,7 +12,7 @@ void startSelectTool()          { datApplication::GetApp().GetToolManager().Star
 void startPlacePolylineTool()   { datApplication::GetApp().GetToolManager().StartTool(new datPlacePolylineTool()); }
 void startPlaceTextTool()       { datApplication::GetApp().GetToolManager().StartTool(new datPlaceTextTool()); }
 
-}; // end unnamed namespace
+}; // end unnamed namespaceters
 
 
 datApplication::datApplication() {
