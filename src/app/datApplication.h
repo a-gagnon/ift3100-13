@@ -27,11 +27,19 @@ private:
 
 protected:
 
+ test
+    void CreateToolbar();
+	void dragged(ofDragInfo& info);
+
+
+	bool SendMouseEvent(ofMouseEventArgs& ev);
+
     void SetupUI();
 
     // Make sure x and y values are inside the app window
     void ClampEvent(datMouseEvent& ev) const;
     bool SendMouseEvent(ofMouseEventArgs& ev);
+ master
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
     virtual void setup() override;
@@ -41,9 +49,16 @@ protected:
     virtual void mouseMoved(ofMouseEventArgs& ev) override;
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
+test
+	virtual void exit();
+
     virtual void windowResized(ofResizeEventArgs& resize) override;
+ master
 
 public:
+	vector <ofImage> draggedImages;
+	ofPoint dragPt;
+	ofImage img;
     datApplication();
     virtual ~datApplication();
 
