@@ -4,9 +4,13 @@
 //=======================================================================================
 #pragma once
 
-#include "../datDefinitions.h"
+#include "datDefinitions.h"
 
 BEGIN_DAT_NAMESPACE
+
+
+// Small tolerance for comparisons
+#define datEpsilon 1e-03
 
 //=======================================================================================
 //&&AG NEEDSWORK. Make a better wrapper for text strings!
@@ -15,7 +19,7 @@ struct datText {
 public:
     ofTrueTypeFont m_ttf;
     std::string m_text;
-    ofVec2f m_position;
+    ofPoint m_position;
 
 public:
     ~datText() {}
@@ -29,7 +33,7 @@ public:
 //=======================================================================================
 // Wrapper for openframeworks geometry classes
 //=======================================================================================
-struct datGeometry : NonCopyableClass {
+struct datGeometry : datNonCopyableClass {
 
 public:
     enum class GeometryType {

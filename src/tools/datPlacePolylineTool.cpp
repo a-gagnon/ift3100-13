@@ -16,62 +16,65 @@ datPlacePolylineTool::~datPlacePolylineTool() {
 }
 
 
-void datPlacePolylineTool::saveShape(ofPolyline const& polyline) {
+void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
 
-    assert(0 < polyline.size());
-    datGeometry* pGeometry = new datGeometry(polyline);
-    pGeometry->SetColor(ofColor::orange);
-    GeometryCache::GetCache().addGeometry(pGeometry);
+    if (2 <= m_polyline.size()) {
 
-}
+        ofPoint const& secondToLast = m_polyline[m_polyline.size() - 2];
+        ofPoint const& last = m_polyline[m_polyline.size() - 1];
 
-void datPlacePolylineTool::onLeftMouseButtonDown(ofVec2f const& point) {
-
-    // If we're very close to previous point, consider the user wants to 'confirm' the placement
-    if (3 < m_polyline.size()) {
-
-        ofVec2f backPt = m_polyline[m_polyline.size() - 2];
-        if (5.0 > backPt.squareDistance(point)) {
+        // Remove duplicate point if any
+        if (datEpsilon > secondToLast.squareDistance(last)) {
             m_polyline.resize(m_polyline.size() - 1);
-            saveShape(m_polyline);
-            m_polyline.clear();
-            return;
         }
     }
 
+    if (3 <= m_polyline.size() && closeShape)
+        m_polyline.addVertex(m_polyline[0]);
 
-    // Add it twice and use the last point as dynamic
-    if (0 == m_polyline.size())
-        m_polyline.addVertex(point);
-
-    m_polyline.addVertex(point);
-
-}
-
-
-void datPlacePolylineTool::onRightMouseButtonDown(ofVec2f const& point) {
-
-    if (3 < m_polyline.size()) {
-        m_polyline.resize(m_polyline.size() - 1);
-        m_polyline.close();
-        saveShape(m_polyline);
+    if (2 <= m_polyline.size()) {
+        datGeometry* pGeometry = new datGeometry(m_polyline);
+        pGeometry->SetColor(ofColor::orange);
+        GeometryCache::GetCache().addGeometry(pGeometry);
     }
 
     m_polyline.clear();
 }
 
+void datPlacePolylineTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-void datPlacePolylineTool::onMouseMotion(ofVec2f const& point) {
+    if (2 <= m_polyline.size() && datEpsilon > m_polyline[m_polyline.size() - 2].squareDistance(ev)) {
+        saveAndClearShape(false);
+        return;
+    }
+
+    // Add first point twice and use the last one as dynamic
+    if (0 == m_polyline.size())
+        m_polyline.addVertex(ev);
+
+    m_polyline.addVertex(ev);
+
+}
+
+
+void datPlacePolylineTool::onRightMouseButtonDown(datMouseEvent const& ev) {
+
+    saveAndClearShape(true);
+}
+
+
+void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 
     if (0 < m_polyline.size()) {
-        m_polyline[m_polyline.size() - 1] = point;
+        m_polyline[m_polyline.size() - 1] = ev;
     }
 }
 
 
 void datPlacePolylineTool::onDraw() {
 
-    GeometryCache::GetCache().drawCachedGeometries();
-    m_polyline.draw();
+    if (0 < m_polyline.size()) {
+        m_polyline.draw();
+    }
 }
 

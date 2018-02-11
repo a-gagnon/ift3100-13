@@ -9,14 +9,16 @@
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-struct datPlaceTextTool : datTool {
+struct datPlaceTextTool : datEditTool {
 
 private:
     std::string m_text;
     ofTrueTypeFont m_font;
+    ofPoint m_position;
 
 protected:
-    virtual void onRightMouseButtonDown(ofVec2f const& point) override;
+    virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
+    virtual void onMouseMotion(datMouseEvent const& ev) override;
     virtual void onKeyPressed(ofKeyEventArgs const& ev) override;
     virtual void onDraw() override;
 

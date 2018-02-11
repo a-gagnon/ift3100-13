@@ -9,17 +9,17 @@
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-struct datPlacePolylineTool : datTool {
+struct datPlacePolylineTool : datEditTool {
 
 private:
     ofPolyline m_polyline;
 
 protected:
-    void saveShape(ofPolyline const& polyline);
+    void saveAndClearShape(bool closeShape);
 
-    virtual void onLeftMouseButtonDown(ofVec2f const& point) override;
-    virtual void onRightMouseButtonDown(ofVec2f const& point) override;
-    virtual void onMouseMotion(ofVec2f const& point) override;
+    virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
+    virtual void onRightMouseButtonDown(datMouseEvent const& ev) override;
+    virtual void onMouseMotion(datMouseEvent const& ev) override;
     virtual void onDraw() override;
 
 public:

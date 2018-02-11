@@ -4,9 +4,14 @@
 //=======================================================================================
 #pragma once
 
-#include "datInputView.h"
+#include "datView.h"
 
 BEGIN_DAT_NAMESPACE
+
+struct datButton;
+
+// Define pointer-to-function
+typedef void(*datButtonCallbackFunction)(datButton&);
 
 //=======================================================================================
 // Generic style holder for buttons
@@ -15,7 +20,8 @@ struct datButtonStyle {
 
 public:
     ofColor buttonBackgroundColor;
-    ofColor buttonBackgroundColorFocused;
+    ofColor buttonBackgroundColorMouseInside;
+    ofColor buttonBackgroundColorToggled;
     ofColor tooltipBackgroundColor;
     ofColor tooltipTextColor;
 
@@ -26,21 +32,25 @@ public:
 //=======================================================================================
 // Generic button
 //=======================================================================================
-struct datButton : datInputView {
+struct datButton : datView {
 
-DEFINE_T_SUPER(datInputView)
+DEFINE_T_SUPER(datView)
 
 protected:
-    datCallbackFunction m_pCallbackFunction;
+    datButtonCallbackFunction m_pCallbackFunction;
     datButtonStyle m_style;
     std::unique_ptr<ofImage> m_image;
     std::string m_tooltip;
+    bool m_isToggled;
 
 protected:
+    virtual bool onLeftMouseButtonDown(datMouseEvent const& ev) override;
+    virtual bool onLeftMouseButtonUp(datMouseEvent const& ev) override;
     virtual void onHover() override;
     virtual void onBlur() override;
-    virtual void onClick() override;
     virtual void onDraw() override;
+
+    ofColor DetermineDrawColor() const;
 
 public:
     datButton(datButtonStyle const& style);
@@ -48,7 +58,9 @@ public:
     virtual ~datButton();
 
     // Sets the function that will be called when the button is pressed
-    void SetOnPressedCallback(datCallbackFunction func) { m_pCallbackFunction = func; }
+    void SetOnPressedCallback(datButtonCallbackFunction func) { m_pCallbackFunction = func; }
+
+    void PressButton();
 
     // Sets the image that will be displayed
     // @remarks takes ownership with a unique_ptr
@@ -60,6 +72,9 @@ public:
     void SetStyle(datButtonStyle const& style) { m_style = style; }
     datButtonStyle const& GetStyle() const { return m_style; }
     datButtonStyle& GetStyleR() { return m_style; }
+
+    void SetToggle(bool yesNo) { m_isToggled = yesNo; }
+    bool IsToggled() const { return m_isToggled; }
 };
 
 END_DAT_NAMESPACE
