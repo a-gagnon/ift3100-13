@@ -106,12 +106,14 @@ void datApplication::draw() {
 
 	ofSetColor(0);
 	ofDrawBitmapString("drag here", 10, 20);
+
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {
 
     if (!SendMouseEvent(ev))
         T_Super::mousePressed(ev);
+
 }
 
 
@@ -130,8 +132,14 @@ void datApplication::mouseMoved(ofMouseEventArgs& ev) {
 
 
 void datApplication::keyPressed(ofKeyEventArgs& ev) {
-    if (!SendKeyEvent(ev))
-        T_Super::keyPressed(ev);
+	if (!SendKeyEvent(ev)) 
+		T_Super::keyPressed(ev);
+
+}
+
+void datApplication::exit() {
+	img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+	img.save("screenshot.png");
 }
 
 

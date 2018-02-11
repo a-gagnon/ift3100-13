@@ -37,11 +37,12 @@ protected:
     virtual void mouseReleased(ofMouseEventArgs& ev) override;
     virtual void mouseMoved(ofMouseEventArgs& ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
-
+	virtual void exit();
 
 public:
 	vector <ofImage> draggedImages;
 	ofPoint dragPt;
+	ofImage img;
     datApplication();
     virtual ~datApplication();
 
