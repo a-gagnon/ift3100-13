@@ -16,45 +16,99 @@ datToolManager::~datToolManager() {
 }
 
 
-datTool* datToolManager::GetActiveEditTool() {
+datViewTool* datToolManager::GetActiveViewTool() const {
+    return m_viewTool.get();
+}
+
+
+datEditTool* datToolManager::GetActiveEditTool() const {
     return m_editTool.get();
+}
+
+
+datTool* datToolManager::GetToolForEvent() const {
+
+    if (nullptr != m_viewTool)
+        return m_viewTool.get();
+
+    if (nullptr != m_editTool)
+        return m_editTool.get();
+
+    return nullptr;
 }
 
 
 void datToolManager::StartTool(datTool* pTool) {
 
-    // Cleanup the current tool
-    if (nullptr != m_editTool)
-        m_editTool->onExitTool();
+    if (nullptr == pTool) {
+        assert(false);
+        return;
+    }
 
-    // Assign a new tool (possibly nullptr)
-    m_editTool.reset(pTool);
+    if (auto pEditTool = pTool->getAsEditTool()) {
 
-    // Notify the tool that it started
-    if (nullptr != m_editTool)
+        ExitEditTool();
+        m_editTool.reset(pEditTool);
         m_editTool->onStartTool();
+    }
+    else if (auto pViewTool = pTool->getAsViewTool()) {
+
+        ExitViewTool();
+        m_viewTool.reset(pViewTool);
+        m_viewTool->onStartTool();
+    }
 }
 
 
-bool datToolManager::SendMouseEvent(ofMouseEventArgs const& ev) const {
+void datToolManager::ExitViewTool() {
 
-    if (nullptr == m_editTool)
+    if (nullptr != m_viewTool) {
+        m_viewTool->onExitTool();
+        m_viewTool.reset();
+    }
+}
+
+
+void datToolManager::ExitEditTool() {
+
+    if (nullptr != m_editTool) {
+        m_editTool->onExitTool();
+        m_editTool.reset();
+    }
+}
+
+
+bool datToolManager::SendMouseEvent(datMouseEvent ev) const {
+
+    datTool* pTool = GetToolForEvent();
+    if (nullptr == pTool)
         return false;
 
     if (ofMouseEventArgs::Type::Pressed == ev.type) {
 
         if (OF_MOUSE_BUTTON_LEFT == ev.button) {
-            m_editTool->onLeftMouseButtonDown(ev);
+            pTool->onLeftMouseButtonDown(ev);
             return true;
         }
         else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
-            m_editTool->onRightMouseButtonDown(ev);
+            pTool->onRightMouseButtonDown(ev);
             return true;
         }
     }
-    else if (ofMouseEventArgs::Type::Moved == ev.type) {
+    else if (ofMouseEventArgs::Type::Released == ev.type) {
 
-        m_editTool->onMouseMotion(ev);
+        if (OF_MOUSE_BUTTON_LEFT == ev.button) {
+            pTool->onLeftMouseButtonUp(ev);
+            return true;
+        }
+        else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
+            pTool->onRightMouseButtonUp(ev);
+            return true;
+        }
+    }
+    else if (ofMouseEventArgs::Type::Moved == ev.type || ofMouseEventArgs::Type::Dragged == ev.type) {
+
+        pTool->onMouseMotion(ev);
         return true;
     }
 
@@ -64,8 +118,10 @@ bool datToolManager::SendMouseEvent(ofMouseEventArgs const& ev) const {
 
 bool datToolManager::SendKeyEvent(ofKeyEventArgs const& ev) const {
 
-    if (nullptr != m_editTool && ofKeyEventArgs::Type::Pressed == ev.type) {
-        m_editTool->onKeyPressed(ev);
+    datTool* pTool = GetToolForEvent();
+
+    if (nullptr != pTool && ofKeyEventArgs::Type::Pressed == ev.type) {
+        pTool->onKeyPressed(ev);
         return true;
     }
 
@@ -75,7 +131,12 @@ bool datToolManager::SendKeyEvent(ofKeyEventArgs const& ev) const {
 
 void datToolManager::DoDraw() {
 
-    if (nullptr != m_editTool)
+    if (nullptr != m_editTool) {
         m_editTool->onDraw();
+    }
+
+    if (nullptr != m_viewTool) {
+        m_viewTool->onDraw();
+    }
 }
 

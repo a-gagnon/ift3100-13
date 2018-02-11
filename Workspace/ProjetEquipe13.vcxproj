@@ -101,13 +101,16 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\app\datApplication.cpp" />
-    <ClCompile Include="..\src\geometry\datGeometry.cpp" />
+    <ClCompile Include="..\src\core\datGeometry.cpp" />
+    <ClCompile Include="..\src\core\datUtilities.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceTextTool.cpp" />
+    <ClCompile Include="..\src\tools\datSelectTool.cpp" />
     <ClCompile Include="..\src\tools\datToolManager.cpp" />
     <ClCompile Include="..\src\ui\datButton.cpp" />
-    <ClCompile Include="..\src\ui\datInputManager.cpp" />
+    <ClCompile Include="..\src\ui\datView.cpp" />
+    <ClCompile Include="..\src\ui\datViewManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\libs\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
@@ -116,15 +119,20 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\app\datApplication.h" />
-    <ClInclude Include="..\src\datDefinitions.h" />
-    <ClInclude Include="..\src\geometry\datGeometry.h" />
+    <ClInclude Include="..\src\core\datDefinitions.h" />
+    <ClInclude Include="..\src\core\datEvents.h" />
+    <ClInclude Include="..\src\core\datGeometry.h" />
+    <ClInclude Include="..\src\core\datLocalization.h" />
+    <ClInclude Include="..\src\core\datNonCopyableClass.h" />
+    <ClInclude Include="..\src\core\datUtilities.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
     <ClInclude Include="..\src\tools\datPlaceTextTool.h" />
+    <ClInclude Include="..\src\tools\datSelectTool.h" />
     <ClInclude Include="..\src\tools\datTool.h" />
     <ClInclude Include="..\src\tools\datToolManager.h" />
     <ClInclude Include="..\src\ui\datButton.h" />
-    <ClInclude Include="..\src\ui\datInputManager.h" />
-    <ClInclude Include="..\src\ui\datInputView.h" />
+    <ClInclude Include="..\src\ui\datView.h" />
+    <ClInclude Include="..\src\ui\datViewManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

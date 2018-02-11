@@ -5,15 +5,6 @@
     <ClCompile Include="..\src\app\datApplication.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\geometry\datGeometry.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\datInputManager.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\datButton.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\tools\datPlaceTextTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
@@ -23,13 +14,28 @@
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\tools\datSelectTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\datUtilities.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\datGeometry.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datView.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datViewManager.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datButton.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
       <UniqueIdentifier>{0a1ff77a-af01-4155-8b5a-bd0231811ccc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="geometry">
-      <UniqueIdentifier>{5c964b3e-0d15-48c9-97b9-237f32ac497b}</UniqueIdentifier>
     </Filter>
     <Filter Include="ui">
       <UniqueIdentifier>{708bde26-b00a-4330-ae4c-8fa443fbaf79}</UniqueIdentifier>
@@ -37,23 +43,13 @@
     <Filter Include="tools">
       <UniqueIdentifier>{0ee52444-5d94-4692-8019-de58ed9b09e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{5c964b3e-0d15-48c9-97b9-237f32ac497b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\app\datApplication.h">
       <Filter>app</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\datDefinitions.h" />
-    <ClInclude Include="..\src\geometry\datGeometry.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\datInputManager.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\datInputView.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\datButton.h">
-      <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h">
       <Filter>tools</Filter>
@@ -66,6 +62,36 @@
     </ClInclude>
     <ClInclude Include="..\src\tools\datToolManager.h">
       <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datSelectTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datLocalization.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datNonCopyableClass.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datUtilities.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datDefinitions.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datGeometry.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datView.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datViewManager.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datButton.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datEvents.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

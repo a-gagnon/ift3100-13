@@ -4,11 +4,12 @@
 //=======================================================================================
 #pragma once
 
-#include "../datDefinitions.h"
+#include "../core/datDefinitions.h"
 #include "../tools/datToolManager.h"
 #include "../tools/datPlacePolylineTool.h"
 #include "../tools/datPlaceTextTool.h"
-#include "../ui/datInputManager.h"
+#include "../tools/datSelectTool.h"
+#include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
 
 BEGIN_DAT_NAMESPACE
@@ -20,12 +21,16 @@ DEFINE_T_SUPER(ofBaseApp)
 
 private:
     std::unique_ptr<datToolManager> m_toolManager;
-    std::unique_ptr<datInputManager> m_inputManager;
+    std::unique_ptr<datViewManager> m_viewManager;
+    int m_width;
+    int m_height;
 
 protected:
 
-    void CreateToolbar();
+    void SetupUI();
 
+    // Make sure x and y values are inside the app window
+    void ClampEvent(datMouseEvent& ev) const;
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
@@ -34,15 +39,16 @@ protected:
     virtual void mousePressed(ofMouseEventArgs& ev) override;
     virtual void mouseReleased(ofMouseEventArgs& ev) override;
     virtual void mouseMoved(ofMouseEventArgs& ev) override;
+    virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
-
+    virtual void windowResized(ofResizeEventArgs& resize) override;
 
 public:
     datApplication();
     virtual ~datApplication();
 
     datToolManager& GetToolManager();
-    datInputManager& GetInputManager();
+    datViewManager& GetViewManager();
 
     static datApplication& GetApp();
 };

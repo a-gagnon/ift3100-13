@@ -10,7 +10,8 @@ datButtonStyle datButtonStyle::createForToolButton() {
 
     datButtonStyle style;
     style.buttonBackgroundColor = ofColor::lightSteelBlue;
-    style.buttonBackgroundColorFocused = ofColor::steelBlue;
+    style.buttonBackgroundColorMouseInside = ofColor::steelBlue;
+    style.buttonBackgroundColorToggled = ofColor::cadetBlue;
     style.tooltipBackgroundColor = ofColor::darkGrey;
     style.tooltipTextColor = ofColor::antiqueWhite;
     return style;
@@ -19,16 +20,16 @@ datButtonStyle datButtonStyle::createForToolButton() {
 
 datButton::datButton(datButtonStyle const& style) : T_Super(),
     m_pCallbackFunction(nullptr),
+    m_isToggled(false),
     m_style(style) {
-
 }
 
 
 datButton::datButton(float x, float y, float width, float height, datButtonStyle const& style) :
     T_Super(x, y, width, height),
     m_pCallbackFunction(nullptr),
+    m_isToggled(false),
     m_style(style) {
-
 }
 
 
@@ -47,29 +48,48 @@ void datButton::onBlur() {
 }
 
 
-void datButton::onClick() {
+bool datButton::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-    if (nullptr != m_pCallbackFunction) {
-        m_pCallbackFunction();
-    }
+    PressButton();
+    return true;
+}
+
+
+bool datButton::onLeftMouseButtonUp(datMouseEvent const& ev) {
+    return IsMouseInside();
 }
 
 
 void datButton::onDraw() {
 
-    const ofColor bgColor = HasFocus() ? m_style.buttonBackgroundColorFocused : m_style.buttonBackgroundColor;
-    ofSetColor(bgColor);
+    const ofColor color = DetermineDrawColor();
+
+    ofSetColor(color);
     ofDrawRectangle(getX(), getY(), getWidth(), getHeight());
 
     if (nullptr != m_image)
         m_image->draw(getX(), getY(), getWidth(), getHeight());
 
-    if (HasFocus() && !m_tooltip.empty()) {
+    if (IsMouseInside() && !m_tooltip.empty()) {
         ofDrawBitmapStringHighlight(m_tooltip, getX() + getWidth() + 5, getY() + getHeight() + 5,
             m_style.tooltipBackgroundColor, m_style.tooltipTextColor);
     }
 }
 
 
+ofColor datButton::DetermineDrawColor() const {
 
+    if (IsToggled())
+        return m_style.buttonBackgroundColorToggled;
 
+    if (IsMouseInside())
+        return m_style.buttonBackgroundColorMouseInside;
+
+    return m_style.buttonBackgroundColor;
+}
+
+void datButton::PressButton() {
+
+    if (nullptr != m_pCallbackFunction)
+        m_pCallbackFunction(*this);
+}
