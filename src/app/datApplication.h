@@ -34,6 +34,7 @@ protected:
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
+	void dragged(ofDragInfo& ev);
     virtual void setup() override;
     virtual void draw() override;
     virtual void mousePressed(ofMouseEventArgs& ev) override;
@@ -42,10 +43,15 @@ protected:
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
+	virtual void exit();
 
 public:
     datApplication();
     virtual ~datApplication();
+
+	vector <ofImage> draggedImages;
+	ofPoint dragPt;
+	ofImage img;
 
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();

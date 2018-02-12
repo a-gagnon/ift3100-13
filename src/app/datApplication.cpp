@@ -144,12 +144,33 @@ bool datApplication::SendKeyEvent(ofKeyEventArgs& ev) {
 }
 
 
+void datApplication::dragged(ofDragInfo& ev) {
+	if (ev.files.size() > 0) {
+		dragPt = ev.position;
+		draggedImages.assign(ev.files.size(), ofImage());
+
+		for (unsigned int i = 0; i < ev.files.size(); i++) {
+			draggedImages[i].load(ev.files[i]);
+		}
+	}
+}
+
+
 void datApplication::draw() {
 
     T_Super::draw();
     GeometryCache::GetCache().drawCachedGeometries();
     GetViewManager().DoDraw();
     GetToolManager().DoDraw();
+
+	ofSetColor(255);
+	float dx = dragPt.x;
+	float dy = dragPt.y;
+
+	for (unsigned int i = 0; i < draggedImages.size(); i++) {
+		draggedImages[i].draw(dx, dy);
+		dy += draggedImages[i].getHeight() + 10;
+	}
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {
@@ -192,6 +213,11 @@ void datApplication::windowResized(ofResizeEventArgs& resize) {
     datView& mainView = GetViewManager().GetMainView();
     mainView.setWidth(resize.width);
     mainView.setHeight(resize.height);
+}
+
+void datApplication::exit() {
+	img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+	img.save("screenshot.png");
 }
 
 datToolManager& datApplication::GetToolManager() {
