@@ -51,3 +51,4 @@ Workspace/.vs/*
 out/
 src/libs/of_v0.9.8_vs_release/
 .vs/
+Workspace/GTest.vcxproj

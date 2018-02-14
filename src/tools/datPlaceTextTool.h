@@ -16,6 +16,10 @@ private:
     ofTrueTypeFont m_font;
     ofPoint m_position;
 
+private:
+    void SetPlaceholderText();
+    bool IsPlaceholderText() const;
+
 protected:
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onMouseMotion(datMouseEvent const& ev) override;

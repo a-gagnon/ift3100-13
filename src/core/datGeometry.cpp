@@ -18,13 +18,31 @@ datGeometry::datGeometry(ofMesh const& mesh) :
 }
 
 
-datGeometry::datGeometry(datText const& text) :
-    m_type(GeometryType::Text),
-    m_textData(text) {
+datGeometry::datGeometry(datTextString const& textString) :
+    m_type(GeometryType::TextString),
+    m_textStringData(textString) {
 }
 
 
-void datGeometry::draw() {
+std::unique_ptr<datGeometry> datGeometry::Create(ofPolyline const& polyline) {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(polyline));
+    return std::move(ptr);
+}
+
+
+std::unique_ptr<datGeometry> datGeometry::Create(ofMesh const& mesh) {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(mesh));
+    return std::move(ptr);
+}
+
+
+std::unique_ptr<datGeometry> datGeometry::Create(datTextString const& textString) {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(textString));
+    return std::move(ptr);
+}
+
+
+void datGeometry::draw() const {
 
     ofSetColor(m_color);
 
@@ -35,33 +53,8 @@ void datGeometry::draw() {
         case GeometryType::Mesh:
             m_meshData.draw();
             break;
-        case GeometryType::Text:
-            m_textData.draw();
-    }
-}
-
-
-//=======================================================================================
-GeometryCache& GeometryCache::GetCache() {
-
-    static GeometryCache s_instance;
-    return s_instance;
-}
-
-
-void GeometryCache::addGeometry(datGeometry* pGeometry) {
-
-    assert(nullptr != pGeometry);
-    m_geometries.push_back(std::unique_ptr<datGeometry>(pGeometry));
-}
-
-
-void GeometryCache::drawCachedGeometries() {
-
-    for (auto const& entry : m_geometries) {
-
-        if (nullptr != entry) {
-            entry->draw();
-        }
+        case GeometryType::TextString:
+            m_textStringData.draw();
+            break;
     }
 }

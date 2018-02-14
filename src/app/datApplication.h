@@ -4,7 +4,7 @@
 //=======================================================================================
 #pragma once
 
-#include "../core/datDefinitions.h"
+#include "../core/datCore.h"
 #include "../tools/datToolManager.h"
 #include "../tools/datPlacePolylineTool.h"
 #include "../tools/datPlaceTextTool.h"
@@ -22,6 +22,8 @@ DEFINE_T_SUPER(ofBaseApp)
 private:
     std::unique_ptr<datToolManager> m_toolManager;
     std::unique_ptr<datViewManager> m_viewManager;
+    std::unique_ptr<datRenderer> m_renderer;
+
     int m_width;
     int m_height;
 
@@ -34,7 +36,7 @@ protected:
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
-	void dragged(ofDragInfo& ev);
+    virtual void dragged(ofDragInfo& ev) override;;
     virtual void setup() override;
     virtual void draw() override;
     virtual void mousePressed(ofMouseEventArgs& ev) override;
@@ -43,7 +45,7 @@ protected:
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
-	virtual void exit();
+    virtual void exit() override;
 
 public:
     datApplication();
@@ -55,6 +57,7 @@ public:
 
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();
+    datRenderer& GetRenderer();
 
     static datApplication& GetApp();
 };

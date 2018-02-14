@@ -53,7 +53,6 @@ protected:
     ofColor DetermineDrawColor() const;
 
 public:
-    datButton(datButtonStyle const& style);
     datButton(float x, float y, float width, float height, datButtonStyle const& style);
     virtual ~datButton();
 

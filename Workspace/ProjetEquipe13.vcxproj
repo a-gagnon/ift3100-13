@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,19 +14,19 @@
     <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>emptyExample</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
@@ -102,6 +102,8 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   <ItemGroup>
     <ClCompile Include="..\src\app\datApplication.cpp" />
     <ClCompile Include="..\src\core\datGeometry.cpp" />
+    <ClCompile Include="..\src\core\datRenderer.cpp" />
+    <ClCompile Include="..\src\core\datTextString.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
@@ -124,6 +126,8 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datGeometry.h" />
     <ClInclude Include="..\src\core\datLocalization.h" />
     <ClInclude Include="..\src\core\datNonCopyableClass.h" />
+    <ClInclude Include="..\src\core\datRenderer.h" />
+    <ClInclude Include="..\src\core\datTextString.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
     <ClInclude Include="..\src\tools\datPlaceTextTool.h" />

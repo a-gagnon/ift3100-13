@@ -5,29 +5,13 @@
 #pragma once
 
 #include "datDefinitions.h"
+#include "datNonCopyableClass.h"
+#include "datTextString.h"
 
 BEGIN_DAT_NAMESPACE
 
-
 // Small tolerance for comparisons
 #define datEpsilon 1e-03
-
-//=======================================================================================
-//&&AG NEEDSWORK. Make a better wrapper for text strings!
-struct datText {
-
-public:
-    ofTrueTypeFont m_ttf;
-    std::string m_text;
-    ofPoint m_position;
-
-public:
-    ~datText() {}
-    datText(ofTrueTypeFont const& ttf, std::string const& text, ofVec2f const& position) :
-        m_ttf(ttf), m_text(text), m_position(position) {}
-
-    void draw() { m_ttf.drawString(m_text, m_position.x, m_position.y); }
-};
 
 
 //=======================================================================================
@@ -39,7 +23,7 @@ public:
     enum class GeometryType {
         Polyline,
         Mesh,
-        Text
+        TextString
     };
 
 private:
@@ -49,42 +33,30 @@ private:
     union {
         ofPolyline m_polylineData;
         ofMesh m_meshData;
-        datText m_textData;
+        datTextString m_textStringData;
     };
 
-public:
+private:
     datGeometry(ofPolyline const& polyline);
     datGeometry(ofMesh const& mesh);
-    datGeometry(datText const& text);
+    datGeometry(datTextString const& textString);
+
+public:
     ~datGeometry() {}
+    static std::unique_ptr<datGeometry> Create(ofPolyline const& polyline);
+    static std::unique_ptr<datGeometry> Create(ofMesh const& mesh);
+    static std::unique_ptr<datGeometry> Create(datTextString const& textString);
 
     void SetColor(ofColor const& color) { m_color = color; }
     ofColor const& GetColor() const { return m_color; }
 
-    GeometryType GetType() const    { return m_type; }
-    ofPolyline& GetAsPolyline()     { assert(GeometryType::Polyline == m_type); return m_polylineData; }
-    ofMesh& GetAsMesh()             { assert(GeometryType::Mesh == m_type); return m_meshData; }
-    datText& GetAsText()            { assert(GeometryType::Text == m_type); return m_textData; }
+    GeometryType GetType() const        { return m_type; }
+    ofPolyline& GetAsPolyline()         { assert(GeometryType::Polyline == m_type); return m_polylineData; }
+    ofMesh& GetAsMesh()                 { assert(GeometryType::Mesh == m_type); return m_meshData; }
+    datTextString& GetAsTextString()    { assert(GeometryType::TextString == m_type); return m_textStringData; }
 
-    void draw();
+    void draw() const;
 };
 
-
-//&&AG NEEDSWORK even more
-// Static cache for geometry.. until we have some persistence
-//=======================================================================================
-struct GeometryCache {
-
-private:
-    std::vector<std::unique_ptr<datGeometry>> m_geometries;
-
-    GeometryCache() {}
-    ~GeometryCache() {}
-
-public:
-    static GeometryCache& GetCache();
-    void addGeometry(datGeometry* pGeometry);
-    void drawCachedGeometries();
-};
 
 END_DAT_NAMESPACE
