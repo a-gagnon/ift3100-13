@@ -36,7 +36,7 @@ protected:
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
-	void dragged(ofDragInfo& ev);
+    virtual void dragged(ofDragInfo& ev) override;;
     virtual void setup() override;
     virtual void draw() override;
     virtual void mousePressed(ofMouseEventArgs& ev) override;
@@ -45,7 +45,7 @@ protected:
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
-	virtual void exit();
+    virtual void exit() override;
 
 public:
     datApplication();

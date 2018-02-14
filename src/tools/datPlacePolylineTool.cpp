@@ -59,6 +59,10 @@ void datPlacePolylineTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
 void datPlacePolylineTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
+    // Remove the dynamic point
+    if (0 < m_polyline.size())
+        m_polyline.resize(m_polyline.size() - 1);
+
     saveAndClearShape(true);
 }
 
