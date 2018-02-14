@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjetEquipe13", "ProjetEquipe13.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GTest", "GTest.vcxproj", "{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "..\src\libs\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
 EndProject
 Global
@@ -23,12 +21,6 @@ Global
 		{7FD42DF7-442E-479A-BA76-D0022F99702A}.Release|x64.ActiveCfg = Release|Win32
 		{7FD42DF7-442E-479A-BA76-D0022F99702A}.Release|x86.ActiveCfg = Release|Win32
 		{7FD42DF7-442E-479A-BA76-D0022F99702A}.Release|x86.Build.0 = Release|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Debug|x64.ActiveCfg = Debug|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Debug|x86.ActiveCfg = Debug|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Debug|x86.Build.0 = Debug|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Release|x64.ActiveCfg = Release|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Release|x86.ActiveCfg = Release|Win32
-		{AF0752B9-5D47-4625-87B5-4C8CD2F475EC}.Release|x86.Build.0 = Release|Win32
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Debug|x64.ActiveCfg = Debug|x64
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Debug|x64.Build.0 = Debug|x64
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Debug|x86.ActiveCfg = Debug|Win32
