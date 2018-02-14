@@ -32,6 +32,12 @@
     <ClCompile Include="..\src\ui\datButton.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datRenderer.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\datTextString.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -78,9 +84,6 @@
     <ClInclude Include="..\src\core\datDefinitions.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\core\datGeometry.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ui\datView.h">
       <Filter>ui</Filter>
     </ClInclude>
@@ -91,6 +94,15 @@
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\datEvents.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datGeometry.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datRenderer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datTextString.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>

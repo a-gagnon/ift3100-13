@@ -33,9 +33,9 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
         m_polyline.addVertex(m_polyline[0]);
 
     if (2 <= m_polyline.size()) {
-        datGeometry* pGeometry = new datGeometry(m_polyline);
-        pGeometry->SetColor(ofColor::orange);
-        GeometryCache::GetCache().addGeometry(pGeometry);
+        std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
+        geometry->SetColor(ofColor::orange);
+        datRenderer::GetRenderer().addGeometry(geometry);
     }
 
     m_polyline.clear();

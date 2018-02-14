@@ -18,13 +18,6 @@ datButtonStyle datButtonStyle::createForToolButton() {
 }
 
 
-datButton::datButton(datButtonStyle const& style) : T_Super(),
-    m_pCallbackFunction(nullptr),
-    m_isToggled(false),
-    m_style(style) {
-}
-
-
 datButton::datButton(float x, float y, float width, float height, datButtonStyle const& style) :
     T_Super(x, y, width, height),
     m_pCallbackFunction(nullptr),

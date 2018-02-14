@@ -4,7 +4,7 @@
 //=======================================================================================
 #pragma once
 
-#include "../core/datDefinitions.h"
+#include "../core/datCore.h"
 #include "../tools/datToolManager.h"
 #include "../tools/datPlacePolylineTool.h"
 #include "../tools/datPlaceTextTool.h"
@@ -22,6 +22,8 @@ DEFINE_T_SUPER(ofBaseApp)
 private:
     std::unique_ptr<datToolManager> m_toolManager;
     std::unique_ptr<datViewManager> m_viewManager;
+    std::unique_ptr<datRenderer> m_renderer;
+
     int m_width;
     int m_height;
 
@@ -49,6 +51,7 @@ public:
 
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();
+    datRenderer& GetRenderer();
 
     static datApplication& GetApp();
 };

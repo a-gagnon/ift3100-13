@@ -72,7 +72,7 @@ void datApplication::SetupUI() {
     datButton* pSelectToolButton = new datButton(10, 20, 40, 40, datButtonStyle::createForToolButton());
     pSelectToolButton->SetOnPressedCallback(startSelectTool);
     pSelectToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("cursor.png"));
-    pSelectToolButton->SetTooltip(datLocalization::Tooltip_SelectTool());
+    pSelectToolButton->SetTooltip(datLocalization::SelectTool_Tooltip());
     pSelectToolButton->SetName(BUTTON_NAME_SELECT);
     mainView.AddView(pSelectToolButton);
 
@@ -80,7 +80,7 @@ void datApplication::SetupUI() {
     datButton* pPolylineToolButton = new datButton(10, 65, 40, 40, datButtonStyle::createForToolButton());
     pPolylineToolButton->SetOnPressedCallback(startPlacePolylineTool);
     pPolylineToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("pencil.png"));
-    pPolylineToolButton->SetTooltip(datLocalization::Tooltip_PlacePolylineTool());
+    pPolylineToolButton->SetTooltip(datLocalization::PlacePolylineTool_Tooltip());
     pPolylineToolButton->SetName(BUTTON_NAME_PLACEPOLYLINE);
     mainView.AddView(pPolylineToolButton);
 
@@ -88,7 +88,7 @@ void datApplication::SetupUI() {
     datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40, datButtonStyle::createForToolButton());
     pWriteTextToolButton->SetOnPressedCallback(startPlaceTextTool);
     pWriteTextToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("write_text.png"));
-    pWriteTextToolButton->SetTooltip(datLocalization::Tooltip_PlaceTextTool());
+    pWriteTextToolButton->SetTooltip(datLocalization::PlaceTextTool_Tooltip());
     pWriteTextToolButton->SetName(BUTTON_NAME_PLACETEXT);
     mainView.AddView(pWriteTextToolButton);
 
@@ -147,7 +147,8 @@ bool datApplication::SendKeyEvent(ofKeyEventArgs& ev) {
 void datApplication::draw() {
 
     T_Super::draw();
-    GeometryCache::GetCache().drawCachedGeometries();
+
+    GetRenderer().render();
     GetViewManager().DoDraw();
     GetToolManager().DoDraw();
 }
@@ -209,6 +210,14 @@ datViewManager& datApplication::GetViewManager() {
         m_viewManager.reset(new datViewManager());
 
     return *m_viewManager;
+}
+
+
+datRenderer& datApplication::GetRenderer() {
+    if (nullptr == m_renderer)
+        m_renderer.reset(new datRenderer());
+
+    return *m_renderer;
 }
 
 
