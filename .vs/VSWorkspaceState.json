@@ -3,12 +3,10 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\geometry",
-    "\\src\\libs\\gtest",
     "\\src\\tests",
     "\\src\\tools",
     "\\Workspace"
   ],
-  "SelectedNode": "\\assets",
+  "SelectedNode": "\\Workspace\\SolutionEquipe13.sln",
   "PreviewInSolutionExplorer": false
 }
