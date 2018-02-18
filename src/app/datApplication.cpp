@@ -197,6 +197,8 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
     datMouseEvent datEvent(ev);
     ClampEvent(datEvent);
 
+    GetRenderer().setCoordinates(ev);
+
     if (GetViewManager().SendMouseEvent(datEvent))
         return true;
 

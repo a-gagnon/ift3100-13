@@ -39,7 +39,7 @@ datRenderer& datRenderer::GetActiveRenderer() {
 }
 
 
-std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() {
+std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
 
     std::vector<Entry*> visibleEntries;
 
@@ -48,6 +48,13 @@ std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() {
     }
 
     return visibleEntries;
+}
+
+
+void datRenderer::drawCursorType() const {
+    //&&AG TODO
+    // use m_cursorCoordinates to get current x/y position
+
 }
 
 
@@ -69,4 +76,6 @@ void datRenderer::render() {
 
         ofPopMatrix(); // load transform from top of stack
     }
+
+    drawCursorType();
 }
