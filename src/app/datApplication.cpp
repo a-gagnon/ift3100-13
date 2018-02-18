@@ -157,7 +157,7 @@ void datApplication::SetupUI() {
 
 
     // Color picker button
-    datButton* pColorPickerButton = new datButton(100, 10, 40, 40, datButtonStyle::createForToolButton());
+    datButton* pColorPickerButton = new datButton(200, 20, 40, 40, datButtonStyle::createForToolButton());
     pColorPickerButton->SetOnPressedCallback(onColorPickerButtonPressed);
     pColorPickerButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
     pColorPickerButton->SetTooltip(datLocalization::ChangeActiveColor());

@@ -8,8 +8,6 @@
 
 BEGIN_DAT_NAMESPACE
 
-struct datColorPicker;
-
 //=======================================================================================
 // Color picker
 // Draw 3 images of 256x40 px that represents each color

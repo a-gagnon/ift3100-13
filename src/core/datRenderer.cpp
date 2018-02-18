@@ -21,7 +21,8 @@ datRenderer::Entry::~Entry() {
 //=======================================================================================
 datRenderer* datRenderer::s_activeRenderer = nullptr;
 
-datRenderer::datRenderer() {
+datRenderer::datRenderer() : 
+    m_activeDrawColor(255, 255, 255, 255) {
     assert(nullptr == s_activeRenderer);
     s_activeRenderer = this;
 }
