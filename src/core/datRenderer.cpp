@@ -32,7 +32,7 @@ datRenderer::~datRenderer() {
 }
 
 
-datRenderer& datRenderer::GetRenderer() {
+datRenderer& datRenderer::GetActiveRenderer() {
     assert(nullptr != s_activeRenderer);
     return *s_activeRenderer;
 }

@@ -11,4 +11,5 @@
 #include "datNonCopyableClass.h"
 #include "datRenderer.h"
 #include "datTextString.h"
+#include "datImage.h"
 #include "datUtilities.h"

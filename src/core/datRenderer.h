@@ -39,6 +39,8 @@ private:
     static datRenderer* s_activeRenderer; // pointer to active renderer or nullptr
     std::vector<std::unique_ptr<Entry>> m_entries;
     
+    ofColor m_activeDrawColor;
+    
 private:
     // Returns the visible entries given current transform
     std::vector<Entry*> GetVisibleEntries();
@@ -46,11 +48,14 @@ private:
 public:
     datRenderer();
     ~datRenderer();
-    static datRenderer& GetRenderer();
+    static datRenderer& GetActiveRenderer();
 
     // Adds a geometry to the renderer. Source is cleared
     void addGeometry(std::unique_ptr<datGeometry>& geometry);
     void render();
+
+    ofColor getActiveDrawColor() const { return m_activeDrawColor; }
+    void setActiveDrawColor(ofColor const& color) { m_activeDrawColor = color; }
 };
 
 END_DAT_NAMESPACE

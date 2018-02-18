@@ -9,8 +9,11 @@
 #include "../tools/datPlacePolylineTool.h"
 #include "../tools/datPlaceTextTool.h"
 #include "../tools/datSelectTool.h"
+#include "../tools/datPlaceImageTool.h"
+#include "../tools/datExportImageTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
+#include "../ui/datColorPicker.h"
 
 BEGIN_DAT_NAMESPACE
 
@@ -36,7 +39,7 @@ protected:
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
-    virtual void dragged(ofDragInfo& ev) override;;
+    virtual void dragged(ofDragInfo& ev) override;
     virtual void setup() override;
     virtual void draw() override;
     virtual void mousePressed(ofMouseEventArgs& ev) override;
@@ -45,15 +48,10 @@ protected:
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
-    virtual void exit() override;
 
 public:
     datApplication();
     virtual ~datApplication();
-
-	vector <ofImage> draggedImages;
-	ofPoint dragPt;
-	ofImage img;
 
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();

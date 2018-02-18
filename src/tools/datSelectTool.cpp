@@ -61,7 +61,7 @@ void datSelectTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
 void datSelectTool::onLeftMouseButtonUp(datMouseEvent const& ev) {
 
-    if (m_isMouseDrag) {
+    if (m_hasFirstPoint && m_isMouseDrag) {
 
         updateRectangle(ev);
         updateSelectionMode(ev);

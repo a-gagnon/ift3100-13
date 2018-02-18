@@ -34,8 +34,10 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
 
     if (2 <= m_polyline.size()) {
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
-        geometry->SetColor(ofColor::orange);
-        datRenderer::GetRenderer().addGeometry(geometry);
+
+        datRenderer& renderer = datRenderer::GetActiveRenderer();
+        geometry->SetColor(renderer.getActiveDrawColor());
+        renderer.addGeometry(geometry);
     }
 
     m_polyline.clear();
@@ -78,6 +80,8 @@ void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 void datPlacePolylineTool::onDraw() {
 
     if (0 < m_polyline.size()) {
+        const ofColor color = datRenderer::GetActiveRenderer().getActiveDrawColor();
+        ofSetColor(color);
         m_polyline.draw();
     }
 }

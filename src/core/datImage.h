@@ -1,5 +1,5 @@
 //=======================================================================================
-// datTextString.h
+// datImage.h
 // IFT3100-13
 //=======================================================================================
 #pragma once
@@ -9,18 +9,19 @@
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-// Basic wrapper around the ofTrueTypeFont class
+// Basic wrapper around the ofImage class
 //=======================================================================================
-struct datTextString {
+struct datImage {
 
 public:
-    ofTrueTypeFont m_trueTypeFont;
-    std::string m_text;
+    ofImage m_image;
     ofPoint m_position;
+    uint32_t m_width;
+    uint32_t m_height;
 
 public:
-    datTextString(ofTrueTypeFont const& trueTypeFont, std::string const& text, ofVec2f const& position);
-    ~datTextString();
+    datImage(ofImage const& image, ofPoint const& position, uint32_t width, uint32_t height);
+    ~datImage();
 
     void draw() const;
 };

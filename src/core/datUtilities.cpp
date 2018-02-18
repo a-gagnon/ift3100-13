@@ -27,3 +27,36 @@ ofImage* datUtilities::LoadImageFromAssetsFolder(std::string const& fileName) {
     delete pImage;
     return nullptr;
 }
+
+
+bool datUtilities::OpenFileDialog(std::string& filePath, bool fileMustExist) {
+
+    WCHAR wideChars[260];
+
+    // Open windows file browser to populate images to place
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.lpstrFile = wideChars;
+    ofn.lpstrFile[0] = '\0';
+    ofn.nMaxFile = sizeof(wideChars);
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST;
+    
+    if (fileMustExist)
+        ofn.Flags |= OFN_FILEMUSTEXIST;
+
+    if (!GetOpenFileName(&ofn)) {
+        // Dialog closed without picking any file
+        return false;
+    }
+
+    char defaultChar = ' ';
+    char chars[260];
+    WideCharToMultiByte(CP_ACP, 0, wideChars, -1, chars, 260, &defaultChar, false);
+
+    filePath = std::string(chars);
+    return true;
+}
