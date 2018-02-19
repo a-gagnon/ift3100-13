@@ -1,21 +1,113 @@
 //=======================================================================================
-// datApplication.cpp
+// datToolbar.cpp
 // IFT3100-13
 //=======================================================================================
-#include "datApplication.h"
+#include "datToolbar.h"
 
 USING_DAT_NAMESPACE
 
-// Private names so we can refer to a specific views at runtime
+datToolbar* datToolbar::s_activeToolbar = nullptr;
+
+datToolbar::datToolbar() {
+    s_activeToolbar = this;
+}
+
+
+datToolbar::~datToolbar() {
+    s_activeToolbar = nullptr;
+}
+
+
+datToolbar& datToolbar::GetActiveToolbar() {
+    assert(nullptr != s_activeToolbar);
+    return *s_activeToolbar;
+}
+
+
+void datToolbar::InitToolbar(datView& mainView) {
+
+    // Select tool
+    datButton* pSelectToolButton = new datButton(10, 20, 40, 40, datButtonStyle::createForToolButton());
+    pSelectToolButton->SetOnPressedCallback(onSelectPressed);
+    pSelectToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("cursor.png"));
+    pSelectToolButton->SetTooltip(datLocalization::SelectTool_Tooltip());
+    pSelectToolButton->SetName(NameSelectButton());
+    m_toolButtons.push_back(pSelectToolButton);
+    mainView.AddView(pSelectToolButton);
+
+    // Place polyline tool
+    datButton* pPolylineToolButton = new datButton(10, 65, 40, 40, datButtonStyle::createForToolButton());
+    pPolylineToolButton->SetOnPressedCallback(startPlacePolylineTool);
+    pPolylineToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("pencil.png"));
+    pPolylineToolButton->SetTooltip(datLocalization::PlacePolylineTool_Tooltip());
+    pPolylineToolButton->SetName(NamePlacePolylineButton());
+    m_toolButtons.push_back(pPolylineToolButton);
+    mainView.AddView(pPolylineToolButton);
+
+    // Place text tool
+    datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40, datButtonStyle::createForToolButton());
+    pWriteTextToolButton->SetOnPressedCallback(startPlaceTextTool);
+    pWriteTextToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("write_text.png"));
+    pWriteTextToolButton->SetTooltip(datLocalization::PlaceTextTool_Tooltip());
+    pWriteTextToolButton->SetName(NamePlaceTextButton());
+    m_toolButtons.push_back(pWriteTextToolButton);
+    mainView.AddView(pWriteTextToolButton);
+
+    // Insert image tool
+    datButton* pPlaceImageToolButton = new datButton(10, 155, 40, 40, datButtonStyle::createForToolButton());
+    pPlaceImageToolButton->SetOnPressedCallback(startPlaceImageTool);
+    pPlaceImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
+    pPlaceImageToolButton->SetTooltip(datLocalization::PlaceImageTool_Tooltip());
+    pPlaceImageToolButton->SetName(NamePlaceImageButton());
+    m_toolButtons.push_back(pPlaceImageToolButton);
+    mainView.AddView(pPlaceImageToolButton);
+
+}
+
+
+void datToolbar::setToggleAllButtonsOff() {
+
+    for (auto const& pButton : m_toolButtons) {
+        pButton->SetToggle(false);
+    }
+}
+
+
+void datToolbar::onSelectPressed(datButton& button) {
+    GetActiveToolbar().setToggleAllButtonsOff();
+}
+
+
+void datToolbar::onPlacePolylinePressed(datButton& button) {
+
+}
+void datToolbar::onPlaceTextPressed(datButton& button) {
+
+}
+
+void datToolbar::onPlaceImagePressed(datButton& button) {
+
+}
+
+void datToolbar::onPlaceImageCompleted() {
+
+
+}
+
+
+
+
+
+
+
+
+
+// Private button names so we can refer to a specific button at runtime
 // not exposed to users
 #define DAT_BUTTON_NAME_SELECT "btn_selectTool"
 #define DAT_BUTTON_NAME_PLACEPOLYLINE "btn_placePolylineTool"
 #define DAT_BUTTON_NAME_PLACETEXT "btn_placeTextTool"
 #define DAT_BUTTON_NAME_PLACEIMAGE "btn_placeImageTool"
-#define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
-
-#define DAT_BUTTON_NAME_COLORPICKER "btn_colorPicker"
-#define DAT_COLORPICKER_NAME "ui_colorPicker"
 
 namespace {
 
@@ -25,8 +117,7 @@ namespace {
             DAT_BUTTON_NAME_SELECT,
             DAT_BUTTON_NAME_PLACEPOLYLINE,
             DAT_BUTTON_NAME_PLACETEXT,
-            DAT_BUTTON_NAME_PLACEIMAGE,
-            DAT_BUTTON_NAME_EXPORTIMAGE
+            DAT_BUTTON_NAME_PLACEIMAGE
         };
 
         datViewManager& manager = datApplication::GetApp().GetViewManager();
@@ -39,63 +130,42 @@ namespace {
         }
     }
 
-    void startDefaultTool() {
-        auto pSelectToolButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_SELECT);
-        static_cast<datButton*>(pSelectToolButton)->PressButton();
-    }
-
-    void onStartSelectToolPressed(datButton& button) {
+    void startSelectTool(datButton& button) {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datSelectTool());
     }
 
-    void onStartPlacePolylineToolPressed(datButton& button) {
+    void startPlacePolylineTool(datButton& button) {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datPlacePolylineTool());
     }
 
-    void onStartPlaceTextToolPressed(datButton& button) {
+    void startPlaceTextTool(datButton& button) {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datPlaceTextTool());
     }
 
-    void onStartPlaceImageToolPressed(datButton& button) {
+    void onPlaceImageCompleted() {
+        datViewManager& manager = datApplication::GetApp().GetViewManager();
+
+        // Exits the place image tool and starts the select tool
+        auto pSelectToolButton = manager.GetViewByName(DAT_BUTTON_NAME_SELECT);
+        static_cast<datButton*>(pSelectToolButton)->PressButton();
+    }
+    void startPlaceImageTool(datButton& button) {
+
         setToggleAllToolButtons(false);
         button.SetToggle(true);
-        datApplication::GetApp().GetToolManager().StartTool(new datPlaceImageTool(startDefaultTool));
+
+        auto pTool = new datPlaceImageTool();
+        pTool->SetOnCompletedCallback(onPlaceImageCompleted);
+        datApplication::GetApp().GetToolManager().StartTool(pTool);
     }
 
-    void onStartExportImageToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
-        datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool(startDefaultTool));
-    }
-
-    void onColorPickerButtonPressed(datButton& button) {
-
-        datViewManager& viewManager = datApplication::GetApp().GetViewManager();
-
-        if (button.IsToggled()) {
-            auto pColorPicker = viewManager.GetViewByName(DAT_COLORPICKER_NAME);
-            assert(nullptr != pColorPicker);
-            pColorPicker->DropView();
-            button.SetToggle(false);
-        }
-        else {
-            ofPoint corner = button.getBottomLeft();
-            corner.y += 10;
-            auto pColorPicker = new datColorPicker(corner);
-            pColorPicker->SetName(DAT_COLORPICKER_NAME);
-            viewManager.GetMainView().AddView(pColorPicker);
-            button.SetToggle(true);
-        }
-
-    }
-
-}; // end unnamed namespace
+}; // end unnamed namespaceters
 
 
 datApplication::datApplication() {
@@ -117,7 +187,7 @@ void datApplication::SetupUI() {
 
     // Select tool
     datButton* pSelectToolButton = new datButton(10, 20, 40, 40, datButtonStyle::createForToolButton());
-    pSelectToolButton->SetOnPressedCallback(onStartSelectToolPressed);
+    pSelectToolButton->SetOnPressedCallback(startSelectTool);
     pSelectToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("cursor.png"));
     pSelectToolButton->SetTooltip(datLocalization::SelectTool_Tooltip());
     pSelectToolButton->SetName(DAT_BUTTON_NAME_SELECT);
@@ -125,7 +195,7 @@ void datApplication::SetupUI() {
 
     // Place polyline tool
     datButton* pPolylineToolButton = new datButton(10, 65, 40, 40, datButtonStyle::createForToolButton());
-    pPolylineToolButton->SetOnPressedCallback(onStartPlacePolylineToolPressed);
+    pPolylineToolButton->SetOnPressedCallback(startPlacePolylineTool);
     pPolylineToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("pencil.png"));
     pPolylineToolButton->SetTooltip(datLocalization::PlacePolylineTool_Tooltip());
     pPolylineToolButton->SetName(DAT_BUTTON_NAME_PLACEPOLYLINE);
@@ -133,7 +203,7 @@ void datApplication::SetupUI() {
 
     // Place text tool
     datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40, datButtonStyle::createForToolButton());
-    pWriteTextToolButton->SetOnPressedCallback(onStartPlaceTextToolPressed);
+    pWriteTextToolButton->SetOnPressedCallback(startPlaceTextTool);
     pWriteTextToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("write_text.png"));
     pWriteTextToolButton->SetTooltip(datLocalization::PlaceTextTool_Tooltip());
     pWriteTextToolButton->SetName(DAT_BUTTON_NAME_PLACETEXT);
@@ -141,31 +211,15 @@ void datApplication::SetupUI() {
 
     // Insert image tool
     datButton* pPlaceImageToolButton = new datButton(10, 155, 40, 40, datButtonStyle::createForToolButton());
-    pPlaceImageToolButton->SetOnPressedCallback(onStartPlaceImageToolPressed);
+    pPlaceImageToolButton->SetOnPressedCallback(startPlaceImageTool);
     pPlaceImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
     pPlaceImageToolButton->SetTooltip(datLocalization::PlaceImageTool_Tooltip());
     pPlaceImageToolButton->SetName(DAT_BUTTON_NAME_PLACEIMAGE);
     mainView.AddView(pPlaceImageToolButton);
 
-    // Export image tool
-    datButton* pExportImageToolButton = new datButton(10, 200, 40, 40, datButtonStyle::createForToolButton());
-    pExportImageToolButton->SetOnPressedCallback(onStartExportImageToolPressed);
-    pExportImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("export_image.png"));
-    pExportImageToolButton->SetTooltip(datLocalization::ExportImageTool_Tooltip());
-    pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
-    mainView.AddView(pExportImageToolButton);
 
-
-    // Color picker button
-    datButton* pColorPickerButton = new datButton(200, 20, 40, 40, datButtonStyle::createForToolButton());
-    pColorPickerButton->SetOnPressedCallback(onColorPickerButtonPressed);
-    pColorPickerButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
-    pColorPickerButton->SetTooltip(datLocalization::ChangeActiveColor());
-    pColorPickerButton->SetName(DAT_BUTTON_NAME_COLORPICKER);
-    mainView.AddView(pColorPickerButton);
-
-
-    startDefaultTool();
+    // Set the select tool as the active tool
+    pSelectToolButton->PressButton();
 }
 
 
@@ -196,8 +250,6 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
 
     datMouseEvent datEvent(ev);
     ClampEvent(datEvent);
-
-    GetRenderer().setCoordinates(ev);
 
     if (GetViewManager().SendMouseEvent(datEvent))
         return true;
@@ -234,7 +286,8 @@ void datApplication::dragged(ofDragInfo& ev) {
         auto pView = GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEIMAGE);
         static_cast<datButton*>(pView)->SetToggle(true);
         
-        auto pTool = new datPlaceImageTool(startDefaultTool);
+        auto pTool = new datPlaceImageTool();
+        pTool->SetOnCompletedCallback(onPlaceImageCompleted);
         pTool->SetImagesToPlace(images);
         datApplication::GetApp().GetToolManager().StartTool(pTool);
     }
@@ -292,6 +345,11 @@ void datApplication::windowResized(ofResizeEventArgs& resize) {
     mainView.setHeight(resize.height);
 }
 
+void datApplication::exit() {
+    ofImage img;
+    img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+    img.save("screenshot.png");
+}
 
 datToolManager& datApplication::GetToolManager() {
 

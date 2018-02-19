@@ -1,28 +1,31 @@
 //=======================================================================================
-// datTextString.h
+// datColorPicker.h
 // IFT3100-13
 //=======================================================================================
 #pragma once
 
-#include "datDefinitions.h"
+#include "datView.h"
 
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-// Basic wrapper around the ofTrueTypeFont class
+// Color picker
+// Draw 3 images of 256x40 px that represents each color
 //=======================================================================================
-struct datTextString {
+struct datColorPicker : datView {
+
+DEFINE_T_SUPER(datView)
+
+protected:
+    std::unique_ptr<ofImage> m_rgbImage;
+
+protected:
+    virtual bool onLeftMouseButtonDown(datMouseEvent const& ev) override;
+    virtual void onDraw() override;
 
 public:
-    ofTrueTypeFont m_trueTypeFont;
-    std::string m_text;
-    ofPoint m_position;
-
-public:
-    datTextString(ofTrueTypeFont const& trueTypeFont, std::string const& text, ofVec2f const& position);
-    ~datTextString();
-
-    void draw() const;
+    datColorPicker(ofVec2f const& position);
+    virtual ~datColorPicker();
 };
 
 END_DAT_NAMESPACE

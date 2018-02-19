@@ -45,6 +45,7 @@ public:
     // Takes ownership of the view using a unique_ptr
     void AddView(datView* pView);
     void RemoveView(datView* pView);
+    void DropView();
 
     bool IsVisible() const;
     void SetVisible(bool yesNo);
@@ -56,5 +57,19 @@ public:
     ofColor const& GetBackgroundColor() const { return m_backgroundColor; }
     void SetBackgroundColor(ofColor const& color) { m_backgroundColor = color; }
 };
+
+
+//=======================================================================================
+struct IViewRemovedListener {
+
+protected:
+    virtual void _OnViewDropped(datView& view) {}
+
+public:
+    static void AddListener(IViewRemovedListener* pListener);
+    static void DropListener(IViewRemovedListener* pListener);
+    static void NotifyViewRemoved(datView& view);
+};
+
 
 END_DAT_NAMESPACE

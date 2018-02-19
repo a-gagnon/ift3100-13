@@ -21,7 +21,8 @@ datRenderer::Entry::~Entry() {
 //=======================================================================================
 datRenderer* datRenderer::s_activeRenderer = nullptr;
 
-datRenderer::datRenderer() {
+datRenderer::datRenderer() : 
+    m_activeDrawColor(255, 255, 255, 255) {
     assert(nullptr == s_activeRenderer);
     s_activeRenderer = this;
 }
@@ -32,13 +33,13 @@ datRenderer::~datRenderer() {
 }
 
 
-datRenderer& datRenderer::GetRenderer() {
+datRenderer& datRenderer::GetActiveRenderer() {
     assert(nullptr != s_activeRenderer);
     return *s_activeRenderer;
 }
 
 
-std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() {
+std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
 
     std::vector<Entry*> visibleEntries;
 
@@ -47,6 +48,13 @@ std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() {
     }
 
     return visibleEntries;
+}
+
+
+void datRenderer::drawCursorType() const {
+    //&&AG TODO
+    // use m_cursorCoordinates to get current x/y position
+
 }
 
 
@@ -68,4 +76,6 @@ void datRenderer::render() {
 
         ofPopMatrix(); // load transform from top of stack
     }
+
+    drawCursorType();
 }

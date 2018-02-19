@@ -79,11 +79,18 @@ void datView::RemoveView(datView* pView) {
         for (int i = 0; i < m_views.size(); ++i) {
 
             if (m_views[i].get() == pView) {
+                IViewRemovedListener::NotifyViewRemoved(*m_views[i]);
                 m_views.erase(m_views.begin() + i);
                 return;
             }
         }
     }
+}
+
+
+void datView::DropView() {
+    assert(nullptr != m_pParentView);
+    m_pParentView->RemoveView(this);
 }
 
 
@@ -107,5 +114,35 @@ void datView::SetVisible(bool yesNo) {
         if (nullptr != view) {
             view->SetVisible(yesNo);
         }
+    }
+}
+
+
+//=======================================================================================
+static std::vector<IViewRemovedListener*> s_pListeners;
+
+void IViewRemovedListener::AddListener(IViewRemovedListener* pListener) {
+    assert(nullptr != pListener);
+    s_pListeners.push_back(pListener);
+}
+
+
+void IViewRemovedListener::DropListener(IViewRemovedListener* pListener) {
+    assert(nullptr != pListener);
+
+    for (size_t i = 0; i < s_pListeners.size(); ++i){
+
+        if (s_pListeners[i] == pListener) {
+            s_pListeners.erase(s_pListeners.begin() + i);
+            return;
+        }
+    }
+}
+
+
+void IViewRemovedListener::NotifyViewRemoved(datView& view) {
+
+    for (auto const& pListener : s_pListeners) {
+        pListener->_OnViewDropped(view);
     }
 }

@@ -38,6 +38,18 @@
     <ClCompile Include="..\src\core\datTextString.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datImage.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceImageTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datExportImageTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datColorPicker.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -104,6 +116,21 @@
     </ClInclude>
     <ClInclude Include="..\src\core\datTextString.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datImage.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datCore.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceImageTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datExportImageTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datColorPicker.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

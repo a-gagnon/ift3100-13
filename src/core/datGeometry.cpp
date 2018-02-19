@@ -24,6 +24,12 @@ datGeometry::datGeometry(datTextString const& textString) :
 }
 
 
+datGeometry::datGeometry(datImage const& image) :
+    m_type(GeometryType::Image),
+    m_imageData(image) {
+}
+
+
 std::unique_ptr<datGeometry> datGeometry::Create(ofPolyline const& polyline) {
     auto ptr = std::unique_ptr<datGeometry>(new datGeometry(polyline));
     return std::move(ptr);
@@ -42,6 +48,12 @@ std::unique_ptr<datGeometry> datGeometry::Create(datTextString const& textString
 }
 
 
+std::unique_ptr<datGeometry> datGeometry::Create(datImage const& image) {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(image));
+    return std::move(ptr);
+}
+
+
 void datGeometry::draw() const {
 
     ofSetColor(m_color);
@@ -55,6 +67,9 @@ void datGeometry::draw() const {
             break;
         case GeometryType::TextString:
             m_textStringData.draw();
+            break;
+        case GeometryType::Image:
+            m_imageData.draw();
             break;
     }
 }

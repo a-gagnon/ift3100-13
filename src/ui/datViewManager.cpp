@@ -6,14 +6,35 @@
 
 USING_DAT_NAMESPACE
 
+datViewManager* datViewManager::s_activeViewManager = nullptr;
+
 datViewManager::datViewManager() :
     m_viewWithMouseInside(nullptr),
     m_mainView(new datView()) {
+
+    assert(nullptr == s_activeViewManager);
+    s_activeViewManager = this;
+    IViewRemovedListener::AddListener(this);
 }
 
 
 datViewManager::~datViewManager() {
+    s_activeViewManager = nullptr;
+    IViewRemovedListener::DropListener(this);
+}
 
+
+datViewManager& datViewManager::GetActiveViewManager() {
+    assert(nullptr != s_activeViewManager);
+    return  *s_activeViewManager;
+}
+
+
+void datViewManager::_OnViewDropped(datView& view) {
+
+    if (m_viewWithMouseInside == &view) {
+        m_viewWithMouseInside = nullptr;
+    }
 }
 
 
