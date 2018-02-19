@@ -30,7 +30,7 @@ private:
 protected:
 
     void SetupUI();
-
+	
     // Make sure x and y values are inside the app window
     void ClampEvent(datMouseEvent& ev) const;
     bool SendMouseEvent(ofMouseEventArgs& ev);
