@@ -3,9 +3,11 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\core",
     "\\src\\tools",
+    "\\src\\ui",
     "\\Workspace"
   ],
-  "SelectedNode": "\\Workspace\\SolutionEquipe13.sln",
+  "SelectedNode": "\\src\\core\\datRenderer.h",
   "PreviewInSolutionExplorer": false
 }

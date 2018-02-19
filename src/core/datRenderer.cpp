@@ -54,7 +54,40 @@ std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
 void datRenderer::drawCursorType() const {
     //&&AG TODO
     // use m_cursorCoordinates to get current x/y position
-
+	if (ofGetKeyPressed('1')) {
+		ofHideCursor();
+		ofSetColor(80);
+		ofDrawRectangle(m_cursorCoordinates.x-8, m_cursorCoordinates.y-8, 16, 16);
+	}
+	else if (ofGetKeyPressed('2')) {
+		ofHideCursor();
+		ofSetColor(80);
+		ofDrawCircle(m_cursorCoordinates.x, m_cursorCoordinates.y, 10);
+	}
+	else if (ofGetKeyPressed('3')) {
+		ofHideCursor();
+		ofSetColor(80);
+		ofSetLineWidth(3);
+		ofDrawLine(m_cursorCoordinates.x+8, m_cursorCoordinates.y+8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x-8, m_cursorCoordinates.y-8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x-8, m_cursorCoordinates.y+8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x+8, m_cursorCoordinates.y-8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+	}
+	else if (ofGetKeyPressed('4')) {
+		ofHideCursor();
+		ofSetColor(80);
+		ofSetLineWidth(3);
+		ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y + 8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y - 8, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y, m_cursorCoordinates.x, m_cursorCoordinates.y);
+		ofDrawLine(m_cursorCoordinates.x + 8, m_cursorCoordinates.y, m_cursorCoordinates.x, m_cursorCoordinates.y);
+	}
+	else if (ofGetKeyPressed('5')) {
+		ofHideCursor();
+		ofSetColor(80);
+		ofDrawTriangle(m_cursorCoordinates.x, m_cursorCoordinates.y, m_cursorCoordinates.x-8, m_cursorCoordinates.y+15,m_cursorCoordinates.x+8,m_cursorCoordinates.y+15);
+	}
+	else ofShowCursor();
 }
 
 

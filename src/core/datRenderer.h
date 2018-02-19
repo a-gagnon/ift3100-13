@@ -68,7 +68,7 @@ public:
 
     void setCoordinates(ofVec2f const& coordinates) { m_cursorCoordinates = coordinates; }
     void render();
-
+	
     ofColor getActiveDrawColor() const { return m_activeDrawColor; }
     void setActiveDrawColor(ofColor const& color) { m_activeDrawColor = color; }
 };
