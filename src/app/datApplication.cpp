@@ -197,7 +197,7 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
     datMouseEvent datEvent(ev);
     ClampEvent(datEvent);
 
-    GetRenderer().setCoordinates(ev);
+    GetRenderer().GrabMouseEvent(datEvent);
 
     if (GetViewManager().SendMouseEvent(datEvent))
         return true;
@@ -245,9 +245,10 @@ void datApplication::draw() {
 
     T_Super::draw();
 
-    GetRenderer().render();
+    GetRenderer().Render();
     GetViewManager().DoDraw();
     GetToolManager().DoDraw();
+    GetRenderer().DrawCursorType();
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {

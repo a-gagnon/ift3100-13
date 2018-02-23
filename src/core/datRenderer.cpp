@@ -22,7 +22,8 @@ datRenderer::Entry::~Entry() {
 datRenderer* datRenderer::s_activeRenderer = nullptr;
 
 datRenderer::datRenderer() : 
-    m_activeDrawColor(255, 255, 255, 255) {
+    m_activeDrawColor(255, 255, 255, 255),
+    m_activeCursorType(CursorType::Normal) {
     assert(nullptr == s_activeRenderer);
     s_activeRenderer = this;
 }
@@ -51,54 +52,56 @@ std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
 }
 
 
-void datRenderer::drawCursorType() const {
-    //&&AG TODO
-    // use m_cursorCoordinates to get current x/y position
-	if (ofGetKeyPressed('1')) {
-		ofHideCursor();
-		ofSetColor(80);
-		ofDrawRectangle(m_cursorCoordinates.x-8, m_cursorCoordinates.y-8, 16, 16);
-	}
-	else if (ofGetKeyPressed('2')) {
-		ofHideCursor();
-		ofSetColor(80);
-		ofDrawCircle(m_cursorCoordinates.x, m_cursorCoordinates.y, 10);
-	}
-	else if (ofGetKeyPressed('3')) {
-		ofHideCursor();
-		ofSetColor(80);
-		ofSetLineWidth(3);
-		ofDrawLine(m_cursorCoordinates.x+8, m_cursorCoordinates.y+8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x-8, m_cursorCoordinates.y-8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x-8, m_cursorCoordinates.y+8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x+8, m_cursorCoordinates.y-8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-	}
-	else if (ofGetKeyPressed('4')) {
-		ofHideCursor();
-		ofSetColor(80);
-		ofSetLineWidth(3);
-		ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y + 8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y - 8, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y, m_cursorCoordinates.x, m_cursorCoordinates.y);
-		ofDrawLine(m_cursorCoordinates.x + 8, m_cursorCoordinates.y, m_cursorCoordinates.x, m_cursorCoordinates.y);
-	}
-	else if (ofGetKeyPressed('5')) {
-		ofHideCursor();
-		ofSetColor(80);
-		ofDrawTriangle(m_cursorCoordinates.x, m_cursorCoordinates.y, m_cursorCoordinates.x-8, m_cursorCoordinates.y+15,m_cursorCoordinates.x+8,m_cursorCoordinates.y+15);
-	}
-	else ofShowCursor();
+void datRenderer::DrawCursorType() const {
+
+    if (CursorType::Normal == m_activeCursorType) {
+        ofShowCursor();
+        return;
+    }
+
+    ofHideCursor();
+    ofSetColor(80);
+    ofSetLineWidth(3);
+
+    switch (m_activeCursorType) {
+
+        case CursorType::Circle:
+            ofDrawCircle(m_cursorCoordinates.x, m_cursorCoordinates.y, 10);
+            break;
+
+        case CursorType::X:
+            ofSetLineWidth(3);
+            ofDrawLine(m_cursorCoordinates.x + 8, m_cursorCoordinates.y + 8, m_cursorCoordinates.x - 8, m_cursorCoordinates.y - 8);
+            ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y + 8, m_cursorCoordinates.x + 8, m_cursorCoordinates.y - 8);
+            break;
+
+        case CursorType::Cross:
+            ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y + 8, m_cursorCoordinates.x, m_cursorCoordinates.y - 8);
+            ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y, m_cursorCoordinates.x + 8, m_cursorCoordinates.y);
+            break;
+
+        case CursorType::Triangle:
+            ofDrawTriangle(m_cursorCoordinates.x, m_cursorCoordinates.y, m_cursorCoordinates.x - 8,
+                m_cursorCoordinates.y + 15, m_cursorCoordinates.x + 8, m_cursorCoordinates.y + 15);
+            break;
+    }
 }
 
 
-void datRenderer::addGeometry(std::unique_ptr<datGeometry>& geometry) {
+void datRenderer::GrabMouseEvent(datMouseEvent const& ev)
+    {
+    m_cursorCoordinates = ev;
+    }
+
+
+void datRenderer::AddGeometry(std::unique_ptr<datGeometry>& geometry) {
 
     std::unique_ptr<Entry> entry(new Entry(geometry));
     m_entries.push_back(std::move(entry));
 }
 
 
-void datRenderer::render() {
+void datRenderer::Render() const {
 
     const std::vector<Entry*> visibleEntries = GetVisibleEntries();
     for (auto const& entry : visibleEntries) {
@@ -109,6 +112,4 @@ void datRenderer::render() {
 
         ofPopMatrix(); // load transform from top of stack
     }
-
-    drawCursorType();
 }

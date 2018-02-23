@@ -39,8 +39,8 @@ void datPlaceTextTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(textString);
 
         datRenderer& renderer = datRenderer::GetActiveRenderer();
-        geometry->SetColor(renderer.getActiveDrawColor());
-        renderer.addGeometry(geometry);
+        geometry->SetColor(renderer.GetActiveDrawColor());
+        renderer.AddGeometry(geometry);
     }
 
     SetPlaceholderText();
@@ -71,7 +71,7 @@ void datPlaceTextTool::onKeyPressed(ofKeyEventArgs const& ev) {
 void datPlaceTextTool::onDraw() {
 
     if (!m_text.empty()) {
-        ofColor color = datRenderer::GetActiveRenderer().getActiveDrawColor();
+        ofColor color = datRenderer::GetActiveRenderer().GetActiveDrawColor();
         ofSetColor(color);
         m_font.drawStringAsShapes(m_text, m_position.x, m_position.y);
     }

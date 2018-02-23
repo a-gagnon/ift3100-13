@@ -49,7 +49,7 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         datImage wrappedImage(image, position, width, height);
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
 
-        datRenderer::GetActiveRenderer().addGeometry(geometry);
+        datRenderer::GetActiveRenderer().AddGeometry(geometry);
         m_imagesToPlace.pop_back();
 
         if (m_imagesToPlace.empty() && nullptr != m_pCallbackFunction)

@@ -6,6 +6,8 @@
 
 #include <memory>
 #include "ofMain.h"
+#include "ofxAssimpModelLoader.h"
+#include "ofxGui.h"
 
 // Convenience macros
 #define BEGIN_DAT_NAMESPACE namespace dat {

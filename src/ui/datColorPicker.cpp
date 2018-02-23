@@ -33,7 +33,7 @@ bool datColorPicker::onLeftMouseButtonDown(datMouseEvent const& ev) {
         return true;
 
     datRenderer& renderer = datRenderer::GetActiveRenderer();
-    ofColor color = renderer.getActiveDrawColor();
+    ofColor color = renderer.GetActiveDrawColor();
 
     if (hitPosition.y <= 40) {
         color.r = hitPosition.x;
@@ -47,7 +47,7 @@ bool datColorPicker::onLeftMouseButtonDown(datMouseEvent const& ev) {
     else
         return true;
 
-    renderer.setActiveDrawColor(color);
+    renderer.SetActiveDrawColor(color);
     return true;
 }
 
@@ -58,7 +58,7 @@ void datColorPicker::onDraw() {
 
 
     // Draw a rectangle to show the color preview
-    const ofColor current = datRenderer::GetActiveRenderer().getActiveDrawColor();
+    const ofColor current = datRenderer::GetActiveRenderer().GetActiveDrawColor();
     ofSetColor(current);
     const ofRectangle rect(getX(), getY() + 130, COLOR_IMAGE_WIDTH, 10);
     ofDrawRectangle(rect);

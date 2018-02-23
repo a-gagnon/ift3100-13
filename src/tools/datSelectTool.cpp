@@ -83,6 +83,39 @@ void datSelectTool::onMouseMotion(datMouseEvent const& ev) {
 }
 
 
+void datSelectTool::onKeyPressed(ofKeyEventArgs const& ev) {
+
+    const datRenderer::CursorType activeCursorType = datRenderer::GetActiveRenderer().GetActiveCursorType();
+    datRenderer::CursorType cursorType = activeCursorType;
+
+    const char key = static_cast<char>(ev.key);
+    switch (key) {
+    case '1':
+        cursorType = datRenderer::CursorType::Normal;
+        break;
+    case '2':
+        cursorType = datRenderer::CursorType::Circle;
+        break;
+    case '3':
+        cursorType = datRenderer::CursorType::X;
+        break;
+    case '4':
+        cursorType = datRenderer::CursorType::Cross;
+        break;
+    case '5':
+        cursorType = datRenderer::CursorType::Triangle;
+        break;
+    default:
+        break;
+    }
+
+    if (cursorType != activeCursorType) {
+        datRenderer::GetActiveRenderer().SetActiveCursorType(cursorType);
+    }
+
+}
+
+
 void datSelectTool::onDraw() {
 
     if (m_hasFirstPoint && datEpsilon < m_rectangle.getArea()) {

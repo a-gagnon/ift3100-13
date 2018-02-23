@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -65,7 +65,7 @@
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
@@ -79,7 +79,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -91,7 +91,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>

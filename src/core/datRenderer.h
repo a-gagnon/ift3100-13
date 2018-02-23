@@ -5,6 +5,7 @@
 #pragma once
 
 #include "datNonCopyableClass.h"
+#include "datEvents.h"
 #include "datGeometry.h"
 
 BEGIN_DAT_NAMESPACE
@@ -20,12 +21,11 @@ struct datRenderer : datNonCopyableClass {
 
 public:
     enum class CursorType {
-        Normal,
-        Dot,        // '.'
-        Cross,      // '+'
-        X,          // 'x'
-        Circle,     // 'o'
-        Square,     // '[]' rect += 5 pixels around cursor point?
+        Normal  = 1,
+        Circle  = 2, // 'o'
+        X       = 3, // 'x'
+        Cross   = 4, // '+'
+        Triangle = 5
     };
 
 
@@ -52,25 +52,29 @@ private:
     
     ofVec2f m_cursorCoordinates;
     ofColor m_activeDrawColor;
+    CursorType m_activeCursorType;
     
 private:
     // Returns the visible entries given current transform
     std::vector<Entry*> GetVisibleEntries() const;
-    void drawCursorType() const;
 
 public:
     datRenderer();
     ~datRenderer();
     static datRenderer& GetActiveRenderer();
 
-    // Adds a geometry to the renderer. Source is cleared
-    void addGeometry(std::unique_ptr<datGeometry>& geometry);
+    void GrabMouseEvent(datMouseEvent const& ev);
 
-    void setCoordinates(ofVec2f const& coordinates) { m_cursorCoordinates = coordinates; }
-    void render();
-	
-    ofColor getActiveDrawColor() const { return m_activeDrawColor; }
-    void setActiveDrawColor(ofColor const& color) { m_activeDrawColor = color; }
+    // Adds a geometry to the renderer. Source is cleared
+    void AddGeometry(std::unique_ptr<datGeometry>& geometry);
+    void Render() const;
+    void DrawCursorType() const;
+
+    ofColor GetActiveDrawColor() const { return m_activeDrawColor; }
+    void SetActiveDrawColor(ofColor const& color) { m_activeDrawColor = color; }
+
+    CursorType GetActiveCursorType() const { return m_activeCursorType; }
+    void SetActiveCursorType(CursorType type) { m_activeCursorType = type; }
 };
 
 END_DAT_NAMESPACE

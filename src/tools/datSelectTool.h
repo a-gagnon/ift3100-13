@@ -35,6 +35,7 @@ protected:
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onLeftMouseButtonUp(datMouseEvent const& ev) override;
     virtual void onMouseMotion(datMouseEvent const& ev) override;
+    virtual void onKeyPressed(ofKeyEventArgs const& ev) override;
     virtual void onDraw() override;
 
 public:
