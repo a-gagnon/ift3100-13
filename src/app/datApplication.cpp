@@ -14,9 +14,6 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_PLACEIMAGE "btn_placeImageTool"
 #define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
 
-#define DAT_BUTTON_NAME_COLORPICKER "btn_colorPicker"
-#define DAT_COLORPICKER_NAME "ui_colorPicker"
-
 namespace {
 
     void setToggleAllToolButtons(bool yesNo) {
@@ -72,27 +69,6 @@ namespace {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool(startDefaultTool));
-    }
-
-    void onColorPickerButtonPressed(datButton& button) {
-
-        datViewManager& viewManager = datApplication::GetApp().GetViewManager();
-
-        if (button.IsToggled()) {
-            auto pColorPicker = viewManager.GetViewByName(DAT_COLORPICKER_NAME);
-            assert(nullptr != pColorPicker);
-            pColorPicker->DropView();
-            button.SetToggle(false);
-        }
-        else {
-            ofPoint corner = button.getBottomLeft();
-            corner.y += 10;
-            auto pColorPicker = new datColorPicker(corner);
-            pColorPicker->SetName(DAT_COLORPICKER_NAME);
-            viewManager.GetMainView().AddView(pColorPicker);
-            button.SetToggle(true);
-        }
-
     }
 
 }; // end unnamed namespace
@@ -155,16 +131,6 @@ void datApplication::SetupUI() {
     pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
     mainView.AddView(pExportImageToolButton);
 
-
-    // Color picker button
-    datButton* pColorPickerButton = new datButton(200, 20, 40, 40, datButtonStyle::createForToolButton());
-    pColorPickerButton->SetOnPressedCallback(onColorPickerButtonPressed);
-    pColorPickerButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
-    pColorPickerButton->SetTooltip(datLocalization::ChangeActiveColor());
-    pColorPickerButton->SetName(DAT_BUTTON_NAME_COLORPICKER);
-    mainView.AddView(pColorPickerButton);
-
-
     startDefaultTool();
 }
 
@@ -196,8 +162,6 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
 
     datMouseEvent datEvent(ev);
     ClampEvent(datEvent);
-
-    GetRenderer().GrabMouseEvent(datEvent);
 
     if (GetViewManager().SendMouseEvent(datEvent))
         return true;

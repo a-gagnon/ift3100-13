@@ -14,9 +14,12 @@ struct datPlacePolylineTool : datEditTool {
 private:
     ofPolyline m_polyline;
 
-protected:
-    void saveAndClearShape(bool closeShape);
+    ofxPanel m_panel;
+    ofParameter<ofColor> m_paramColor;
 
+protected:
+    virtual void onStartTool() override;
+    void saveAndClearShape(bool closeShape);
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onRightMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onMouseMotion(datMouseEvent const& ev) override;

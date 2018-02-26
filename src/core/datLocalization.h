@@ -19,6 +19,12 @@ struct datLocalization {
     static std::string PlaceTextTool_Placeholder()  { return "Placeholder"; }
     static std::string PlaceTextTool_Tooltip()      { return "Place text tool"; }
     static std::string SelectTool_Tooltip()         { return "Select tool"; }
+    static std::string SelectTool_CursorNormal()    { return "Normal cursor"; }
+    static std::string SelectTool_CursorCircle()    { return "Circle"; }
+    static std::string SelectTool_CursorX()         { return "X"; }
+    static std::string SelectTool_CursorCross()     { return "Cross"; }
+    static std::string SelectTool_CursorTriangle()  { return "Triangle"; }
+
 
 };
 

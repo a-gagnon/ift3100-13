@@ -6,11 +6,24 @@
 
 USING_DAT_NAMESPACE
 
+void setCursorType1() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Normal); }
+void setCursorType2() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Circle); }
+void setCursorType3() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::X); }
+void setCursorType4() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Cross); }
+void setCursorType5() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Triangle); }
+
+ofEvent<ofxButton> selectCursorTypeEvent;
+
+
 datSelectTool::datSelectTool() :
     m_isMouseDrag(false),
     m_hasFirstPoint(false),
-    m_color(ofColor::dodgerBlue) {
-
+    m_color(ofColor::dodgerBlue),
+    m_radio1(setCursorType1, selectCursorTypeEvent),
+    m_radio2(setCursorType2, selectCursorTypeEvent),
+    m_radio3(setCursorType3, selectCursorTypeEvent),
+    m_radio4(setCursorType4, selectCursorTypeEvent),
+    m_radio5(setCursorType5, selectCursorTypeEvent) {
 }
 
 
@@ -42,6 +55,18 @@ void datSelectTool::updateSelectionMode(datMouseEvent const& ev) {
     assert(m_hasFirstPoint);
     m_mode = (m_downPoint.x > ev.x && m_downPoint.y > ev.y) ? SelectionMode::Crossing : SelectionMode::Window;
 }
+
+
+void datSelectTool::onStartTool() {
+
+    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+    m_panel.add(m_radio1.setup(datLocalization::SelectTool_CursorNormal()));
+    m_panel.add(m_radio2.setup(datLocalization::SelectTool_CursorCircle()));
+    m_panel.add(m_radio3.setup(datLocalization::SelectTool_CursorX()));
+    m_panel.add(m_radio4.setup(datLocalization::SelectTool_CursorCross()));
+    m_panel.add(m_radio5.setup(datLocalization::SelectTool_CursorTriangle()));
+}
+
 
 
 void datSelectTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
@@ -125,4 +150,6 @@ void datSelectTool::onDraw() {
         ofDrawRectangle(m_rectangle);
         ofFill();
     }
+
+    m_panel.draw();
 }

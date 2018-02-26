@@ -18,23 +18,39 @@ datPlaceImageTool::~datPlaceImageTool() {
 }
 
 
+void datPlaceImageTool::UpdateParameters() {
+
+    assert(!m_imagesToPlace.empty());
+    ofImage& img = m_imagesToPlace.back();
+    m_paramWidth.set("width", img.getWidth(), 0.0, 2.0 * img.getWidth());
+    m_paramHeight.set("heigth", img.getHeight(), 0.0, 2.0 * img.getHeight());
+}
+
+
 void datPlaceImageTool::onStartTool() {
 
-    if (!m_imagesToPlace.empty())
-        return;
+    if (m_imagesToPlace.empty()) {
 
-    // Open a file dialog and let the user choose a image file
-    std::string filePath;
-    if (datUtilities::OpenFileDialog(filePath, true/*fileMustExist*/)) {
+        // Open a file dialog and let the user choose a image file
+        std::string filePath;
+        if (datUtilities::OpenFileDialog(filePath, true/*fileMustExist*/)) {
 
-        ofImage image;
-        if (image.load(filePath))
-            m_imagesToPlace.push_back(image);
+            ofImage image;
+            if (image.load(filePath))
+                m_imagesToPlace.push_back(image);
+        }
+
+        // Still empty. exit tool
+        if (m_imagesToPlace.empty()) {
+            m_pCallbackFunction();
+            return;
+        }
     }
 
-    // Still empty. exit tool
-    if (m_imagesToPlace.empty() && nullptr != m_pCallbackFunction)
-        m_pCallbackFunction();
+    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+    m_panel.add(m_paramWidth);
+    m_panel.add(m_paramHeight);
+    UpdateParameters();
 }
 
 
@@ -44,15 +60,15 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
         ofImage const& image = m_imagesToPlace.back();
         const ofVec2f position = ev;
-        const uint32_t width = static_cast<uint32_t>(image.getWidth());
-        const uint32_t height = static_cast<uint32_t>(image.getHeight());
-        datImage wrappedImage(image, position, width, height);
+        datImage wrappedImage(image, position, m_paramWidth, m_paramHeight);
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
 
         datRenderer::GetActiveRenderer().AddGeometry(geometry);
         m_imagesToPlace.pop_back();
 
-        if (m_imagesToPlace.empty() && nullptr != m_pCallbackFunction)
+        if (!m_imagesToPlace.empty())
+            UpdateParameters();
+        else
             m_pCallbackFunction();
     }
 }
@@ -64,7 +80,9 @@ void datPlaceImageTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
         m_imagesToPlace.pop_back();
 
-        if (m_imagesToPlace.empty() && nullptr != m_pCallbackFunction)
+        if (!m_imagesToPlace.empty())
+            UpdateParameters();
+        else
             m_pCallbackFunction();
     }
 }
@@ -88,11 +106,12 @@ void datPlaceImageTool::onDraw() {
 
         // Draw image using original size
         ofImage const& image = m_imagesToPlace.back();
-        const uint32_t width = image.getWidth();
-        const uint32_t height = image.getHeight();
-        image.draw(m_position.x, m_position.y, width, height);
+        image.draw(m_position.x, m_position.y, m_paramWidth, m_paramHeight);
 
         // Put back original color
         ofSetColor(currentColor);
     }
+
+    m_panel.draw();
 }
+

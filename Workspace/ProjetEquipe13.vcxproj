@@ -106,6 +106,14 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datTextString.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxBaseGui.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxButton.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxGuiGroup.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxLabel.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxPanel.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSlider.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
@@ -114,7 +122,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\tools\datSelectTool.cpp" />
     <ClCompile Include="..\src\tools\datToolManager.cpp" />
     <ClCompile Include="..\src\ui\datButton.cpp" />
-    <ClCompile Include="..\src\ui\datColorPicker.cpp" />
+    <ClCompile Include="..\src\ui\datofxRadioButton.cpp" />
     <ClCompile Include="..\src\ui\datView.cpp" />
     <ClCompile Include="..\src\ui\datViewManager.cpp" />
   </ItemGroup>
@@ -135,6 +143,15 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datRenderer.h" />
     <ClInclude Include="..\src\core\datTextString.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxBaseGui.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxButton.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxGui.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxGuiGroup.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxLabel.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxPanel.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSlider.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.h" />
     <ClInclude Include="..\src\tools\datExportImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
@@ -143,9 +160,9 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\tools\datTool.h" />
     <ClInclude Include="..\src\tools\datToolManager.h" />
     <ClInclude Include="..\src\ui\datButton.h" />
-    <ClInclude Include="..\src\ui\datColorPicker.h" />
     <ClInclude Include="..\src\ui\datView.h" />
     <ClInclude Include="..\src\ui\datViewManager.h" />
+    <ClInclude Include="..\src\ui\datofxRadioButton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

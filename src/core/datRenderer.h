@@ -50,7 +50,6 @@ private:
     static datRenderer* s_activeRenderer; // pointer to active renderer or nullptr
     std::vector<std::unique_ptr<Entry>> m_entries;
     
-    ofVec2f m_cursorCoordinates;
     ofColor m_activeDrawColor;
     CursorType m_activeCursorType;
     
@@ -62,8 +61,6 @@ public:
     datRenderer();
     ~datRenderer();
     static datRenderer& GetActiveRenderer();
-
-    void GrabMouseEvent(datMouseEvent const& ev);
 
     // Adds a geometry to the renderer. Source is cleared
     void AddGeometry(std::unique_ptr<datGeometry>& geometry);

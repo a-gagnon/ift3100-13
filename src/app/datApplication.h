@@ -13,7 +13,6 @@
 #include "../tools/datExportImageTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
-#include "../ui/datColorPicker.h"
 
 BEGIN_DAT_NAMESPACE
 

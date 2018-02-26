@@ -22,7 +22,7 @@ datRenderer::Entry::~Entry() {
 datRenderer* datRenderer::s_activeRenderer = nullptr;
 
 datRenderer::datRenderer() : 
-    m_activeDrawColor(255, 255, 255, 255),
+    m_activeDrawColor(120, 120, 120, 255),
     m_activeCursorType(CursorType::Normal) {
     assert(nullptr == s_activeRenderer);
     s_activeRenderer = this;
@@ -54,6 +54,7 @@ std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
 
 void datRenderer::DrawCursorType() const {
 
+
     if (CursorType::Normal == m_activeCursorType) {
         ofShowCursor();
         return;
@@ -63,35 +64,33 @@ void datRenderer::DrawCursorType() const {
     ofSetColor(80);
     ofSetLineWidth(3);
 
+    ofVec2f coords;
+    coords.x = ofGetMouseX();
+    coords.y = ofGetMouseY();
+
     switch (m_activeCursorType) {
 
         case CursorType::Circle:
-            ofDrawCircle(m_cursorCoordinates.x, m_cursorCoordinates.y, 10);
+            ofDrawCircle(coords.x, coords.y, 10);
             break;
 
         case CursorType::X:
             ofSetLineWidth(3);
-            ofDrawLine(m_cursorCoordinates.x + 8, m_cursorCoordinates.y + 8, m_cursorCoordinates.x - 8, m_cursorCoordinates.y - 8);
-            ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y + 8, m_cursorCoordinates.x + 8, m_cursorCoordinates.y - 8);
+            ofDrawLine(coords.x + 8, coords.y + 8, coords.x - 8, coords.y - 8);
+            ofDrawLine(coords.x - 8, coords.y + 8, coords.x + 8, coords.y - 8);
             break;
 
         case CursorType::Cross:
-            ofDrawLine(m_cursorCoordinates.x, m_cursorCoordinates.y + 8, m_cursorCoordinates.x, m_cursorCoordinates.y - 8);
-            ofDrawLine(m_cursorCoordinates.x - 8, m_cursorCoordinates.y, m_cursorCoordinates.x + 8, m_cursorCoordinates.y);
+            ofDrawLine(coords.x, coords.y + 8, coords.x, coords.y - 8);
+            ofDrawLine(coords.x - 8, coords.y, coords.x + 8, coords.y);
             break;
 
         case CursorType::Triangle:
-            ofDrawTriangle(m_cursorCoordinates.x, m_cursorCoordinates.y, m_cursorCoordinates.x - 8,
-                m_cursorCoordinates.y + 15, m_cursorCoordinates.x + 8, m_cursorCoordinates.y + 15);
+            ofDrawTriangle(coords.x, coords.y, coords.x - 8,
+                coords.y + 15, coords.x + 8, coords.y + 15);
             break;
     }
 }
-
-
-void datRenderer::GrabMouseEvent(datMouseEvent const& ev)
-    {
-    m_cursorCoordinates = ev;
-    }
 
 
 void datRenderer::AddGeometry(std::unique_ptr<datGeometry>& geometry) {
