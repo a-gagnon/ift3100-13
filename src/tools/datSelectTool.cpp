@@ -65,6 +65,25 @@ void datSelectTool::onStartTool() {
     m_panel.add(m_radio3.setup(datLocalization::SelectTool_CursorX()));
     m_panel.add(m_radio4.setup(datLocalization::SelectTool_CursorCross()));
     m_panel.add(m_radio5.setup(datLocalization::SelectTool_CursorTriangle()));
+
+    const datRenderer::CursorType currentCursorType = datRenderer::GetActiveRenderer().GetActiveCursorType();
+    switch (currentCursorType) {
+        case datRenderer::CursorType::Normal:
+            ofNotifyEvent(selectCursorTypeEvent, m_radio1);
+            break;
+        case datRenderer::CursorType::Circle:
+            ofNotifyEvent(selectCursorTypeEvent, m_radio2);
+            break;
+        case datRenderer::CursorType::X:
+            ofNotifyEvent(selectCursorTypeEvent, m_radio3);
+            break;
+        case datRenderer::CursorType::Cross:
+            ofNotifyEvent(selectCursorTypeEvent, m_radio4);
+            break;
+        case datRenderer::CursorType::Triangle:
+            ofNotifyEvent(selectCursorTypeEvent, m_radio5);
+            break;
+    }
 }
 
 

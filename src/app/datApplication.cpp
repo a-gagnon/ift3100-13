@@ -140,6 +140,11 @@ void datApplication::setup() {
     m_width = ofGetWidth();
     m_height = ofGetHeight();
 
+    // Make sure we initialize managers
+    GetToolManager();
+    GetViewManager();
+    GetRenderer();
+
     SetupUI();
 }
 
