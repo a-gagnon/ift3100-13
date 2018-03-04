@@ -44,6 +44,7 @@
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)..\out\$(Configuration)\</OutDir>
@@ -64,7 +65,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);assimp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
@@ -101,11 +102,16 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\app\datApplication.cpp" />
+    <ClCompile Include="..\src\core\datBoundingBox.cpp" />
     <ClCompile Include="..\src\core\datGeometry.cpp" />
     <ClCompile Include="..\src\core\datImage.cpp" />
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datTextString.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.cpp" />
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxBaseGui.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxButton.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxGuiGroup.cpp" />
@@ -133,8 +139,9 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\app\datApplication.h" />
+    <ClInclude Include="..\src\core\datBoundingBox.h" />
     <ClInclude Include="..\src\core\datCore.h" />
-    <ClInclude Include="..\src\core\datDefinitions.h" />
+    <ClInclude Include="..\src\core\datDependencies.h" />
     <ClInclude Include="..\src\core\datEvents.h" />
     <ClInclude Include="..\src\core\datGeometry.h" />
     <ClInclude Include="..\src\core\datImage.h" />
@@ -143,6 +150,11 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datRenderer.h" />
     <ClInclude Include="..\src\core\datTextString.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.h" />
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpUtils.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxButton.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxGui.h" />

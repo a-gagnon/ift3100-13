@@ -19,6 +19,9 @@ struct datTool : datNonCopyableClass {
 friend struct datToolManager;
 
 protected:
+    datRenderer* m_pRenderer; // Renderer is set by tool manager when tool starts
+
+protected:
     virtual void onStartTool() {}
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) {}
     virtual void onLeftMouseButtonUp(datMouseEvent const& ev) {}
@@ -32,8 +35,9 @@ protected:
 
     virtual datViewTool* getAsViewTool() { return nullptr; }
     virtual datEditTool* getAsEditTool() { return nullptr; }
+    datRenderer& GetRenderer() const { assert(nullptr != m_pRenderer); return *m_pRenderer; }
 
-    datTool() {}
+    datTool() : m_pRenderer(nullptr) {}
 
 public:
     virtual ~datTool() {}

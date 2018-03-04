@@ -17,14 +17,17 @@ private:
     ofPoint m_position;
 
     ofxPanel m_panel;
-    ofParameter<ofColor> m_paramColor;
+    ofParameter<ofColor> m_paramLineColor;
 
 private:
+    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; }
+
     void SetPlaceholderText();
     bool IsPlaceholderText() const;
 
 protected:
     virtual void onStartTool() override;
+    virtual void onExitTool() override;
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onMouseMotion(datMouseEvent const& ev) override;
     virtual void onKeyPressed(ofKeyEventArgs const& ev) override;

@@ -11,15 +11,30 @@ datPlacePolylineTool::datPlacePolylineTool() {
 
 
 datPlacePolylineTool::~datPlacePolylineTool() {
-    datRenderer::GetActiveRenderer().SetActiveDrawColor(m_paramColor);
 }
 
 
 void datPlacePolylineTool::onStartTool() {
-    ofColor color = datRenderer::GetActiveRenderer().GetActiveDrawColor();
+
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramColor.set("color", color, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
+    m_panel.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+
+    m_paramLineColor.addListener(this, &datPlacePolylineTool::onLineColorChanged);
+    m_paramLineWidth.addListener(this, &datPlacePolylineTool::onLineWidthChanged);
+    m_paramFillColor.addListener(this, &datPlacePolylineTool::onFillColorChanged);
 }
+
+
+void datPlacePolylineTool::onExitTool() {
+
+    m_paramLineColor.removeListener(this, &datPlacePolylineTool::onLineColorChanged);
+    m_paramLineWidth.removeListener(this, &datPlacePolylineTool::onLineWidthChanged);
+    m_paramFillColor.removeListener(this, &datPlacePolylineTool::onFillColorChanged);
+}
+
 
 
 void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
@@ -35,14 +50,15 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
         }
     }
 
-    if (3 <= m_polyline.size() && closeShape)
+    if (3 <= m_polyline.size() && closeShape) {
         m_polyline.addVertex(m_polyline[0]);
+        m_polyline.setClosed(true);
+    }
 
     if (2 <= m_polyline.size()) {
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
-
-        geometry->SetColor(m_paramColor);
-        datRenderer::GetActiveRenderer().AddGeometry(geometry);
+        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+        GetRenderer().AddGeometry(std::move(geometry));
     }
 
     m_polyline.clear();
@@ -86,8 +102,9 @@ void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 void datPlacePolylineTool::onDraw() {
 
     if (0 < m_polyline.size()) {
-        ofSetColor(m_paramColor);
-        m_polyline.draw();
+        std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
+        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+        GetRenderer().DrawGeometry(*geometry);
     }
 
     m_panel.draw();

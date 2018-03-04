@@ -15,10 +15,18 @@ private:
     ofPolyline m_polyline;
 
     ofxPanel m_panel;
-    ofParameter<ofColor> m_paramColor;
+    ofParameter<ofColor> m_paramLineColor;
+    ofParameter<float> m_paramLineWidth;
+    ofParameter<ofColor> m_paramFillColor;
+
+private:
+    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; }
+    void onLineWidthChanged(float& value)   { GetRenderer().GetActiveDisplayParamsR().lineWidth = value; }
+    void onFillColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().fillColor = color; }
 
 protected:
     virtual void onStartTool() override;
+    virtual void onExitTool() override;
     void saveAndClearShape(bool closeShape);
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onRightMouseButtonDown(datMouseEvent const& ev) override;

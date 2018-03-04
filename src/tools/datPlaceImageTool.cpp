@@ -50,6 +50,7 @@ void datPlaceImageTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
     m_panel.add(m_paramWidth);
     m_panel.add(m_paramHeight);
+    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
     UpdateParameters();
 }
 
@@ -61,9 +62,10 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         ofImage const& image = m_imagesToPlace.back();
         const ofVec2f position = ev;
         datImage wrappedImage(image, position, m_paramWidth, m_paramHeight);
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
 
-        datRenderer::GetActiveRenderer().AddGeometry(geometry);
+        std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
+        GetRenderer().AddGeometry(std::move(geometry));
+
         m_imagesToPlace.pop_back();
 
         if (!m_imagesToPlace.empty())

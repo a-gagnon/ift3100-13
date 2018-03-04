@@ -55,6 +55,8 @@ bool datButton::onLeftMouseButtonUp(datMouseEvent const& ev) {
 
 void datButton::onDraw() {
 
+    ofFill();
+
     const ofColor color = DetermineDrawColor();
 
     ofSetColor(color);

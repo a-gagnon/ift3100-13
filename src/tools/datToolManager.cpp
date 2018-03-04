@@ -3,6 +3,7 @@
 // IFT3100-13
 //=======================================================================================
 #include "datToolManager.h"
+#include "../app/datApplication.h"
 
 USING_DAT_NAMESPACE
 
@@ -44,6 +45,8 @@ void datToolManager::StartTool(datTool* pTool) {
         assert(false);
         return;
     }
+
+    pTool->m_pRenderer = &datApplication::GetApp().GetRenderer();
 
     if (auto pEditTool = pTool->getAsEditTool()) {
 

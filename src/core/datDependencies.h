@@ -1,5 +1,5 @@
 //=======================================================================================
-// datDefinitions.h
+// datDependencies.h
 // IFT3100-13
 //=======================================================================================
 #pragma once
@@ -8,6 +8,9 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
+
+#include <commdlg.h> // Windows dialog for OpenFileDialog in datUtilities
+
 
 // Convenience macros
 #define BEGIN_DAT_NAMESPACE namespace dat {

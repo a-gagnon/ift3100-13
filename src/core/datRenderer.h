@@ -10,9 +10,6 @@
 
 BEGIN_DAT_NAMESPACE
 
-// Refer to a 4x4 matrix as a 'Transform'
-typedef ofMatrix4x4 Transform;
-
 //=======================================================================================
 // Class that takes care of rendering graphical objects to screen
 // The app is expected to hold the renderer
@@ -30,48 +27,35 @@ public:
 
 
 private:
-    //=======================================================================================
-    struct Entry {
+    std::vector<std::unique_ptr<datGeometry>> m_geometries;
     
-    private:
-        Transform m_worldToGeometry;
-        std::unique_ptr<datGeometry> m_geometry;
-
-    public:
-        Entry(std::unique_ptr<datGeometry>& geometry);
-        ~Entry();
-
-        Transform const& GetWorldToGeometryTransform() const { return m_worldToGeometry; }
-        datGeometry const& GetGeometry() const { return *m_geometry; }
-    };
-
-
-private:
-    static datRenderer* s_activeRenderer; // pointer to active renderer or nullptr
-    std::vector<std::unique_ptr<Entry>> m_entries;
-    
-    ofColor m_activeDrawColor;
+    datDisplayParams m_activeDisplayParams;
     CursorType m_activeCursorType;
-    
+    bool m_displayBoundingBox;
+
 private:
     // Returns the visible entries given current transform
-    std::vector<Entry*> GetVisibleEntries() const;
+    std::vector<datGeometry*> GetVisibleGeometries() const;
 
 public:
     datRenderer();
     ~datRenderer();
-    static datRenderer& GetActiveRenderer();
 
     // Adds a geometry to the renderer. Source is cleared
-    void AddGeometry(std::unique_ptr<datGeometry>& geometry);
+    void AddGeometry(std::unique_ptr<datGeometry>&& geometry);
     void Render() const;
     void DrawCursorType() const;
+    void DrawGeometry(datGeometry const& geometry) const;
 
-    ofColor GetActiveDrawColor() const { return m_activeDrawColor; }
-    void SetActiveDrawColor(ofColor const& color) { m_activeDrawColor = color; }
+    void SetActiveDisplayParams(datDisplayParams const& displayParams) { m_activeDisplayParams = displayParams; }
+    datDisplayParams& GetActiveDisplayParamsR() { return m_activeDisplayParams; }
+    datDisplayParams const& GetActiveDisplayParams() const { return m_activeDisplayParams; }
 
     CursorType GetActiveCursorType() const { return m_activeCursorType; }
     void SetActiveCursorType(CursorType type) { m_activeCursorType = type; }
+
+    ofColor GetBackgroundColor() const { return ofGetBackgroundColor(); }
+    void SetBackgroundColor(ofColor const& color) { ofSetBackgroundColor(color); }
 };
 
 END_DAT_NAMESPACE

@@ -4,9 +4,7 @@
 //=======================================================================================
 #pragma once
 
-#include "datDefinitions.h"
-#include <commdlg.h> // Windows dialog for OpenFileDialog
-
+#include "datDependencies.h"
 
 BEGIN_DAT_NAMESPACE
 

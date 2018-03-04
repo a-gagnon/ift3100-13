@@ -4,12 +4,13 @@
 //=======================================================================================
 #pragma once
 
-#include "datDefinitions.h"
+#include "datDependencies.h"
 
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
 // Class that hold strings for our app.
+//=======================================================================================
 struct datLocalization {
 
     static std::string ChangeActiveColor()          { return "Change active color"; }
@@ -18,14 +19,17 @@ struct datLocalization {
     static std::string PlacePolylineTool_Tooltip()  { return "Place polyline tool"; }
     static std::string PlaceTextTool_Placeholder()  { return "Placeholder"; }
     static std::string PlaceTextTool_Tooltip()      { return "Place text tool"; }
+    static std::string SelectTool_BackgroundColor() { return "Background color"; }
     static std::string SelectTool_Tooltip()         { return "Select tool"; }
-    static std::string SelectTool_CursorNormal()    { return "Normal cursor"; }
-    static std::string SelectTool_CursorCircle()    { return "Circle"; }
-    static std::string SelectTool_CursorX()         { return "X"; }
-    static std::string SelectTool_CursorCross()     { return "Cross"; }
-    static std::string SelectTool_CursorTriangle()  { return "Triangle"; }
+    static std::string SelectTool_CursorNormal()    { return "'1': Normal cursor"; }
+    static std::string SelectTool_CursorCircle()    { return "'2': Circle"; }
+    static std::string SelectTool_CursorX()         { return "'3': X"; }
+    static std::string SelectTool_CursorCross()     { return "'4': Cross"; }
+    static std::string SelectTool_CursorTriangle()  { return "'5': Triangle"; }
 
-
+    static std::string DisplayParams_LineWidth()    { return "Line width"; }
+    static std::string DisplayParams_LineColor()    { return "Line color"; }
+    static std::string DisplayParams_FillColor()    { return "Fill color"; }
 };
 
 END_DAT_NAMESPACE

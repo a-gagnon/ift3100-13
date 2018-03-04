@@ -1,5 +1,5 @@
 //=======================================================================================
-// datImage.h
+// datBoundingBox.h
 // IFT3100-13
 //=======================================================================================
 #pragma once
@@ -9,26 +9,26 @@
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-// Basic wrapper around the ofImage class
+// Defines a range in 3d that the geometry occupies
 //=======================================================================================
-struct datImage {
+struct datBoundingBox {
 
 public:
-    ofImage m_image;
-    ofPoint m_position;
-    uint32_t m_width;
-    uint32_t m_height;
+    ofVec3f low;
+    ofVec3f high;
 
 public:
-    datImage(ofImage const& image, ofPoint const& position, uint32_t width, uint32_t height);
-    ~datImage();
+    // Creates an invalid range (with inverted low/high)
+    datBoundingBox();
+    datBoundingBox(ofPoint const& point);
+    datBoundingBox(ofPolyline const& polyline);
+    datBoundingBox(ofMesh const& mesh);
 
-    void draw() const;
+    void Init(ofPoint const& point);
+    void InitInvalid();
+    bool IsValid() const;
 
-    // Returns the 4 corner points in CCW order
-    // 0  3
-    // 1  2
-    std::vector<ofPoint> Get4Corners() const;
+    void Extend(ofPoint const& point);
 };
 
 END_DAT_NAMESPACE

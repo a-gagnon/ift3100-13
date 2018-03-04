@@ -4,12 +4,14 @@
 //=======================================================================================
 #pragma once
 
-#include "datDefinitions.h"
+#include "datDependencies.h"
+
+#include "datBoundingBox.h"
 #include "datEvents.h"
 #include "datGeometry.h"
+#include "datImage.h"
 #include "datLocalization.h"
 #include "datNonCopyableClass.h"
 #include "datRenderer.h"
 #include "datTextString.h"
-#include "datImage.h"
 #include "datUtilities.h"

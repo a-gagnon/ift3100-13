@@ -33,14 +33,17 @@ private:
     datofxRadioButton m_radio3;
     datofxRadioButton m_radio4;
     datofxRadioButton m_radio5;
+    ofParameter<ofColor> m_appBackgroundColor;
 
 private:
     void selectObjectsAndClearState();
     void updateRectangle(datMouseEvent const& ev);
     void updateSelectionMode(datMouseEvent const& ev);
+    void setBackgroundColor(ofColor& color) { GetRenderer().SetBackgroundColor(color); }
 
 protected:
     virtual void onStartTool() override;
+    virtual void onExitTool() override;
     virtual void onLeftMouseButtonDown(datMouseEvent const& ev) override;
     virtual void onLeftMouseButtonUp(datMouseEvent const& ev) override;
     virtual void onMouseMotion(datMouseEvent const& ev) override;

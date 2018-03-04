@@ -4,7 +4,7 @@
 //=======================================================================================
 #pragma once
 
-#include "datDefinitions.h"
+#include "datDependencies.h"
 
 BEGIN_DAT_NAMESPACE
 

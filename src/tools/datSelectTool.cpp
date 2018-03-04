@@ -3,17 +3,20 @@
 // IFT3100-13
 //=======================================================================================
 #include "datSelectTool.h"
+#include "../app/datApplication.h"
 
 USING_DAT_NAMESPACE
 
-void setCursorType1() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Normal); }
-void setCursorType2() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Circle); }
-void setCursorType3() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::X); }
-void setCursorType4() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Cross); }
-void setCursorType5() { datRenderer::GetActiveRenderer().SetActiveCursorType(datRenderer::CursorType::Triangle); }
+namespace {
 
-ofEvent<ofxButton> selectCursorTypeEvent;
+    void setCursorType1() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Normal); }
+    void setCursorType2() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Circle); }
+    void setCursorType3() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::X); }
+    void setCursorType4() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Cross); }
+    void setCursorType5() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Triangle); }
 
+    ofEvent<ofxButton> selectCursorTypeEvent;
+};
 
 datSelectTool::datSelectTool() :
     m_isMouseDrag(false),
@@ -59,14 +62,20 @@ void datSelectTool::updateSelectionMode(datMouseEvent const& ev) {
 
 void datSelectTool::onStartTool() {
 
-    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+    m_panel.setup("Tool settings", "");
     m_panel.add(m_radio1.setup(datLocalization::SelectTool_CursorNormal()));
     m_panel.add(m_radio2.setup(datLocalization::SelectTool_CursorCircle()));
     m_panel.add(m_radio3.setup(datLocalization::SelectTool_CursorX()));
     m_panel.add(m_radio4.setup(datLocalization::SelectTool_CursorCross()));
     m_panel.add(m_radio5.setup(datLocalization::SelectTool_CursorTriangle()));
+    m_panel.add(m_appBackgroundColor.set(datLocalization::SelectTool_BackgroundColor(),
+        GetRenderer().GetBackgroundColor(), ofColor(0, 0, 0), ofColor(255, 255, 255)));
 
-    const datRenderer::CursorType currentCursorType = datRenderer::GetActiveRenderer().GetActiveCursorType();
+    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+
+    m_appBackgroundColor.addListener(this, &datSelectTool::setBackgroundColor);
+
+    const datRenderer::CursorType currentCursorType = GetRenderer().GetActiveCursorType();
     switch (currentCursorType) {
         case datRenderer::CursorType::Normal:
             ofNotifyEvent(selectCursorTypeEvent, m_radio1);
@@ -86,6 +95,10 @@ void datSelectTool::onStartTool() {
     }
 }
 
+
+void datSelectTool::onExitTool() {
+    m_appBackgroundColor.removeListener(this, &datSelectTool::setBackgroundColor);
+}
 
 
 void datSelectTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
@@ -129,32 +142,32 @@ void datSelectTool::onMouseMotion(datMouseEvent const& ev) {
 
 void datSelectTool::onKeyPressed(ofKeyEventArgs const& ev) {
 
-    const datRenderer::CursorType activeCursorType = datRenderer::GetActiveRenderer().GetActiveCursorType();
+    const datRenderer::CursorType activeCursorType = GetRenderer().GetActiveCursorType();
     datRenderer::CursorType cursorType = activeCursorType;
 
     const char key = static_cast<char>(ev.key);
     switch (key) {
     case '1':
-        cursorType = datRenderer::CursorType::Normal;
+        ofNotifyEvent(selectCursorTypeEvent, m_radio1);
         break;
     case '2':
-        cursorType = datRenderer::CursorType::Circle;
+        ofNotifyEvent(selectCursorTypeEvent, m_radio2);
         break;
     case '3':
-        cursorType = datRenderer::CursorType::X;
+        ofNotifyEvent(selectCursorTypeEvent, m_radio3);
         break;
     case '4':
-        cursorType = datRenderer::CursorType::Cross;
+        ofNotifyEvent(selectCursorTypeEvent, m_radio4);
         break;
     case '5':
-        cursorType = datRenderer::CursorType::Triangle;
+        ofNotifyEvent(selectCursorTypeEvent, m_radio5);
         break;
     default:
         break;
     }
 
     if (cursorType != activeCursorType) {
-        datRenderer::GetActiveRenderer().SetActiveCursorType(cursorType);
+        GetRenderer().SetActiveCursorType(cursorType);
     }
 
 }

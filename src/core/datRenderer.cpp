@@ -6,49 +6,30 @@
 
 USING_DAT_NAMESPACE
 
-//=======================================================================================
-datRenderer::Entry::Entry(std::unique_ptr<datGeometry>& geometry) :
-    m_geometry(geometry.release()) {
-    m_worldToGeometry.makeTranslationMatrix({ 0, 0, 0 });
-}
-
-
-datRenderer::Entry::~Entry() {
-
-}
-
-
-//=======================================================================================
-datRenderer* datRenderer::s_activeRenderer = nullptr;
-
 datRenderer::datRenderer() : 
-    m_activeDrawColor(120, 120, 120, 255),
-    m_activeCursorType(CursorType::Normal) {
-    assert(nullptr == s_activeRenderer);
-    s_activeRenderer = this;
+    m_activeCursorType(CursorType::Normal),
+    m_displayBoundingBox(false) {
+
+    m_activeDisplayParams.fillColor = ofColor(120, 120, 120, 255);
+    m_activeDisplayParams.lineColor = ofColor(160, 160, 160, 255);
+    m_activeDisplayParams.lineWidth = 4.0f;
 }
 
 
 datRenderer::~datRenderer() {
-    s_activeRenderer = nullptr;
+
 }
 
 
-datRenderer& datRenderer::GetActiveRenderer() {
-    assert(nullptr != s_activeRenderer);
-    return *s_activeRenderer;
-}
+std::vector<datGeometry*> datRenderer::GetVisibleGeometries() const {
 
+    std::vector<datGeometry*> visibleGeometries;
 
-std::vector<datRenderer::Entry*> datRenderer::GetVisibleEntries() const {
-
-    std::vector<Entry*> visibleEntries;
-
-    for (auto& entry : m_entries) {
-        visibleEntries.push_back(entry.get());
+    for (auto& geometry : m_geometries) {
+        visibleGeometries.push_back(geometry.get());
     }
 
-    return visibleEntries;
+    return std::move(visibleGeometries);
 }
 
 
@@ -92,23 +73,25 @@ void datRenderer::DrawCursorType() const {
     }
 }
 
+void datRenderer::DrawGeometry(datGeometry const& geometry) const {
 
-void datRenderer::AddGeometry(std::unique_ptr<datGeometry>& geometry) {
+    ofPushMatrix(); // save transform to top of stack
+                    //ofLoadMatrix(node->GetWorldToNodeTransform());
+    geometry.drawWithDisplayParams();
 
-    std::unique_ptr<Entry> entry(new Entry(geometry));
-    m_entries.push_back(std::move(entry));
+    ofPopMatrix(); // load transform from top of stack
+}
+
+
+void datRenderer::AddGeometry(std::unique_ptr<datGeometry>&& geometry) {
+    m_geometries.push_back(std::move(geometry));
 }
 
 
 void datRenderer::Render() const {
 
-    const std::vector<Entry*> visibleEntries = GetVisibleEntries();
-    for (auto const& entry : visibleEntries) {
-
-        ofPushMatrix(); // save transform to top of stack
-                        //ofLoadMatrix(node->GetWorldToNodeTransform());
-        entry->GetGeometry().draw();
-
-        ofPopMatrix(); // load transform from top of stack
+    const std::vector<datGeometry*> visibleGeometries = GetVisibleGeometries();
+    for (auto const& geometry : visibleGeometries) {
+        DrawGeometry(*geometry);
     }
 }

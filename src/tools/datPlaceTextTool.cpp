@@ -18,14 +18,21 @@ datPlaceTextTool::datPlaceTextTool() :
 
 
 datPlaceTextTool::~datPlaceTextTool() {
-    datRenderer::GetActiveRenderer().SetActiveDrawColor(m_paramColor);
+
 }
 
 
 void datPlaceTextTool::onStartTool() {
-    ofColor color = datRenderer::GetActiveRenderer().GetActiveDrawColor();
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramColor.set("color", color, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+
+    m_paramLineColor.addListener(this, &datPlaceTextTool::onLineColorChanged);
+}
+
+
+void datPlaceTextTool::onExitTool() {
+    m_paramLineColor.removeListener(this, &datPlaceTextTool::onLineColorChanged);
 }
 
 
@@ -44,9 +51,8 @@ void datPlaceTextTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
     if (!m_text.empty()) {
         datTextString textString(m_font, m_text, m_position);
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(textString);
-
-        geometry->SetColor(m_paramColor);
-        datRenderer::GetActiveRenderer().AddGeometry(geometry);
+        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+        GetRenderer().AddGeometry(std::move(geometry));
     }
 
     SetPlaceholderText();
@@ -77,7 +83,7 @@ void datPlaceTextTool::onKeyPressed(ofKeyEventArgs const& ev) {
 void datPlaceTextTool::onDraw() {
 
     if (!m_text.empty()) {
-        ofSetColor(m_paramColor);
+        ofSetColor(m_paramLineColor);
         m_font.drawStringAsShapes(m_text, m_position.x, m_position.y);
     }
 

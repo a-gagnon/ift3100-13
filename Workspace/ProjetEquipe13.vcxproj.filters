@@ -74,6 +74,21 @@
     <ClCompile Include="..\src\ui\datofxRadioButton.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datBoundingBox.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.cpp">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.cpp">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -93,6 +108,9 @@
     </Filter>
     <Filter Include="addons\ofxGui">
       <UniqueIdentifier>{605d090e-01e7-4533-a313-597ceb9263a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxAssimpModelLoader">
+      <UniqueIdentifier>{8a6dfe44-f9fd-4151-8063-d0298a23bc3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +139,6 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\datUtilities.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\core\datDefinitions.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ui\datView.h">
@@ -188,6 +203,27 @@
     </ClInclude>
     <ClInclude Include="..\src\ui\datofxRadioButton.h">
       <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datDependencies.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datBoundingBox.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.h">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.h">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpUtils.h">
+      <Filter>addons\ofxAssimpModelLoader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
