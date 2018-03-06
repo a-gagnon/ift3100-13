@@ -218,6 +218,22 @@ void datApplication::draw() {
     GetViewManager().DoDraw();
     GetToolManager().DoDraw();
     GetRenderer().DrawCursorType();
+
+	string comment =  
+	"-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene.\n"
+	"-Place polyline tool: changer couleur et epaisseur de ligne, changer couleur de remplissage.\n"
+	"-Place text tool: placer du texte dans la scene, changer la couleur du texte.\n"
+	"-Place image tool: placer une image dans la scene.\n"
+	"-Export image tool: sauver une photo de l'etat courant de la scene.";
+
+	rect = getBitmapStringBoudingBox(comment);
+	rect.x = 2;
+	rect.y = ofGetWindowHeight()-75;
+	ofSetColor(255,255,255,0);
+	ofRect(rect.x, rect.y, rect.width, rect.height);
+	ofSetColor(ofColor::black);
+	ofDrawBitmapString(comment, rect.x, rect.y + 11);
+	
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {
@@ -260,6 +276,33 @@ void datApplication::windowResized(ofResizeEventArgs& resize) {
     datView& mainView = GetViewManager().GetMainView();
     mainView.setWidth(resize.width);
     mainView.setHeight(resize.height);
+}
+
+ofRectangle datApplication::getBitmapStringBoudingBox(string text) {
+	vector<string> lines = ofSplitString(text, "\n");
+	int maxLineLength = 0;
+	for (int i = 0; i < (int)lines.size(); i++) {
+		// tabs are not rendered
+		const string & line(lines[i]);
+		int currentLineLength = 0;
+		for (int j = 0; j < (int)line.size(); j++) {
+			if (line[j] == '\t') {
+				currentLineLength += 8 - (currentLineLength % 8);
+			}
+			else {
+				currentLineLength++;
+			}
+		}
+		maxLineLength = MAX(maxLineLength, currentLineLength);
+	}
+
+	int padding = 4;
+	int fontSize = 8;
+	float leading = 1.7;
+	int height = lines.size() * fontSize * leading - 1;
+	int width = maxLineLength * fontSize;
+	return ofRectangle(0, 0, width, height);
+
 }
 
 

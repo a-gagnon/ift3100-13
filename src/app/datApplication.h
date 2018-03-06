@@ -48,10 +48,13 @@ protected:
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
 
+	ofRectangle getBitmapStringBoudingBox(string text);
+	ofRectangle rect;
+
 public:
     datApplication();
     virtual ~datApplication();
-
+	
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();
     datRenderer& GetRenderer();
