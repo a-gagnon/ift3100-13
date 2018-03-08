@@ -275,8 +275,8 @@ void datApplication::draw() {
     GetRenderer().DrawCursorType();
 
 	string comment =  
-	"-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene.\n"
-	"-Place polyline tool: changer couleur et epaisseur de ligne, changer couleur de remplissage.\n"
+	"-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene, 'Bounding Box'.\n"
+	"-Place polyline tool: placer une ligne, changer couleur et epaisseur de ligne, changer couleur de remplissage.\n"
 	"-Place text tool: placer du texte dans la scene, changer la couleur du texte.\n"
 	"-Place image tool: placer une image dans la scene.\n"
 	"-Export image tool: sauver une photo de l'etat courant de la scene.";
