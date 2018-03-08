@@ -66,7 +66,7 @@ void datButton::onDraw() {
         m_image->draw(getX(), getY(), getWidth(), getHeight());
 
     if (IsMouseInside() && !m_tooltip.empty()) {
-        ofDrawBitmapStringHighlight(m_tooltip, getX() + getWidth() + 5, getY() + getHeight() + 5,
+        ofDrawBitmapStringHighlight(m_tooltip, getX() + getWidth() + 5, getY() + getHeight() + 15,
             m_style.tooltipBackgroundColor, m_style.tooltipTextColor);
     }
 }

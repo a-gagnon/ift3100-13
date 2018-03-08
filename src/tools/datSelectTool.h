@@ -15,7 +15,8 @@ struct datSelectTool : datEditTool {
 private:
     enum class SelectionMode {
         Window,     // objects that are strictly inside the rectangle are selected
-        Crossing    // objects inside or crossing the rectangle are selected
+        Crossing,   // objects inside or crossing the rectangle are selected
+        Hit         // objects that intersects with the (single-point) hit
     };
 
 private:
@@ -34,12 +35,14 @@ private:
     datofxRadioButton m_radio4;
     datofxRadioButton m_radio5;
     ofParameter<ofColor> m_appBackgroundColor;
+    ofParameter<bool> m_boundingBoxDisplay;
 
 private:
     void selectObjectsAndClearState();
     void updateRectangle(datMouseEvent const& ev);
     void updateSelectionMode(datMouseEvent const& ev);
     void setBackgroundColor(ofColor& color) { GetRenderer().SetBackgroundColor(color); }
+    void setBoundingBoxDisplay(bool& yesNo) { GetRenderer().SetDisplayBoundingBox(yesNo); }
 
 protected:
     virtual void onStartTool() override;

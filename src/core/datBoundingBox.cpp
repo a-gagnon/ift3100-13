@@ -63,3 +63,32 @@ void datBoundingBox::Extend(ofPoint const& point) {
     high.y = MAX(high.y, point.y);
     high.z = MAX(high.z, point.z);
 }
+
+
+bool datBoundingBox::HasAnyOverlapWith(datBoundingBox const& rhs) const {
+
+    if (low.x > rhs.high.x || high.x < rhs.low.x)
+        return false;
+
+    if (low.y > rhs.high.y || high.y < rhs.low.y)
+        return false;
+
+    if (low.z > rhs.high.z || high.z < rhs.low.z)
+        return false;
+
+    return true;
+}
+
+bool datBoundingBox::Contains(datBoundingBox const& rhs) const {
+    
+    if (rhs.low.x < low.x || high.x < rhs.high.x)
+        return false;
+
+    if (rhs.low.y < low.y || high.y < rhs.high.y)
+        return false;
+
+    if (rhs.low.z < low.z || high.z < rhs.high.z)
+        return false;
+
+    return true;
+}

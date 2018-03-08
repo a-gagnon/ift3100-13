@@ -30,7 +30,7 @@ bool datofxRadioButton::mousePressed(ofMouseEventArgs& args) {
 
 
 bool datofxRadioButton::mouseReleased(ofMouseEventArgs& args) {
-    return true;
+    return false;
 }
 
 

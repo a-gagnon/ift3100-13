@@ -106,6 +106,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\core\datGeometry.cpp" />
     <ClCompile Include="..\src\core\datImage.cpp" />
     <ClCompile Include="..\src\core\datRenderer.cpp" />
+    <ClCompile Include="..\src\core\datSelectionSet.cpp" />
     <ClCompile Include="..\src\core\datTextString.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
@@ -121,6 +122,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\tools\datEditAttributesTool.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
@@ -148,6 +150,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datLocalization.h" />
     <ClInclude Include="..\src\core\datNonCopyableClass.h" />
     <ClInclude Include="..\src\core\datRenderer.h" />
+    <ClInclude Include="..\src\core\datSelectionSet.h" />
     <ClInclude Include="..\src\core\datTextString.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
@@ -164,6 +167,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSlider.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.h" />
+    <ClInclude Include="..\src\tools\datEditAttributesTool.h" />
     <ClInclude Include="..\src\tools\datExportImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />

@@ -13,5 +13,6 @@
 #include "datLocalization.h"
 #include "datNonCopyableClass.h"
 #include "datRenderer.h"
+#include "datSelectionSet.h"
 #include "datTextString.h"
 #include "datUtilities.h"

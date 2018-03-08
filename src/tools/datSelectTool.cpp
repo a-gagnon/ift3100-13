@@ -37,9 +37,31 @@ datSelectTool::~datSelectTool() {
 
 void datSelectTool::selectObjectsAndClearState() {
 
-    //&&AG needswork select geometries using m_rectangle and m_mode
     m_isMouseDrag = false;
     m_hasFirstPoint = false;
+
+    // Do actual picking
+
+    datBoundingBox selectionBox;
+    selectionBox.Extend(m_rectangle.getTopLeft());
+    selectionBox.Extend(m_rectangle.getBottomRight());
+
+    datSelectionSet& selectionSet = GetRenderer().GetSelectionSet();
+    selectionSet.ClearSelection();
+
+    std::vector<datGeometry*> geometries = GetRenderer().QueryGeometries(selectionBox);
+
+    if (SelectionMode::Window == m_mode) {
+        // Must filter some more. Remove elements that are not strictly inside the box
+        for (size_t i = geometries.size(); i > 0; --i) {
+
+            if (!selectionBox.Contains(geometries[i - 1]->GetBoundingBox())) {
+                geometries.erase(geometries.begin() + i - 1);
+            }
+        }
+    }
+
+    selectionSet.SetSelection(geometries);
 }
 
 
@@ -56,7 +78,12 @@ void datSelectTool::updateRectangle(datMouseEvent const& ev) {
 void datSelectTool::updateSelectionMode(datMouseEvent const& ev) {
 
     assert(m_hasFirstPoint);
-    m_mode = (m_downPoint.x > ev.x && m_downPoint.y > ev.y) ? SelectionMode::Crossing : SelectionMode::Window;
+
+    if (2 > std::abs(ev.x - m_downPoint.x) + std::abs(ev.y - m_downPoint.y)) {
+        m_mode = SelectionMode::Hit;
+    }
+    else
+        m_mode = (m_downPoint.x > ev.x && m_downPoint.y > ev.y) ? SelectionMode::Crossing : SelectionMode::Window;
 }
 
 
@@ -70,10 +97,13 @@ void datSelectTool::onStartTool() {
     m_panel.add(m_radio5.setup(datLocalization::SelectTool_CursorTriangle()));
     m_panel.add(m_appBackgroundColor.set(datLocalization::SelectTool_BackgroundColor(),
         GetRenderer().GetBackgroundColor(), ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_boundingBoxDisplay.set(datLocalization::SelectTool_BoundingBox(),
+        GetRenderer().GetDisplayBoundingBox()));
 
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_appBackgroundColor.addListener(this, &datSelectTool::setBackgroundColor);
+    m_boundingBoxDisplay.addListener(this, &datSelectTool::setBoundingBoxDisplay);
 
     const datRenderer::CursorType currentCursorType = GetRenderer().GetActiveCursorType();
     switch (currentCursorType) {
@@ -98,6 +128,7 @@ void datSelectTool::onStartTool() {
 
 void datSelectTool::onExitTool() {
     m_appBackgroundColor.removeListener(this, &datSelectTool::setBackgroundColor);
+    m_boundingBoxDisplay.removeListener(this, &datSelectTool::setBoundingBoxDisplay);
 }
 
 
@@ -118,8 +149,7 @@ void datSelectTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
 void datSelectTool::onLeftMouseButtonUp(datMouseEvent const& ev) {
 
-    if (m_hasFirstPoint && m_isMouseDrag) {
-
+    if (m_hasFirstPoint) {
         updateRectangle(ev);
         updateSelectionMode(ev);
         selectObjectsAndClearState();
@@ -177,10 +207,17 @@ void datSelectTool::onDraw() {
 
     if (m_hasFirstPoint && datEpsilon < m_rectangle.getArea()) {
 
+        if (SelectionMode::Window != m_mode) {
+            ofFill();
+            ofColor color = m_color;
+            color.a = 128;
+            ofSetColor(color);
+            ofDrawRectangle(m_rectangle);
+        }
+
         ofSetColor(m_color);
         ofNoFill();
         ofDrawRectangle(m_rectangle);
-        ofFill();
     }
 
     m_panel.draw();

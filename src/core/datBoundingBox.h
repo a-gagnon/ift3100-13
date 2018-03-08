@@ -29,6 +29,12 @@ public:
     bool IsValid() const;
 
     void Extend(ofPoint const& point);
+    bool HasAnyOverlapWith(datBoundingBox const& rhs) const;
+    bool Contains(datBoundingBox const& rhs) const;
+
+    float GetXLength() const { return high.x - low.x; }
+    float GetYLength() const { return high.y - low.y; }
+    float GetZLength() const { return high.z - low.z; }
 };
 
 END_DAT_NAMESPACE

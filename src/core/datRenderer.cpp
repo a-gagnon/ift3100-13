@@ -8,7 +8,8 @@ USING_DAT_NAMESPACE
 
 datRenderer::datRenderer() : 
     m_activeCursorType(CursorType::Normal),
-    m_displayBoundingBox(false) {
+    m_displayBoundingBox(false),
+    m_drawSelectedInHilite(true) {
 
     m_activeDisplayParams.fillColor = ofColor(120, 120, 120, 255);
     m_activeDisplayParams.lineColor = ofColor(160, 160, 160, 255);
@@ -73,14 +74,41 @@ void datRenderer::DrawCursorType() const {
     }
 }
 
-void datRenderer::DrawGeometry(datGeometry const& geometry) const {
+void datRenderer::DrawGeometry(datGeometry const& geometry, bool useDisplayParams) const {
 
     ofPushMatrix(); // save transform to top of stack
                     //ofLoadMatrix(node->GetWorldToNodeTransform());
-    geometry.drawWithDisplayParams();
+
+    if (useDisplayParams)
+        geometry.drawWithDisplayParams();
+    else
+        geometry.draw();
 
     ofPopMatrix(); // load transform from top of stack
 }
+
+
+void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
+
+    datBoundingBox const& box = geometry.GetBoundingBox();
+    ofSetColor(ofColor::lightGray);
+    ofSetLineWidth(2.0);
+
+    static bool s_drawRect = true;
+    if (s_drawRect)
+        ofDrawRectangle(box.low, box.GetXLength(), box.GetYLength());
+    else
+        ofDrawBox(box.low.x, box.low.y, box.low.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
+}
+
+
+namespace {
+    void cloneInDest(std::vector<std::unique_ptr<datGeometry>>& result, std::vector<std::unique_ptr<datGeometry>> const& source) {
+
+        result.clear();
+        std::transform(source.begin(), source.end(), std::back_inserter(result), [](std::unique_ptr<datGeometry> const& ptr) { return ptr->Clone(); });
+    }
+};
 
 
 void datRenderer::AddGeometry(std::unique_ptr<datGeometry>&& geometry) {
@@ -88,10 +116,58 @@ void datRenderer::AddGeometry(std::unique_ptr<datGeometry>&& geometry) {
 }
 
 
+void datRenderer::RemoveGeometry(datGeometry* pGeometry) {
+
+    for (size_t i = 0; i < m_geometries.size(); ++i) {
+
+        if (pGeometry == m_geometries[i].get()) {
+            m_selectionSet.RemoveFromSelection(pGeometry, false);
+            m_geometries.erase(m_geometries.begin() + i);
+        }
+    }
+}
+
+
+std::vector<datGeometry*> datRenderer::QueryGeometries(datBoundingBox const& boundingBox) const {
+    
+    std::vector<datGeometry*> results;
+
+    //&&AG this will probably need to take into account current transform and element transform at some point
+    for (auto const& geometry : m_geometries) {
+
+        if (boundingBox.HasAnyOverlapWith(geometry->GetBoundingBox())) {
+            results.push_back(geometry.get());
+        }
+    }
+
+    return results;
+}
+
+
 void datRenderer::Render() const {
+
+    std::vector<datGeometry*> selectedGeometries;
 
     const std::vector<datGeometry*> visibleGeometries = GetVisibleGeometries();
     for (auto const& geometry : visibleGeometries) {
+
+        if (m_selectionSet.IsSelected(geometry))
+            selectedGeometries.push_back(geometry);
+
         DrawGeometry(*geometry);
+
+        //ofNoFill();
+        if (m_displayBoundingBox)
+            DrawBoundingBox(*geometry);
+    }
+
+    if (m_drawSelectedInHilite && !selectedGeometries.empty()) {
+        // Redraw elements that are selected. Just put their outline in a different color
+        ofSetColor(ofColor::darkBlue);
+        ofNoFill();
+
+        for (auto const& geometry : selectedGeometries) {
+            DrawGeometry(*geometry, false/*useDisplayParams*/);
+        }
     }
 }

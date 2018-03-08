@@ -31,7 +31,7 @@ public:
 //=======================================================================================
 // Wrapper for openframeworks geometry classes
 //=======================================================================================
-struct datGeometry : datNonCopyableClass {
+struct datGeometry {
 
 public:
     enum class GeometryType {
@@ -64,6 +64,9 @@ private:
     datGeometry(datTextString const& textString);
     datGeometry(datImage const& image);
     datGeometry(ofxAssimpModelLoader const& model);
+    datGeometry(datGeometry const&);
+    datGeometry& operator= (datGeometry const&) = delete;
+
 
 public:
     ~datGeometry() {}
@@ -73,6 +76,8 @@ public:
     static std::unique_ptr<datGeometry> Create(datImage const& image);
     static std::unique_ptr<datGeometry> Create(ofxAssimpModelLoader const& model);
 
+    std::unique_ptr<datGeometry> Clone() const;
+
     datBoundingBox GetBoundingBox() const { return m_boundingBox; }
     void CalculateBoundingBox();
 
@@ -80,6 +85,7 @@ public:
     void SetTransform(Transform const& transform) { m_transform = transform; }
 
     datDisplayParams const& GetDisplayParams() const { return m_displayParams; }
+    datDisplayParams& GetDisplayParamsR() { return m_displayParams; }
     void SetDisplayParams(datDisplayParams const& displayParams) { m_displayParams = displayParams; }
 
     void draw() const;

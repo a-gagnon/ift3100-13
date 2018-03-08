@@ -89,6 +89,12 @@
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.cpp">
       <Filter>addons\ofxAssimpModelLoader</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datSelectionSet.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datEditAttributesTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -224,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpUtils.h">
       <Filter>addons\ofxAssimpModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datSelectionSet.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datEditAttributesTool.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

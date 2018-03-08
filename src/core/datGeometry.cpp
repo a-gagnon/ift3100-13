@@ -45,6 +45,11 @@ datGeometry::datGeometry(ofxAssimpModelLoader const& model) :
     CalculateBoundingBox();
 }
 
+datGeometry::datGeometry(datGeometry const& rhs) {
+    memcpy(this, &rhs, sizeof(datGeometry));
+}
+
+
 
 std::unique_ptr<datGeometry> datGeometry::Create(ofPolyline const& polyline) {
     auto ptr = std::unique_ptr<datGeometry>(new datGeometry(polyline));
@@ -76,6 +81,12 @@ std::unique_ptr<datGeometry> datGeometry::Create(ofxAssimpModelLoader const& mod
 }
 
 
+std::unique_ptr<datGeometry> datGeometry::Clone() const {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(*this));
+    return std::move(ptr);
+}
+
+
 void datGeometry::CalculateBoundingBox() {
 
     switch (m_type) {
@@ -88,7 +99,9 @@ void datGeometry::CalculateBoundingBox() {
             break;
         }
         case GeometryType::TextString: {
-            m_boundingBox.InitInvalid(); //&&AG needswork
+            ofRectangle rect = m_textStringData.m_trueTypeFont.getStringBoundingBox(m_textStringData.m_text, m_textStringData.m_position.x, m_textStringData.m_position.y);
+            m_boundingBox.low = rect.getTopLeft();
+            m_boundingBox.high = rect.getBottomRight();
             break;
         }
         case GeometryType::Image: {

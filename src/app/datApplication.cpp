@@ -13,6 +13,9 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_PLACETEXT "btn_placeTextTool"
 #define DAT_BUTTON_NAME_PLACEIMAGE "btn_placeImageTool"
 #define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
+#define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
+
+#define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 
 namespace {
 
@@ -23,7 +26,8 @@ namespace {
             DAT_BUTTON_NAME_PLACEPOLYLINE,
             DAT_BUTTON_NAME_PLACETEXT,
             DAT_BUTTON_NAME_PLACEIMAGE,
-            DAT_BUTTON_NAME_EXPORTIMAGE
+            DAT_BUTTON_NAME_EXPORTIMAGE,
+            DAT_BUTTON_NAME_EDITATTRIBUTES
         };
 
         datViewManager& manager = datApplication::GetApp().GetViewManager();
@@ -69,6 +73,38 @@ namespace {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool(startDefaultTool));
+    }
+
+    void onStartEditAttributesToolPressed(datButton& button) {
+        setToggleAllToolButtons(false);
+        button.SetToggle(true);
+        datApplication::GetApp().GetToolManager().StartTool(new datEditAttributesTool());
+    }
+
+
+    void onDeleteSelectionPressed(datButton& button) {
+        button.SetVisible(false);
+
+        datRenderer& renderer = datApplication::GetApp().GetRenderer();
+
+        std::set<datGeometry*> selection = renderer.GetSelectionSet().GetSelection();
+        for (auto const& entry : selection) {
+            renderer.RemoveGeometry(entry);
+        }
+
+        startDefaultTool();
+    }
+
+    void onDeleteButtonSelectionChanged() {
+        const bool isVisible = 0 < datApplication::GetApp().GetRenderer().GetSelectionSet().GetSelection().size();
+        auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
+        static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
+    }
+
+    void onEditAttributesSelectionChanged() {
+        const bool isVisible = 0 < datApplication::GetApp().GetRenderer().GetSelectionSet().GetSelection().size();
+        auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
+        static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
     }
 
 }; // end unnamed namespace
@@ -130,6 +166,25 @@ void datApplication::SetupUI() {
     pExportImageToolButton->SetTooltip(datLocalization::ExportImageTool_Tooltip());
     pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
     mainView.AddView(pExportImageToolButton);
+
+    // Delete selection
+    datButton* pDeleteSelectionButton = new datButton(240, 20, 40, 40, datButtonStyle::createForToolButton());
+    pDeleteSelectionButton->SetOnPressedCallback(onDeleteSelectionPressed);
+    pDeleteSelectionButton->SetImage(datUtilities::LoadImageFromAssetsFolder("trash_can.png"));
+    pDeleteSelectionButton->SetTooltip(datLocalization::DeleteSelectedGeometries());
+    pDeleteSelectionButton->SetName(DAT_BUTTON_NAME_DELETESELECTED);
+    mainView.AddView(pDeleteSelectionButton);
+    pDeleteSelectionButton->SetVisible(false);
+    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onDeleteButtonSelectionChanged);
+
+    datButton* pEditAttributesToolButton = new datButton(285, 20, 40, 40, datButtonStyle::createForToolButton());
+    pEditAttributesToolButton->SetOnPressedCallback(onStartEditAttributesToolPressed);
+    pEditAttributesToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
+    pEditAttributesToolButton->SetTooltip(datLocalization::EditAttributesTool_Tooltip());
+    pEditAttributesToolButton->SetName(DAT_BUTTON_NAME_EDITATTRIBUTES);
+    mainView.AddView(pEditAttributesToolButton);
+    pEditAttributesToolButton->SetVisible(false);
+    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onEditAttributesSelectionChanged);
 
     startDefaultTool();
 }
