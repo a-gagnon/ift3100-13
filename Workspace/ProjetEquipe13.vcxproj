@@ -125,6 +125,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\tools\datEditAttributesTool.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
+    <ClCompile Include="..\src\tools\datPlaceModelTool.cpp" />
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceTextTool.cpp" />
     <ClCompile Include="..\src\tools\datSelectTool.cpp" />
@@ -170,6 +171,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\tools\datEditAttributesTool.h" />
     <ClInclude Include="..\src\tools\datExportImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />
+    <ClInclude Include="..\src\tools\datPlaceModelTool.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
     <ClInclude Include="..\src\tools\datPlaceTextTool.h" />
     <ClInclude Include="..\src\tools\datSelectTool.h" />

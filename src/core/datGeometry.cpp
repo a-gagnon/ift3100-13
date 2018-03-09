@@ -113,8 +113,11 @@ void datGeometry::CalculateBoundingBox() {
             break;
         }
         case GeometryType::AssimpModel: {
+
             m_boundingBox.Init(m_modelData.getSceneMin(true));
             m_boundingBox.Extend(m_modelData.getSceneMax(true));
+            m_boundingBox.Multiply(m_modelData.getNormalizedScale());
+            m_boundingBox.Translate(m_modelData.getPosition());
             break;
         }
     }

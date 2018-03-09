@@ -11,6 +11,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_SELECT "btn_selectTool"
 #define DAT_BUTTON_NAME_PLACEPOLYLINE "btn_placePolylineTool"
 #define DAT_BUTTON_NAME_PLACETEXT "btn_placeTextTool"
+#define DAT_BUTTON_NAME_PLACEMODEL "btn_placeModelTool"
 #define DAT_BUTTON_NAME_PLACEIMAGE "btn_placeImageTool"
 #define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
@@ -25,6 +26,7 @@ namespace {
             DAT_BUTTON_NAME_SELECT,
             DAT_BUTTON_NAME_PLACEPOLYLINE,
             DAT_BUTTON_NAME_PLACETEXT,
+            DAT_BUTTON_NAME_PLACEMODEL,
             DAT_BUTTON_NAME_PLACEIMAGE,
             DAT_BUTTON_NAME_EXPORTIMAGE,
             DAT_BUTTON_NAME_EDITATTRIBUTES
@@ -63,6 +65,12 @@ namespace {
         datApplication::GetApp().GetToolManager().StartTool(new datPlaceTextTool());
     }
 
+    void onStartPlaceModelToolPressed(datButton& button) {
+        setToggleAllToolButtons(false);
+        button.SetToggle(true);
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceModelTool(startDefaultTool));
+    }
+
     void onStartPlaceImageToolPressed(datButton& button) {
         setToggleAllToolButtons(false);
         button.SetToggle(true);
@@ -88,6 +96,8 @@ namespace {
         datRenderer& renderer = datApplication::GetApp().GetRenderer();
 
         std::set<datGeometry*> selection = renderer.GetSelectionSet().GetSelection();
+        renderer.GetSelectionSet().ClearSelection();
+
         for (auto const& entry : selection) {
             renderer.RemoveGeometry(entry);
         }
@@ -151,8 +161,16 @@ void datApplication::SetupUI() {
     pWriteTextToolButton->SetName(DAT_BUTTON_NAME_PLACETEXT);
     mainView.AddView(pWriteTextToolButton);
 
+    // Insert model tool
+    datButton* pPlaceModelToolButton = new datButton(10, 155, 40, 40, datButtonStyle::createForToolButton());
+    pPlaceModelToolButton->SetOnPressedCallback(onStartPlaceModelToolPressed);
+    pPlaceModelToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_model.png"));
+    pPlaceModelToolButton->SetTooltip(datLocalization::PlaceModelTool_Tooltip());
+    pPlaceModelToolButton->SetName(DAT_BUTTON_NAME_PLACEMODEL);
+    mainView.AddView(pPlaceModelToolButton);
+
     // Insert image tool
-    datButton* pPlaceImageToolButton = new datButton(10, 155, 40, 40, datButtonStyle::createForToolButton());
+    datButton* pPlaceImageToolButton = new datButton(10, 200, 40, 40, datButtonStyle::createForToolButton());
     pPlaceImageToolButton->SetOnPressedCallback(onStartPlaceImageToolPressed);
     pPlaceImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
     pPlaceImageToolButton->SetTooltip(datLocalization::PlaceImageTool_Tooltip());
@@ -160,7 +178,7 @@ void datApplication::SetupUI() {
     mainView.AddView(pPlaceImageToolButton);
 
     // Export image tool
-    datButton* pExportImageToolButton = new datButton(10, 200, 40, 40, datButtonStyle::createForToolButton());
+    datButton* pExportImageToolButton = new datButton(10, 245, 40, 40, datButtonStyle::createForToolButton());
     pExportImageToolButton->SetOnPressedCallback(onStartExportImageToolPressed);
     pExportImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("export_image.png"));
     pExportImageToolButton->SetTooltip(datLocalization::ExportImageTool_Tooltip());
@@ -245,9 +263,7 @@ bool datApplication::SendKeyEvent(ofKeyEventArgs& ev) {
 void datApplication::dragged(ofDragInfo& ev) {
 
     std::vector<ofImage> images;
-
     for (auto const& filePath : ev.files) {
-
         ofImage image;
         if (image.load(filePath))
             images.push_back(std::move(image));
@@ -260,6 +276,25 @@ void datApplication::dragged(ofDragInfo& ev) {
         
         auto pTool = new datPlaceImageTool(startDefaultTool);
         pTool->SetImagesToPlace(images);
+        datApplication::GetApp().GetToolManager().StartTool(pTool);
+    }
+
+    // Try as ofxAssimpModel
+    std::vector<ofxAssimpModelLoader> models;
+    for (auto const& filePath : ev.files) {
+        ofxAssimpModelLoader model;
+        if (model.loadModel(filePath)) {
+            models.push_back(std::move(model));
+        }
+    }
+
+    if (!models.empty()) {
+        setToggleAllToolButtons(false);
+        auto pView = GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEMODEL);
+        static_cast<datButton*>(pView)->SetToggle(true);
+
+        auto pTool = new datPlaceModelTool(startDefaultTool);
+        pTool->SetModelsToPlace(std::move(models));
         datApplication::GetApp().GetToolManager().StartTool(pTool);
     }
 }

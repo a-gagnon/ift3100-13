@@ -95,6 +95,9 @@
     <ClCompile Include="..\src\tools\datEditAttributesTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceModelTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -235,6 +238,9 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\tools\datEditAttributesTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceModelTool.h">
       <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>

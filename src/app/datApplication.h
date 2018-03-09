@@ -9,6 +9,7 @@
 #include "../tools/datPlacePolylineTool.h"
 #include "../tools/datPlaceTextTool.h"
 #include "../tools/datSelectTool.h"
+#include "../tools/datPlaceModelTool.h"
 #include "../tools/datPlaceImageTool.h"
 #include "../tools/datExportImageTool.h"
 #include "../tools/datEditAttributesTool.h"

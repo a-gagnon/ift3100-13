@@ -65,6 +65,27 @@ void datBoundingBox::Extend(ofPoint const& point) {
 }
 
 
+void datBoundingBox::Multiply(float factor) {
+    low.x *= factor;
+    low.y *= factor;
+    low.z *= factor;
+    high.x *= factor;
+    high.y *= factor;
+    high.z *= factor;
+}
+
+
+void datBoundingBox::Translate(ofPoint const& offset) {
+    low.x += offset.x;
+    low.y += offset.y;
+    low.z += offset.z;
+    high.x += offset.x;
+    high.y += offset.y;
+    high.z += offset.z;
+}
+
+
+
 bool datBoundingBox::HasAnyOverlapWith(datBoundingBox const& rhs) const {
 
     if (low.x > rhs.high.x || high.x < rhs.low.x)

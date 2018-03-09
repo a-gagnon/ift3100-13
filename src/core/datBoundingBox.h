@@ -29,6 +29,8 @@ public:
     bool IsValid() const;
 
     void Extend(ofPoint const& point);
+    void Multiply(float factor);
+    void Translate(ofPoint const& offset);
     bool HasAnyOverlapWith(datBoundingBox const& rhs) const;
     bool Contains(datBoundingBox const& rhs) const;
 

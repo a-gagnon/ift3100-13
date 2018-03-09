@@ -18,6 +18,7 @@ struct datLocalization {
     static std::string EditAttributesTool_Tooltip() { return "Edit attributes of selected geometries"; }
     static std::string ExportImageTool_Tooltip()    { return "Export image"; }
     static std::string PlaceImageTool_Tooltip()     { return "Place image tool"; }
+    static std::string PlaceModelTool_Tooltip()     { return "Place model tool"; }
     static std::string PlacePolylineTool_Tooltip()  { return "Place polyline tool"; }
     static std::string PlaceTextTool_Placeholder()  { return "Placeholder"; }
     static std::string PlaceTextTool_Tooltip()      { return "Place text tool"; }
