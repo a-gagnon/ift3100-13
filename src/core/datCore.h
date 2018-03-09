@@ -15,4 +15,5 @@
 #include "datRenderer.h"
 #include "datSelectionSet.h"
 #include "datTextString.h"
+#include "datTransform.h"
 #include "datUtilities.h"

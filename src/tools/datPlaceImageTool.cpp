@@ -6,10 +6,8 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceImageTool::datPlaceImageTool(datPlaceImageDoneCallback callback) :
-    m_pCallbackFunction(callback),
+datPlaceImageTool::datPlaceImageTool() :
     m_position(0, 0, 0) {
-    assert(nullptr != m_pCallbackFunction);
 }
 
 
@@ -42,7 +40,7 @@ void datPlaceImageTool::onStartTool() {
 
         // Still empty. exit tool
         if (m_imagesToPlace.empty()) {
-            m_pCallbackFunction();
+            _ExitTool();
             return;
         }
     }
@@ -71,7 +69,7 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         if (!m_imagesToPlace.empty())
             UpdateParameters();
         else
-            m_pCallbackFunction();
+            _ExitTool();
     }
 }
 
@@ -85,7 +83,7 @@ void datPlaceImageTool::onRightMouseButtonDown(datMouseEvent const& ev) {
         if (!m_imagesToPlace.empty())
             UpdateParameters();
         else
-            m_pCallbackFunction();
+            _ExitTool();
     }
 }
 

@@ -6,6 +6,7 @@
 
 #include "datDependencies.h"
 #include "datBoundingBox.h"
+#include "datId.h"
 #include "datNonCopyableClass.h"
 #include "datTextString.h"
 #include "datImage.h"
@@ -44,6 +45,7 @@ public:
 
 private:
 
+    datId m_id;
     datBoundingBox m_boundingBox;
     Transform m_transform;
     datDisplayParams m_displayParams;
@@ -77,6 +79,10 @@ public:
     static std::unique_ptr<datGeometry> Create(ofxAssimpModelLoader const& model);
 
     std::unique_ptr<datGeometry> Clone() const;
+
+    // only scene should call this
+    void AssignId(datId id) { m_id = id; }
+    datId GetId() const { return m_id; }
 
     datBoundingBox GetBoundingBox() const { return m_boundingBox; }
     void CalculateBoundingBox();

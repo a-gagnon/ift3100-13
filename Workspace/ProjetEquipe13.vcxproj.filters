@@ -98,6 +98,12 @@
     <ClCompile Include="..\src\tools\datPlaceModelTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datTransform.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\datScene.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -242,6 +248,15 @@
     </ClInclude>
     <ClInclude Include="..\src\tools\datPlaceModelTool.h">
       <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datScene.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datTransform.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datId.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

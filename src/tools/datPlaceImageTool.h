@@ -15,7 +15,6 @@ typedef void(*datPlaceImageDoneCallback)(void);
 struct datPlaceImageTool : datEditTool {
 
 private:
-    datPlaceImageDoneCallback m_pCallbackFunction;
     std::vector<ofImage> m_imagesToPlace;
     ofPoint m_position;
 
@@ -35,7 +34,7 @@ protected:
 public:
     void SetImagesToPlace(std::vector<ofImage> const& images) { m_imagesToPlace = images; }
 
-    datPlaceImageTool(datPlaceImageDoneCallback callback);
+    datPlaceImageTool();
     virtual ~datPlaceImageTool();
 };
 

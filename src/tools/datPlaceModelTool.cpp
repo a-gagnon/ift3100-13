@@ -6,10 +6,8 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceModelTool::datPlaceModelTool(datPlaceModelDoneCallback callback) :
-    m_pCallbackFunction(callback),
+datPlaceModelTool::datPlaceModelTool() :
     m_position(0, 0, 0) {
-    assert(nullptr != m_pCallbackFunction);
 }
 
 
@@ -40,7 +38,7 @@ void datPlaceModelTool::onStartTool() {
 
         // Still empty. exit tool
         if (m_modelsToPlace.empty()) {
-            m_pCallbackFunction();
+            _ExitTool();
             return;
         }
     }
@@ -66,7 +64,7 @@ void datPlaceModelTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         if (!m_modelsToPlace.empty())
             UpdateParameters();
         else
-            m_pCallbackFunction();
+            _ExitTool();
     }
 }
 
@@ -80,7 +78,7 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
         if (!m_modelsToPlace.empty())
             UpdateParameters();
         else
-            m_pCallbackFunction();
+            _ExitTool();
     }
 }
 

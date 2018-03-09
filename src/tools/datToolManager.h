@@ -14,6 +14,10 @@ struct datToolManager : datNonCopyableClass {
 private:
     std::unique_ptr<datViewTool> m_viewTool;
     std::unique_ptr<datEditTool> m_editTool;
+    ofEvent<datEditTool> m_onEditToolStartedEvent;
+    ofEvent<datViewTool> m_onViewToolStartedEvent;
+    ofEvent<void> m_onSupplyEditToolEvent;
+    bool m_isStartingTool;
 
 private:
     // Determines which tool should get events
@@ -25,6 +29,10 @@ public:
 
     datViewTool* GetActiveViewTool() const;
     datEditTool* GetActiveEditTool() const;
+
+    ofEvent<datEditTool>& GetOnEditToolStartedEvent() { return m_onEditToolStartedEvent; }
+    ofEvent<datViewTool>& GetOnViewToolStartedEvent() { return m_onViewToolStartedEvent; }
+    ofEvent<void>& GetOnSupplyEditToolEvent() { return m_onSupplyEditToolEvent; }
 
     // Starts the tool
     // @remarks takes ownership with a unique_ptr

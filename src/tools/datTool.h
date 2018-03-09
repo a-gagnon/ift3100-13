@@ -48,7 +48,7 @@ struct datViewTool : datTool {
 
 protected:
     virtual datViewTool* getAsViewTool() override final { return this; }
-    virtual void _ExitTool() override final {} //&&AG needswork
+    virtual void _ExitTool() override final;
     datViewTool() {}
 
 public:
@@ -60,7 +60,7 @@ struct datEditTool : datTool {
 
 protected:
     virtual datEditTool* getAsEditTool() override final { return this; }
-    virtual void _ExitTool() override final {} //&&AG needswork
+    virtual void _ExitTool() override final;
     datEditTool() {}
 
 public:

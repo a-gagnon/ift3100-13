@@ -7,8 +7,19 @@
 
 USING_DAT_NAMESPACE
 
-datToolManager::datToolManager() {
+//=======================================================================================
+void datViewTool::_ExitTool() {
+    datApplication::GetApp().GetToolManager().ExitViewTool();
+}
 
+//=======================================================================================
+void datEditTool::_ExitTool() {
+    datApplication::GetApp().GetToolManager().ExitEditTool();
+}
+
+
+datToolManager::datToolManager() :
+    m_isStartingTool(false) {
 }
 
 
@@ -50,15 +61,21 @@ void datToolManager::StartTool(datTool* pTool) {
 
     if (auto pEditTool = pTool->getAsEditTool()) {
 
+        m_isStartingTool = true;
         ExitEditTool();
         m_editTool.reset(pEditTool);
         m_editTool->onStartTool();
+        ofNotifyEvent(m_onEditToolStartedEvent, *m_editTool);
+        m_isStartingTool = false;
     }
     else if (auto pViewTool = pTool->getAsViewTool()) {
 
+        m_isStartingTool = true;
         ExitViewTool();
         m_viewTool.reset(pViewTool);
         m_viewTool->onStartTool();
+        ofNotifyEvent(m_onViewToolStartedEvent, *m_viewTool);
+        m_isStartingTool = false;
     }
 }
 
@@ -78,6 +95,9 @@ void datToolManager::ExitEditTool() {
         m_editTool->onExitTool();
         m_editTool.reset();
     }
+
+    if (!m_isStartingTool)
+        ofNotifyEvent(m_onSupplyEditToolEvent);
 }
 
 

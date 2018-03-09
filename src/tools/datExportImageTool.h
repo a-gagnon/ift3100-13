@@ -8,20 +8,15 @@
 
 BEGIN_DAT_NAMESPACE
 
-// Define pointer-to-function. Called when the tool has no more images to place
-typedef void(*datExportImageDoneCallback)(void);
-
 //=======================================================================================
 struct datExportImageTool : datEditTool {
 
-private:
-    datExportImageDoneCallback m_pCallbackFunction;
-
 protected:
     virtual void onStartTool() override;
+    virtual void onDraw() override;
 
 public:
-    datExportImageTool(datExportImageDoneCallback callback);
+    datExportImageTool();
     virtual ~datExportImageTool();
 };
 

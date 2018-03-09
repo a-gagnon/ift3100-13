@@ -15,7 +15,6 @@ typedef void(*datPlaceModelDoneCallback)(void);
 struct datPlaceModelTool : datEditTool {
 
 private:
-    datPlaceModelDoneCallback m_pCallbackFunction;
     std::vector<ofxAssimpModelLoader> m_modelsToPlace;
     ofPoint m_position;
 
@@ -33,7 +32,7 @@ protected:
 public:
     void SetModelsToPlace(std::vector<ofxAssimpModelLoader>&& models) { m_modelsToPlace = std::move(models); }
 
-    datPlaceModelTool(datPlaceModelDoneCallback callback);
+    datPlaceModelTool();
     virtual ~datPlaceModelTool();
 };
 

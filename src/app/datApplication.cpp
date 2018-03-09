@@ -20,72 +20,69 @@ USING_DAT_NAMESPACE
 
 namespace {
 
-    void setToggleAllToolButtons(bool yesNo) {
-
-        const std::vector<std::string> buttonNames {
-            DAT_BUTTON_NAME_SELECT,
-            DAT_BUTTON_NAME_PLACEPOLYLINE,
-            DAT_BUTTON_NAME_PLACETEXT,
-            DAT_BUTTON_NAME_PLACEMODEL,
-            DAT_BUTTON_NAME_PLACEIMAGE,
-            DAT_BUTTON_NAME_EXPORTIMAGE,
-            DAT_BUTTON_NAME_EDITATTRIBUTES
-        };
-
-        datViewManager& manager = datApplication::GetApp().GetViewManager();
-        for (auto const& buttonName : buttonNames) {
-
-            auto pButton = manager.GetViewByName(buttonName);
-            if (nullptr != pButton) {
-                static_cast<datButton*>(pButton)->SetToggle(yesNo);
-            }
-        }
+    // Event listeners whenever user starts a tool.
+    // This should toggle the button of the tool, and put all the others off
+    void onSelectToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_SELECT);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datSelectTool*>(&editTool));
     }
 
-    void startDefaultTool() {
-        auto pSelectToolButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_SELECT);
-        static_cast<datButton*>(pSelectToolButton)->PressButton();
+    void onPlacePolylineToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEPOLYLINE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlacePolylineTool*>(&editTool));
     }
 
+    void onPlaceTextToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACETEXT);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceTextTool*>(&editTool));
+    }
+
+    void onPlaceModelToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEMODEL);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceModelTool*>(&editTool));
+    }
+
+    void onPlaceImagetoolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEIMAGE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceImageTool*>(&editTool));
+    }
+
+    void onExportImageToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EXPORTIMAGE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datExportImageTool*>(&editTool));
+    }
+
+    void onEditAttributesToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
+    }
+    
+    // On-pressed button events
     void onStartSelectToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datSelectTool());
     }
 
     void onStartPlacePolylineToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datPlacePolylineTool());
     }
 
     void onStartPlaceTextToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datPlaceTextTool());
     }
 
     void onStartPlaceModelToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
-        datApplication::GetApp().GetToolManager().StartTool(new datPlaceModelTool(startDefaultTool));
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceModelTool());
     }
 
     void onStartPlaceImageToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
-        datApplication::GetApp().GetToolManager().StartTool(new datPlaceImageTool(startDefaultTool));
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceImageTool());
     }
 
     void onStartExportImageToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
-        datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool(startDefaultTool));
+        datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool());
     }
 
     void onStartEditAttributesToolPressed(datButton& button) {
-        setToggleAllToolButtons(false);
-        button.SetToggle(true);
         datApplication::GetApp().GetToolManager().StartTool(new datEditAttributesTool());
     }
 
@@ -102,17 +99,16 @@ namespace {
             renderer.RemoveGeometry(entry);
         }
 
-        startDefaultTool();
+        datApplication::GetApp().SupplyDefaultEditTool();
     }
 
-    void onDeleteButtonSelectionChanged() {
+    // Called when the selection changes
+    void onSelectionChanged() {
         const bool isVisible = 0 < datApplication::GetApp().GetRenderer().GetSelectionSet().GetSelection().size();
+
         auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
         static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
-    }
 
-    void onEditAttributesSelectionChanged() {
-        const bool isVisible = 0 < datApplication::GetApp().GetRenderer().GetSelectionSet().GetSelection().size();
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
     }
@@ -193,7 +189,6 @@ void datApplication::SetupUI() {
     pDeleteSelectionButton->SetName(DAT_BUTTON_NAME_DELETESELECTED);
     mainView.AddView(pDeleteSelectionButton);
     pDeleteSelectionButton->SetVisible(false);
-    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onDeleteButtonSelectionChanged);
 
     datButton* pEditAttributesToolButton = new datButton(285, 20, 40, 40, datButtonStyle::createForToolButton());
     pEditAttributesToolButton->SetOnPressedCallback(onStartEditAttributesToolPressed);
@@ -202,9 +197,20 @@ void datApplication::SetupUI() {
     pEditAttributesToolButton->SetName(DAT_BUTTON_NAME_EDITATTRIBUTES);
     mainView.AddView(pEditAttributesToolButton);
     pEditAttributesToolButton->SetVisible(false);
-    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onEditAttributesSelectionChanged);
 
-    startDefaultTool();
+    // Register all events
+    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onSelectionChanged);
+
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onSelectToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceTextToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceModelToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceImagetoolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onExportImageToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onEditAttributesToolStarted);
+    
+    ofAddListener(GetToolManager().GetOnSupplyEditToolEvent(), this, &datApplication::SupplyDefaultEditTool);
+    SupplyDefaultEditTool();
 }
 
 
@@ -223,16 +229,8 @@ void datApplication::setup() {
 
 
 void datApplication::ClampEvent(datMouseEvent& ev) const {
-
-    if (ev.x < 1)
-        ev.x = 1.0;
-    else if (m_width < ev.x)
-        ev.x = m_width;
-
-    if (ev.y < 1)
-        ev.y = 1.0;
-    else if (m_height < ev.y)
-        ev.y = m_height;
+    ev.x = CLAMP(ev.x, 1, m_width);
+    ev.y = CLAMP(ev.y, 1, m_height);
 }
 
 
@@ -270,11 +268,7 @@ void datApplication::dragged(ofDragInfo& ev) {
     }
 
     if (!images.empty()) {
-        setToggleAllToolButtons(false);
-        auto pView = GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEIMAGE);
-        static_cast<datButton*>(pView)->SetToggle(true);
-        
-        auto pTool = new datPlaceImageTool(startDefaultTool);
+        auto pTool = new datPlaceImageTool();
         pTool->SetImagesToPlace(images);
         datApplication::GetApp().GetToolManager().StartTool(pTool);
     }
@@ -289,11 +283,7 @@ void datApplication::dragged(ofDragInfo& ev) {
     }
 
     if (!models.empty()) {
-        setToggleAllToolButtons(false);
-        auto pView = GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEMODEL);
-        static_cast<datButton*>(pView)->SetToggle(true);
-
-        auto pTool = new datPlaceModelTool(startDefaultTool);
+        auto pTool = new datPlaceModelTool();
         pTool->SetModelsToPlace(std::move(models));
         datApplication::GetApp().GetToolManager().StartTool(pTool);
     }
@@ -419,6 +409,11 @@ datRenderer& datApplication::GetRenderer() {
         m_renderer.reset(new datRenderer());
 
     return *m_renderer;
+}
+
+
+void datApplication::SupplyDefaultEditTool() {
+    GetToolManager().StartTool(new datSelectTool());
 }
 
 

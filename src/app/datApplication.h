@@ -32,9 +32,8 @@ private:
     int m_height;
 
 protected:
-
     void SetupUI();
-	
+
     // Make sure x and y values are inside the app window
     void ClampEvent(datMouseEvent& ev) const;
     bool SendMouseEvent(ofMouseEventArgs& ev);
@@ -50,16 +49,18 @@ protected:
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
 
-	ofRectangle getBitmapStringBoudingBox(string text);
-	ofRectangle rect;
+    ofRectangle getBitmapStringBoudingBox(string text);
+    ofRectangle rect;
 
 public:
     datApplication();
     virtual ~datApplication();
-	
+
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();
     datRenderer& GetRenderer();
+
+    void SupplyDefaultEditTool();
 
     static datApplication& GetApp();
 };
