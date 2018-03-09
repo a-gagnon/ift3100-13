@@ -29,6 +29,8 @@ private:
 
 
 public:
+    datScene();
+    ~datScene();
 
     datTransform const& GetViewToWorld() const { return m_viewToWorld; }
     datTransform const& GetWorldToView() const { return m_worldToView; }
