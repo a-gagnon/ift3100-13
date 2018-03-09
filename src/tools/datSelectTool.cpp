@@ -37,31 +37,25 @@ datSelectTool::~datSelectTool() {
 
 void datSelectTool::selectObjectsAndClearState() {
 
-    m_isMouseDrag = false;
-    m_hasFirstPoint = false;
+	m_isMouseDrag = false;
+	m_hasFirstPoint = false;
 
-    // Do actual picking
+	// Do actual picking
+	datBoundingBox selectionBox;
+	selectionBox.Extend(m_rectangle.getTopLeft());
+	selectionBox.Extend(m_rectangle.getBottomRight());
+	selectionBox.Expand(0.05);
 
-    datBoundingBox selectionBox;
-    selectionBox.Extend(m_rectangle.getTopLeft());
-    selectionBox.Extend(m_rectangle.getBottomRight());
+	datScene& scene = GetRenderer().GetScene();
+	scene.GetViewToWorld().Multiply(selectionBox);
 
-    datSelectionSet& selectionSet = GetRenderer().GetSelectionSet();
-    selectionSet.ClearSelection();
+	std::vector<datGeometry const*> geometries = scene.QueryGeometries(selectionBox, (SelectionMode::Window == m_mode));
 
-    std::vector<datGeometry*> geometries = GetRenderer().QueryGeometries(selectionBox);
+	std::set<datId> selectedIds;
+	for (auto const& geometry : geometries)
+		selectedIds.insert(geometry->GetId());
 
-    if (SelectionMode::Window == m_mode) {
-        // Must filter some more. Remove elements that are not strictly inside the box
-        for (size_t i = geometries.size(); i > 0; --i) {
-
-            if (!selectionBox.Contains(geometries[i - 1]->GetBoundingBox())) {
-                geometries.erase(geometries.begin() + i - 1);
-            }
-        }
-    }
-
-    selectionSet.SetSelection(geometries);
+	scene.SetSelection(selectedIds);
 }
 
 
@@ -98,7 +92,7 @@ void datSelectTool::onStartTool() {
     m_panel.add(m_appBackgroundColor.set(datLocalization::SelectTool_BackgroundColor(),
         GetRenderer().GetBackgroundColor(), ofColor(0, 0, 0), ofColor(255, 255, 255)));
     m_panel.add(m_boundingBoxDisplay.set(datLocalization::SelectTool_BoundingBox(),
-        GetRenderer().GetDisplayBoundingBox()));
+        GetRenderer().GetDrawBoundingBox()));
 
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 

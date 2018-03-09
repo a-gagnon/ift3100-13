@@ -26,17 +26,20 @@ public:
 
     void Init(ofPoint const& point);
     void InitInvalid();
-    bool IsValid() const;
 
     void Extend(ofPoint const& point);
+	void Expand(float delta);
     void Multiply(float factor);
     void Translate(ofPoint const& offset);
-    bool HasAnyOverlapWith(datBoundingBox const& rhs) const;
-    bool Contains(datBoundingBox const& rhs) const;
 
+	bool Intersects(datBoundingBox const& other, bool strictlyInside) const;
+
+	ofPoint GetCenter() const;
+	std::vector<ofPoint> Get8Corners() const;
     float GetXLength() const { return high.x - low.x; }
     float GetYLength() const { return high.y - low.y; }
     float GetZLength() const { return high.z - low.z; }
+
 };
 
 END_DAT_NAMESPACE

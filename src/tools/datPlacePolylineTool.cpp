@@ -58,7 +58,7 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
     if (2 <= m_polyline.size()) {
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
         geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
-        GetRenderer().AddGeometry(std::move(geometry));
+		GetRenderer().GetScene().InsertGeometry(std::move(geometry));
     }
 
     m_polyline.clear();

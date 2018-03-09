@@ -27,6 +27,7 @@ private:
     std::unique_ptr<datToolManager> m_toolManager;
     std::unique_ptr<datViewManager> m_viewManager;
     std::unique_ptr<datRenderer> m_renderer;
+	std::shared_ptr<datScene> m_scene;
 
     int m_width;
     int m_height;
@@ -56,6 +57,7 @@ public:
     datApplication();
     virtual ~datApplication();
 
+	datScene& GetScene();
     datToolManager& GetToolManager();
     datViewManager& GetViewManager();
     datRenderer& GetRenderer();

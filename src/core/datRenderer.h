@@ -7,7 +7,7 @@
 #include "datNonCopyableClass.h"
 #include "datEvents.h"
 #include "datGeometry.h"
-#include "datSelectionSet.h"
+#include "datScene.h"
 
 BEGIN_DAT_NAMESPACE
 
@@ -28,33 +28,28 @@ public:
 
 
 private:
-    std::vector<std::unique_ptr<datGeometry>> m_geometries;
-    datSelectionSet m_selectionSet;
+	datScene& m_scene;
     
+	std::set<datId> m_neverDraw;
     datDisplayParams m_activeDisplayParams;
     CursorType m_activeCursorType;
-    bool m_displayBoundingBox;
+    bool m_drawBoundingBox;
     bool m_drawSelectedInHilite;
 
-private:
-    // Returns the visible entries given current transform
-    std::vector<datGeometry*> GetVisibleGeometries() const;
-
 public:
-    datRenderer();
+    datRenderer(datScene& scene);
     ~datRenderer();
 
-    // Adds a geometry to the renderer. Source is cleared
-    void AddGeometry(std::unique_ptr<datGeometry>&& geometry);
-    void RemoveGeometry(datGeometry* pGeometry);
-    std::vector<datGeometry*> QueryGeometries(datBoundingBox const& boundingBox) const;
+	datScene& GetScene() { return m_scene; }
 
-    void Render() const;
+	void Render() const;
     void DrawCursorType() const;
     void DrawGeometry(datGeometry const& geometry, bool useDisplayParams = true) const;
     void DrawBoundingBox(datGeometry const& geometry) const;
 
-    datSelectionSet& GetSelectionSet() { return m_selectionSet; }
+	void SetNeverDraw(std::set<datId> const& ids) { m_neverDraw = ids; }
+	void ClearNeverDraw() { m_neverDraw.clear(); }
+	bool IsNeverDraw(datId id) const { return m_neverDraw.find(id) != m_neverDraw.end(); }
 
     void SetActiveDisplayParams(datDisplayParams const& displayParams) { m_activeDisplayParams = displayParams; }
     datDisplayParams& GetActiveDisplayParamsR() { return m_activeDisplayParams; }
@@ -66,8 +61,8 @@ public:
     ofColor GetBackgroundColor() const { return ofGetBackgroundColor(); }
     void SetBackgroundColor(ofColor const& color) { ofSetBackgroundColor(color); }
 
-    bool GetDisplayBoundingBox() const { return m_displayBoundingBox; }
-    void SetDisplayBoundingBox(bool yesNo) { m_displayBoundingBox = yesNo; }
+    bool GetDrawBoundingBox() const { return m_drawBoundingBox; }
+    void SetDrawBoundingBox(bool yesNo) { m_drawBoundingBox = yesNo; }
 
     void SetDrawSelectedInHilite(bool yesNo) { m_drawSelectedInHilite = yesNo;  }
 };

@@ -13,8 +13,8 @@ datTransform::datTransform() {
 }
 
 
-datTransform::datTransform(ofMatrix4x4 const& mat) {
-
+datTransform::datTransform(ofMatrix4x4 const& mat) : ofMatrix4x4(mat) {
+	
 }
 
 
@@ -38,4 +38,10 @@ void datTransform::Multiply(ofPoint& point) const {
         _mat[1][2] * inPoint.y +
         _mat[2][2] * inPoint.z +
         _mat[3][2];
+}
+
+
+void datTransform::Multiply(datBoundingBox& box) const {
+	Multiply(box.low);
+	Multiply(box.high);
 }

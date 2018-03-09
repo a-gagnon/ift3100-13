@@ -10,13 +10,12 @@
 #include "datNonCopyableClass.h"
 #include "datTextString.h"
 #include "datImage.h"
+#include "datTransform.h"
 
 BEGIN_DAT_NAMESPACE
 
 // Small tolerance for comparisons
 #define datEpsilon 1e-03
-
-typedef ofMatrix4x4 Transform;
 
 //=======================================================================================
 // Display parameters for geometries
@@ -47,7 +46,7 @@ private:
 
     datId m_id;
     datBoundingBox m_boundingBox;
-    Transform m_transform;
+    datTransform m_transform;
     datDisplayParams m_displayParams;
 
     GeometryType m_type;
@@ -84,18 +83,18 @@ public:
     void AssignId(datId id) { m_id = id; }
     datId GetId() const { return m_id; }
 
-    datBoundingBox GetBoundingBox() const { return m_boundingBox; }
+	datBoundingBox const& GetBoundingBox() const { return m_boundingBox; }
     void CalculateBoundingBox();
 
-    Transform const& GetTransform() const { return m_transform; }
-    void SetTransform(Transform const& transform) { m_transform = transform; }
+    datTransform const& GetTransform() const { return m_transform; }
+    void SetTransform(datTransform const& transform) { m_transform = transform; }
 
     datDisplayParams const& GetDisplayParams() const { return m_displayParams; }
     datDisplayParams& GetDisplayParamsR() { return m_displayParams; }
     void SetDisplayParams(datDisplayParams const& displayParams) { m_displayParams = displayParams; }
 
     void draw() const;
-    void drawWithDisplayParams() const;
+	void drawWithDisplayParams() const;
 
     GeometryType GetType() const        { return m_type; }
     ofPolyline& GetAsPolyline()         { assert(GeometryType::Polyline == m_type); return m_polylineData; }

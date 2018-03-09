@@ -35,17 +35,13 @@ void datPlaceModelTool::onStartTool() {
             if (model.loadModel(filePath))
                 m_modelsToPlace.push_back(std::move(model));
         }
-
-        // Still empty. exit tool
-        if (m_modelsToPlace.empty()) {
-            _ExitTool();
-            return;
-        }
     }
 
-    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-    UpdateParameters();
+	if (!m_modelsToPlace.empty()) {
+		m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+		m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+		UpdateParameters();
+	}
 }
 
 
@@ -57,7 +53,7 @@ void datPlaceModelTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         const ofVec2f position = ev;
 
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(model);
-        GetRenderer().AddGeometry(std::move(geometry));
+        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
 
         m_modelsToPlace.pop_back();
 
@@ -90,24 +86,25 @@ void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
 
 void datPlaceModelTool::onDraw() {
 
-    if (!m_modelsToPlace.empty()) {
+	if (m_modelsToPlace.empty()) {
+		_ExitTool();
+		return;
+	}
 
-        const ofColor currentColor = ofGetStyle().color;
+    const ofColor currentColor = ofGetStyle().color;
 
-        // Copy current color and add some transparency
-        ofColor color = currentColor;
-        color.a = 128;
-        ofSetColor(color);
+    // Copy current color and add some transparency
+    ofColor color = currentColor;
+    color.a = 128;
+    ofSetColor(color);
 
-        // Draw image using original size
-        ofxAssimpModelLoader& model = m_modelsToPlace.back();
-        model.setPosition(m_position.x, m_position.y, m_position.z);
-        model.draw(ofPolyRenderMode::OF_MESH_FILL);
+    // Draw image using original size
+    ofxAssimpModelLoader& model = m_modelsToPlace.back();
+    model.setPosition(m_position.x, m_position.y, m_position.z);
+    model.draw(ofPolyRenderMode::OF_MESH_FILL);
 
-        // Put back original color
-        ofSetColor(currentColor);
-    }
-
+    // Put back original color
+    ofSetColor(currentColor);
     m_panel.draw();
 }
 

@@ -42,7 +42,7 @@ private:
     void updateRectangle(datMouseEvent const& ev);
     void updateSelectionMode(datMouseEvent const& ev);
     void setBackgroundColor(ofColor& color) { GetRenderer().SetBackgroundColor(color); }
-    void setBoundingBoxDisplay(bool& yesNo) { GetRenderer().SetDisplayBoundingBox(yesNo); }
+    void setBoundingBoxDisplay(bool& yesNo) { GetRenderer().SetDrawBoundingBox(yesNo); }
 
 protected:
     virtual void onStartTool() override;

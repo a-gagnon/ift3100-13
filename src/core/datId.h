@@ -22,6 +22,7 @@ public:
     datId() : m_id(0) {}
     datId(uint32_t id) : m_id(id) {}
 
+	bool operator< (datId const& rhs) const { return m_id < rhs.m_id; }
     bool operator==(datId const& rhs) const { return m_id == rhs.m_id; }
     bool IsValid() const { return 0 != m_id; }
 };

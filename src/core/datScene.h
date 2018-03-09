@@ -8,7 +8,6 @@
 #include "datNonCopyableClass.h"
 #include "datEvents.h"
 #include "datGeometry.h"
-#include "datSelectionSet.h"
 #include "datTransform.h"
 
 BEGIN_DAT_NAMESPACE
@@ -19,15 +18,25 @@ BEGIN_DAT_NAMESPACE
 //=======================================================================================
 struct datScene : datNonCopyableClass {
 
+	typedef std::map<datId, std::unique_ptr<datGeometry>> GeometryMap;
+
 private:
+	uint32_t m_nextId;
     datTransform m_worldToView;
     datTransform m_viewToWorld;
 
-    std::map<datId, std::unique_ptr<datGeometry>> m_geometryMap;
-    std::set<datGeometry*> m_selectionSet;
+	std::vector<GeometryMap> m_undoStack;
+	std::vector<GeometryMap> m_redoStack;
+	ofEvent<void> m_onUndoRedoStatusChangedEvent;
+
+	GeometryMap m_geometryMap;
+    std::set<datId> m_selectionSet;
     ofEvent<void> m_onSelectionChangedEvent;
 
-
+private:
+	datId GetNextId();
+	void CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) const;
+	
 public:
     datScene();
     ~datScene();
@@ -36,19 +45,28 @@ public:
     datTransform const& GetWorldToView() const { return m_worldToView; }
     void SetWorldToView(datTransform const& transform);
     
-    void InsertGeometry(std::unique_ptr<datGeometry>&& geometry);
-    void UpdateGeometry(std::unique_ptr<datGeometry>&& geometry);
-    void UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>> geometries);
-    void DeleteGeometry(datGeometry* geometry);
+	datGeometry const* GetGeometry(datId id) const;
+    datId InsertGeometry(std::unique_ptr<datGeometry>&& geometry);
+    void UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>>&& geometries);
+    void DeleteMultipleGeometries(std::set<datId> const& ids);
 
+	bool CanUndo() const { return !m_undoStack.empty(); }
+	bool CanRedo() const { return !m_redoStack.empty(); }
+	void Undo();
+	void Redo();
+	ofEvent<void>& GetOnUndoRedoStatusChangedEvent() { return m_onUndoRedoStatusChangedEvent; }
 
-    std::set<datGeometry*> const& GetSelectionSet() const { return m_selectionSet; }
+    std::set<datId> const& GetSelection() const { return m_selectionSet; }
     ofEvent<void>& GetOnSelectionChangedEvent() { return m_onSelectionChangedEvent; }
-    void AddToSelection(datGeometry* geometry);
-    void RemoveFromSelection(datGeometry* geometry);
+	bool IsSelected(datId id);
+    void AddToSelection(datId id);
+    void RemoveFromSelection(datId id);
+	void SetSelection(std::set<datId> const& ids);
+	void ClearSelection();
 
-
-
+	// Returns all geometries
+	std::vector<datGeometry const*> QueryGeometries() const;
+	std::vector<datGeometry const*> QueryGeometries(datBoundingBox const& box, bool strictlyInside) const;
 };
 
 END_DAT_NAMESPACE

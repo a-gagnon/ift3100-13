@@ -127,6 +127,7 @@ void datGeometry::CalculateBoundingBox() {
 void datGeometry::draw() const {
 
     ofPushMatrix();
+	ofMultMatrix(m_transform);
 
     switch (m_type) {
         case GeometryType::Polyline:

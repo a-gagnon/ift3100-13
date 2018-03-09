@@ -37,19 +37,15 @@ void datPlaceImageTool::onStartTool() {
             if (image.load(filePath))
                 m_imagesToPlace.push_back(image);
         }
-
-        // Still empty. exit tool
-        if (m_imagesToPlace.empty()) {
-            _ExitTool();
-            return;
-        }
     }
 
-    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramWidth);
-    m_panel.add(m_paramHeight);
-    m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-    UpdateParameters();
+	if (!m_imagesToPlace.empty()) {
+		m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+		m_panel.add(m_paramWidth);
+		m_panel.add(m_paramHeight);
+		m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+		UpdateParameters();
+	}
 }
 
 
@@ -62,7 +58,7 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         datImage wrappedImage(image, position, m_paramWidth, m_paramHeight);
 
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
-        GetRenderer().AddGeometry(std::move(geometry));
+        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
 
         m_imagesToPlace.pop_back();
 
@@ -95,22 +91,24 @@ void datPlaceImageTool::onMouseMotion(datMouseEvent const& ev) {
 
 void datPlaceImageTool::onDraw() {
 
-    if (!m_imagesToPlace.empty()) {
+	if (m_imagesToPlace.empty()) {
+		_ExitTool();
+		return;
+	}
 
-        const ofColor currentColor = ofGetStyle().color;
+    const ofColor currentColor = ofGetStyle().color;
 
-        // Copy current color and add some transparency
-        ofColor color = currentColor;
-        color.a = 128;
-        ofSetColor(color);
+    // Copy current color and add some transparency
+    ofColor color = currentColor;
+    color.a = 128;
+    ofSetColor(color);
 
-        // Draw image using original size
-        ofImage const& image = m_imagesToPlace.back();
-        image.draw(m_position.x, m_position.y, m_paramWidth, m_paramHeight);
+    // Draw image using original size
+    ofImage const& image = m_imagesToPlace.back();
+    image.draw(m_position.x, m_position.y, m_paramWidth, m_paramHeight);
 
-        // Put back original color
-        ofSetColor(currentColor);
-    }
+    // Put back original color
+    ofSetColor(currentColor);
 
     m_panel.draw();
 }

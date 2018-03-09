@@ -5,6 +5,7 @@
 #pragma once
 
 #include "datDependencies.h"
+#include "datBoundingBox.h"
 
 BEGIN_DAT_NAMESPACE
 
@@ -19,6 +20,7 @@ public:
     datTransform(ofMatrix4x4 const& mat);
 
     void Multiply(ofPoint& point) const;
+	void Multiply(datBoundingBox& box) const;
 };
 
 END_DAT_NAMESPACE

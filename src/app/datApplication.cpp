@@ -17,6 +17,9 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
 
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
+#define DAT_BUTTON_NAME_UNDO "btn_undo"
+#define DAT_BUTTON_NAME_REDO "btn_redo"
+
 
 namespace {
 
@@ -88,23 +91,18 @@ namespace {
 
 
     void onDeleteSelectionPressed(datButton& button) {
-        button.SetVisible(false);
 
-        datRenderer& renderer = datApplication::GetApp().GetRenderer();
+		datScene& scene = datApplication::GetApp().GetScene();
+		std::set<datId> ids = scene.GetSelection();
 
-        std::set<datGeometry*> selection = renderer.GetSelectionSet().GetSelection();
-        renderer.GetSelectionSet().ClearSelection();
-
-        for (auto const& entry : selection) {
-            renderer.RemoveGeometry(entry);
-        }
-
+		scene.ClearSelection();
+		scene.DeleteMultipleGeometries(ids);
         datApplication::GetApp().SupplyDefaultEditTool();
     }
 
     // Called when the selection changes
     void onSelectionChanged() {
-        const bool isVisible = 0 < datApplication::GetApp().GetRenderer().GetSelectionSet().GetSelection().size();
+		const bool isVisible = !datApplication::GetApp().GetScene().GetSelection().empty();
 
         auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
         static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
@@ -112,6 +110,41 @@ namespace {
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
     }
+	// Called when undo/redo status changed
+	void onUndoRedoStatusChanged() {
+
+		datScene& scene = datApplication::GetApp().GetScene();
+
+		auto pUndoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_UNDO);
+		static_cast<datButton*>(pUndoButton)->SetVisible(scene.CanUndo());
+
+		auto pRedoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_REDO);
+		static_cast<datButton*>(pRedoButton)->SetVisible(scene.CanRedo());
+	}
+
+
+
+	void onUndoPressed(datButton& button) {
+
+		datScene& scene = datApplication::GetApp().GetScene();
+		assert(scene.CanUndo());
+		// To make sure we never interfere with any tool, start Select tool first
+		datApplication::GetApp().SupplyDefaultEditTool();
+		scene.ClearSelection();
+		scene.Undo();
+	}
+
+	void onRedoPressed(datButton& button) {
+
+		datScene& scene = datApplication::GetApp().GetScene();
+		assert(scene.CanRedo());
+		// To make sure we never interfere with any tool, start Select tool first
+		datApplication::GetApp().SupplyDefaultEditTool();
+		scene.ClearSelection();
+		scene.Redo();
+	}
+
+
 
 }; // end unnamed namespace
 
@@ -181,8 +214,26 @@ void datApplication::SetupUI() {
     pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
     mainView.AddView(pExportImageToolButton);
 
+	// Undo button
+	datButton* pUndoButton = new datButton(55, 20, 40, 40, datButtonStyle::createForToolButton());
+	pUndoButton->SetOnPressedCallback(onUndoPressed);
+	pUndoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("undo.png"));
+	pUndoButton->SetTooltip(datLocalization::Undo());
+	pUndoButton->SetName(DAT_BUTTON_NAME_UNDO);
+	mainView.AddView(pUndoButton);
+	pUndoButton->SetVisible(false);
+
+	// Redo button
+	datButton* pRedoButton = new datButton(100, 20, 40, 40, datButtonStyle::createForToolButton());
+	pRedoButton->SetOnPressedCallback(onRedoPressed);
+	pRedoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("redo.png"));
+	pRedoButton->SetTooltip(datLocalization::Redo());
+	pRedoButton->SetName(DAT_BUTTON_NAME_REDO);
+	mainView.AddView(pRedoButton);
+	pRedoButton->SetVisible(false);
+
     // Delete selection
-    datButton* pDeleteSelectionButton = new datButton(240, 20, 40, 40, datButtonStyle::createForToolButton());
+    datButton* pDeleteSelectionButton = new datButton(280, 20, 40, 40, datButtonStyle::createForToolButton());
     pDeleteSelectionButton->SetOnPressedCallback(onDeleteSelectionPressed);
     pDeleteSelectionButton->SetImage(datUtilities::LoadImageFromAssetsFolder("trash_can.png"));
     pDeleteSelectionButton->SetTooltip(datLocalization::DeleteSelectedGeometries());
@@ -190,7 +241,8 @@ void datApplication::SetupUI() {
     mainView.AddView(pDeleteSelectionButton);
     pDeleteSelectionButton->SetVisible(false);
 
-    datButton* pEditAttributesToolButton = new datButton(285, 20, 40, 40, datButtonStyle::createForToolButton());
+	// Edit attributes
+    datButton* pEditAttributesToolButton = new datButton(325, 20, 40, 40, datButtonStyle::createForToolButton());
     pEditAttributesToolButton->SetOnPressedCallback(onStartEditAttributesToolPressed);
     pEditAttributesToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
     pEditAttributesToolButton->SetTooltip(datLocalization::EditAttributesTool_Tooltip());
@@ -199,7 +251,8 @@ void datApplication::SetupUI() {
     pEditAttributesToolButton->SetVisible(false);
 
     // Register all events
-    ofAddListener(GetRenderer().GetSelectionSet().GetSelectionChangedEvent(), onSelectionChanged);
+    ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
+	ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
 
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onSelectToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
@@ -219,7 +272,8 @@ void datApplication::setup() {
     m_width = ofGetWidth();
     m_height = ofGetHeight();
 
-    // Make sure we initialize managers
+    // Initialize common resources
+	GetScene();
     GetToolManager();
     GetViewManager();
     GetRenderer();
@@ -386,6 +440,14 @@ ofRectangle datApplication::getBitmapStringBoudingBox(string text) {
 }
 
 
+datScene& datApplication::GetScene() {
+	if (nullptr == m_scene)
+		m_scene = std::make_shared<datScene>();
+
+	return *m_scene;
+}
+
+
 datToolManager& datApplication::GetToolManager() {
 
     if (nullptr == m_toolManager)
@@ -405,8 +467,9 @@ datViewManager& datApplication::GetViewManager() {
 
 
 datRenderer& datApplication::GetRenderer() {
-    if (nullptr == m_renderer)
-        m_renderer.reset(new datRenderer());
+	if (nullptr == m_renderer) {
+		m_renderer.reset(new datRenderer(*m_scene));
+	}
 
     return *m_renderer;
 }
