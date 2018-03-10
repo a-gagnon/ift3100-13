@@ -95,6 +95,9 @@ void datRenderer::Render() const {
 
     std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
     std::vector<datGeometry const*> selectedGeometries;
+    std::vector<datGeometry const*> bBoxGeometries;
+
+    ofEnableDepthTest();
 
     for (auto const& geometry : geometries) {
 
@@ -103,15 +106,16 @@ void datRenderer::Render() const {
 
         geometry->drawWithDisplayParams();
 
-        if (m_scene.IsSelected(geometry->GetId()))
+        if (m_drawSelectedInHilite && m_scene.IsSelected(geometry->GetId()))
             selectedGeometries.push_back(geometry);
 
         if (m_drawBoundingBox)
-            DrawBoundingBox(*geometry);
+            bBoxGeometries.push_back(geometry);
     }
 
+    ofDisableDepthTest();
 
-    if (m_drawSelectedInHilite && !selectedGeometries.empty()) {
+    if (!selectedGeometries.empty()) {
         // Redraw elements that are selected. Just put their outline in a different color
         ofSetColor(ofColor::darkBlue);
         ofNoFill();
@@ -119,5 +123,10 @@ void datRenderer::Render() const {
         for (auto const& geometry : selectedGeometries) {
             DrawGeometry(*geometry, false/*useDisplayParams*/);
         }
+    }
+
+    if (!bBoxGeometries.empty()) {
+        for (auto const& geometry : bBoxGeometries)
+            DrawBoundingBox(*geometry);
     }
 }

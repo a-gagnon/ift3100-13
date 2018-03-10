@@ -121,10 +121,13 @@ void datEditAttributesTool::applyTransforms() {
 
 void datEditAttributesTool::onDraw() {
     m_panel.draw();
-
 	datRenderer& renderer = GetRenderer();
+
+    ofEnableDepthTest();
 
 	for (auto const& geometry : m_geometries) {
 		renderer.DrawGeometry(*geometry, true);
 	}
+
+    ofDisableDepthTest();
 }

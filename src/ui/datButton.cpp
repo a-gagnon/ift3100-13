@@ -10,7 +10,7 @@ datButtonStyle datButtonStyle::createForToolButton() {
 
     datButtonStyle style;
     style.buttonBackgroundColor = ofColor::lightSteelBlue;
-    style.buttonBackgroundColorDisabled = ofColor::gainsboro;
+    style.buttonBackgroundColorDisabled = ofColor::dimGray;
     style.buttonBackgroundColorMouseInside = ofColor::steelBlue;
     style.buttonBackgroundColorToggled = ofColor::cadetBlue;
     style.tooltipBackgroundColor = ofColor::darkGrey;
@@ -69,7 +69,7 @@ void datButton::onDraw() {
     if (nullptr != m_image)
         m_image->draw(getX(), getY(), getWidth(), getHeight());
 
-    if (IsMouseInside() && !m_tooltip.empty()) {
+    if (IsEnabled() && IsMouseInside() && !m_tooltip.empty()) {
         ofDrawBitmapStringHighlight(m_tooltip, getX() + getWidth() + 5, getY() + getHeight() + 15,
             m_style.tooltipBackgroundColor, m_style.tooltipTextColor);
     }
