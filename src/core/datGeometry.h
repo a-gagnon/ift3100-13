@@ -83,7 +83,7 @@ public:
     void AssignId(datId id) { m_id = id; }
     datId GetId() const { return m_id; }
 
-	datBoundingBox const& GetBoundingBox() const { return m_boundingBox; }
+    datBoundingBox const& GetBoundingBox() const { return m_boundingBox; }
     void CalculateBoundingBox();
 
     datTransform const& GetTransform() const { return m_transform; }
@@ -94,7 +94,7 @@ public:
     void SetDisplayParams(datDisplayParams const& displayParams) { m_displayParams = displayParams; }
 
     void draw() const;
-	void drawWithDisplayParams() const;
+    void drawWithDisplayParams() const;
 
     GeometryType GetType() const        { return m_type; }
     ofPolyline& GetAsPolyline()         { assert(GeometryType::Polyline == m_type); return m_polylineData; }

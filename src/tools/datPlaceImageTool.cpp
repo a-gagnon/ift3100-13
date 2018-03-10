@@ -39,13 +39,13 @@ void datPlaceImageTool::onStartTool() {
         }
     }
 
-	if (!m_imagesToPlace.empty()) {
-		m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-		m_panel.add(m_paramWidth);
-		m_panel.add(m_paramHeight);
-		m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-		UpdateParameters();
-	}
+    if (!m_imagesToPlace.empty()) {
+        m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+        m_panel.add(m_paramWidth);
+        m_panel.add(m_paramHeight);
+        m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+        UpdateParameters();
+    }
 }
 
 
@@ -91,10 +91,10 @@ void datPlaceImageTool::onMouseMotion(datMouseEvent const& ev) {
 
 void datPlaceImageTool::onDraw() {
 
-	if (m_imagesToPlace.empty()) {
-		_ExitTool();
-		return;
-	}
+    if (m_imagesToPlace.empty()) {
+        _ExitTool();
+        return;
+    }
 
     const ofColor currentColor = ofGetStyle().color;
 

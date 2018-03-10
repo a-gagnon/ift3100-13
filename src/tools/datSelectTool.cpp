@@ -37,25 +37,25 @@ datSelectTool::~datSelectTool() {
 
 void datSelectTool::selectObjectsAndClearState() {
 
-	m_isMouseDrag = false;
-	m_hasFirstPoint = false;
+    m_isMouseDrag = false;
+    m_hasFirstPoint = false;
 
-	// Do actual picking
-	datBoundingBox selectionBox;
-	selectionBox.Extend(m_rectangle.getTopLeft());
-	selectionBox.Extend(m_rectangle.getBottomRight());
-	selectionBox.Expand(0.05);
+    // Do actual picking
+    datBoundingBox selectionBox;
+    selectionBox.Extend(m_rectangle.getTopLeft());
+    selectionBox.Extend(m_rectangle.getBottomRight());
+    selectionBox.Expand(0.05);
 
-	datScene& scene = GetRenderer().GetScene();
-	scene.GetViewToWorld().Multiply(selectionBox);
+    datScene& scene = GetRenderer().GetScene();
+    scene.GetViewToWorld().Multiply(selectionBox);
 
-	std::vector<datGeometry const*> geometries = scene.QueryGeometries(selectionBox, (SelectionMode::Window == m_mode));
+    std::vector<datGeometry const*> geometries = scene.QueryGeometries(selectionBox, (SelectionMode::Window == m_mode));
 
-	std::set<datId> selectedIds;
-	for (auto const& geometry : geometries)
-		selectedIds.insert(geometry->GetId());
+    std::set<datId> selectedIds;
+    for (auto const& geometry : geometries)
+        selectedIds.insert(geometry->GetId());
 
-	scene.SetSelection(selectedIds);
+    scene.SetSelection(selectedIds);
 }
 
 

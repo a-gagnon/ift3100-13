@@ -31,17 +31,17 @@ struct datLocalization {
     static std::string SelectTool_CursorCross()     { return "'4': Cross"; }
     static std::string SelectTool_CursorTriangle()  { return "'5': Triangle"; }
 
-	static std::string Redo()						{ return "Redo"; }
-	static std::string Undo()						{ return "Undo"; }
+    static std::string Redo()                       { return "Redo"; }
+    static std::string Undo()                       { return "Undo"; }
 
-	static std::string DisplayParams()				{ return "Display parameters"; }
+    static std::string DisplayParams()              { return "Display parameters"; }
     static std::string DisplayParams_LineWidth()    { return "Line width"; }
     static std::string DisplayParams_LineColor()    { return "Line color"; }
     static std::string DisplayParams_FillColor()    { return "Fill color"; }
-	static std::string GeometryParams()				{ return "Geometry parameters"; }
-	static std::string GeometryParams_Rotate()		{ return "Rotate"; }
-	static std::string GeometryParams_Scale()		{ return "Scale"; }
-	static std::string GeometryParams_Translate()	{ return "Translate"; }
+    static std::string GeometryParams()             { return "Geometry parameters"; }
+    static std::string GeometryParams_Rotate()      { return "Rotate"; }
+    static std::string GeometryParams_Scale()       { return "Scale"; }
+    static std::string GeometryParams_Translate()   { return "Translate"; }
 };
 
 END_DAT_NAMESPACE

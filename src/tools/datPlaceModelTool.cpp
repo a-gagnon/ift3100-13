@@ -37,11 +37,11 @@ void datPlaceModelTool::onStartTool() {
         }
     }
 
-	if (!m_modelsToPlace.empty()) {
-		m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-		m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-		UpdateParameters();
-	}
+    if (!m_modelsToPlace.empty()) {
+        m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+        m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
+        UpdateParameters();
+    }
 }
 
 
@@ -86,10 +86,10 @@ void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
 
 void datPlaceModelTool::onDraw() {
 
-	if (m_modelsToPlace.empty()) {
-		_ExitTool();
-		return;
-	}
+    if (m_modelsToPlace.empty()) {
+        _ExitTool();
+        return;
+    }
 
     const ofColor currentColor = ofGetStyle().color;
 

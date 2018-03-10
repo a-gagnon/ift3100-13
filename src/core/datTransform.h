@@ -20,7 +20,7 @@ public:
     datTransform(ofMatrix4x4 const& mat);
 
     void Multiply(ofPoint& point) const;
-	void Multiply(datBoundingBox& box) const;
+    void Multiply(datBoundingBox& box) const;
 };
 
 END_DAT_NAMESPACE

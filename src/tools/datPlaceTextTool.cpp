@@ -52,7 +52,7 @@ void datPlaceTextTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
         datTextString textString(m_font, m_text, m_position);
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(textString);
         geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
-		GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
     }
 
     SetPlaceholderText();

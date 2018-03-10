@@ -28,9 +28,9 @@ public:
 
 
 private:
-	datScene& m_scene;
+    datScene& m_scene;
     
-	std::set<datId> m_neverDraw;
+    std::set<datId> m_neverDraw;
     datDisplayParams m_activeDisplayParams;
     CursorType m_activeCursorType;
     bool m_drawBoundingBox;
@@ -40,16 +40,16 @@ public:
     datRenderer(datScene& scene);
     ~datRenderer();
 
-	datScene& GetScene() { return m_scene; }
+    datScene& GetScene() { return m_scene; }
 
-	void Render() const;
+    void Render() const;
     void DrawCursorType() const;
     void DrawGeometry(datGeometry const& geometry, bool useDisplayParams = true) const;
     void DrawBoundingBox(datGeometry const& geometry) const;
 
-	void SetNeverDraw(std::set<datId> const& ids) { m_neverDraw = ids; }
-	void ClearNeverDraw() { m_neverDraw.clear(); }
-	bool IsNeverDraw(datId id) const { return m_neverDraw.find(id) != m_neverDraw.end(); }
+    void SetNeverDraw(std::set<datId> const& ids) { m_neverDraw = ids; }
+    void ClearNeverDraw() { m_neverDraw.clear(); }
+    bool IsNeverDraw(datId id) const { return m_neverDraw.find(id) != m_neverDraw.end(); }
 
     void SetActiveDisplayParams(datDisplayParams const& displayParams) { m_activeDisplayParams = displayParams; }
     datDisplayParams& GetActiveDisplayParamsR() { return m_activeDisplayParams; }
