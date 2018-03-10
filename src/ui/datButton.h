@@ -10,9 +10,6 @@ BEGIN_DAT_NAMESPACE
 
 struct datButton;
 
-// Define pointer-to-function
-typedef void(*datButtonCallbackFunction)(datButton&);
-
 //=======================================================================================
 // Generic style holder for buttons
 //=======================================================================================
@@ -20,6 +17,7 @@ struct datButtonStyle {
 
 public:
     ofColor buttonBackgroundColor;
+    ofColor buttonBackgroundColorDisabled;
     ofColor buttonBackgroundColorMouseInside;
     ofColor buttonBackgroundColorToggled;
     ofColor tooltipBackgroundColor;
@@ -37,11 +35,12 @@ struct datButton : datView {
 DEFINE_T_SUPER(datView)
 
 protected:
-    datButtonCallbackFunction m_pCallbackFunction;
+    ofEvent<datButton> m_onPressedEvent;
     datButtonStyle m_style;
     std::unique_ptr<ofImage> m_image;
     std::string m_tooltip;
     bool m_isToggled;
+    bool m_isEnabled;
 
 protected:
     virtual bool onLeftMouseButtonDown(datMouseEvent const& ev) override;
@@ -53,12 +52,10 @@ protected:
     ofColor DetermineDrawColor() const;
 
 public:
-    datButton(float x, float y, float width, float height, datButtonStyle const& style);
+    datButton(float x, float y, float width = 40.0, float height = 40.0);
     virtual ~datButton();
 
-    // Sets the function that will be called when the button is pressed
-    void SetOnPressedCallback(datButtonCallbackFunction func) { m_pCallbackFunction = func; }
-
+    ofEvent<datButton>& GetOnPressedEvent() { return m_onPressedEvent; }
     void PressButton();
 
     // Sets the image that will be displayed
@@ -74,6 +71,9 @@ public:
 
     void SetToggle(bool yesNo) { m_isToggled = yesNo; }
     bool IsToggled() const { return m_isToggled; }
+
+    void SetEnabled(bool yesNo) { m_isEnabled = yesNo; }
+    bool IsEnabled() const { return m_isEnabled; }
 };
 
 END_DAT_NAMESPACE

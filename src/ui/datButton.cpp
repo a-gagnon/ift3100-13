@@ -10,6 +10,7 @@ datButtonStyle datButtonStyle::createForToolButton() {
 
     datButtonStyle style;
     style.buttonBackgroundColor = ofColor::lightSteelBlue;
+    style.buttonBackgroundColorDisabled = ofColor::gainsboro;
     style.buttonBackgroundColorMouseInside = ofColor::steelBlue;
     style.buttonBackgroundColorToggled = ofColor::cadetBlue;
     style.tooltipBackgroundColor = ofColor::darkGrey;
@@ -18,11 +19,12 @@ datButtonStyle datButtonStyle::createForToolButton() {
 }
 
 
-datButton::datButton(float x, float y, float width, float height, datButtonStyle const& style) :
+datButton::datButton(float x, float y, float width, float height) :
     T_Super(x, y, width, height),
-    m_pCallbackFunction(nullptr),
     m_isToggled(false),
-    m_style(style) {
+    m_isEnabled(true),
+    m_style(datButtonStyle::createForToolButton()) {
+
 }
 
 
@@ -43,7 +45,9 @@ void datButton::onBlur() {
 
 bool datButton::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-    PressButton();
+    if (m_isEnabled)
+        PressButton();
+
     return true;
 }
 
@@ -74,6 +78,9 @@ void datButton::onDraw() {
 
 ofColor datButton::DetermineDrawColor() const {
 
+    if (!IsEnabled())
+        return m_style.buttonBackgroundColorDisabled;
+
     if (IsToggled())
         return m_style.buttonBackgroundColorToggled;
 
@@ -85,6 +92,6 @@ ofColor datButton::DetermineDrawColor() const {
 
 void datButton::PressButton() {
 
-    if (nullptr != m_pCallbackFunction)
-        m_pCallbackFunction(*this);
+    if (m_isEnabled)
+        ofNotifyEvent(m_onPressedEvent, *this);
 }

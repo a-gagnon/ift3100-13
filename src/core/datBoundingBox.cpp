@@ -59,12 +59,12 @@ void datBoundingBox::Extend(ofPoint const& point) {
 
 
 void datBoundingBox::Expand(float delta) {
-	low.x -= delta;
-	low.y -= delta;
-	low.z -= delta;
-	high.x += delta;
-	high.y += delta;
-	high.z += delta;
+    low.x -= delta;
+    low.y -= delta;
+    low.z -= delta;
+    high.x += delta;
+    high.y += delta;
+    high.z += delta;
 }
 
 
@@ -89,89 +89,89 @@ void datBoundingBox::Translate(ofPoint const& offset) {
 
 ofPoint datBoundingBox::GetCenter() const {
 
-	ofPoint pt;
-	pt.x = 0.5 * (low.x + high.x);
-	pt.y = 0.5 * (low.y + high.y);
-	pt.z = 0.5 * (low.z + high.z);
-	return pt;
+    ofPoint pt;
+    pt.x = 0.5 * (low.x + high.x);
+    pt.y = 0.5 * (low.y + high.y);
+    pt.z = 0.5 * (low.z + high.z);
+    return pt;
 }
 
 
 std::vector<ofPoint> datBoundingBox::Get8Corners() const {
 
-	std::vector<ofPoint> result;
-	result.reserve(8);
+    std::vector<ofPoint> result;
+    result.reserve(8);
 
     ofPoint pts[2];
-	pts[0] = low;
-	pts[1] = high;
+    pts[0] = low;
+    pts[1] = high;
 
-	for (uint32_t z = 0; z < 2; ++z) {
-		for (uint32_t y = 0; y < 2; ++y) {
-			for (uint32_t x = 0; x < 2; ++x) {
-				result.push_back(ofPoint(pts[x].x, pts[y].y, pts[z].z));
-			}
-		}
-	}
+    for (uint32_t z = 0; z < 2; ++z) {
+        for (uint32_t y = 0; y < 2; ++y) {
+            for (uint32_t x = 0; x < 2; ++x) {
+                result.push_back(ofPoint(pts[x].x, pts[y].y, pts[z].z));
+            }
+        }
+    }
 
-	return result;
+    return result;
     }
 
 
 
 namespace {
 
-	void getLowHighOnVector(float& min, float& max, ofVec3f const& vector, ofPoint const& refPoint, std::vector<ofPoint> const& points) {
+    void getLowHighOnVector(float& min, float& max, ofVec3f const& vector, ofPoint const& refPoint, std::vector<ofPoint> const& points) {
 
-		min = std::numeric_limits<float>::max();
-		max = std::numeric_limits<float>::lowest();
+        min = std::numeric_limits<float>::max();
+        max = std::numeric_limits<float>::lowest();
 
-		for (auto const& point : points) {
-			const ofVec3f refToPoint(point.x - refPoint.x, point.y - refPoint.y, point.z - refPoint.z);
-			const float distance = vector.dot(refToPoint);
+        for (auto const& point : points) {
+            const ofVec3f refToPoint(point.x - refPoint.x, point.y - refPoint.y, point.z - refPoint.z);
+            const float distance = vector.dot(refToPoint);
 
-			if (min > distance)
-				min = distance;
-			if (max < distance)
-				max = distance;
-		}
-	}
-	
+            if (min > distance)
+                min = distance;
+            if (max < distance)
+                max = distance;
+        }
+    }
+    
 };
 
 
 bool datBoundingBox::Intersects(datBoundingBox const& other, bool strictlyInside) const {
 
-	// An implementation following the ideas of
-	// https://gamedev.stackexchange.com/questions/25397/obb-vs-obb-collision-detection
-	// For each pair of points in the first box, we create a normalized vector
-	// We get the 'range' of the first box on that vector and compare with the second
-	// If there are no intersections between ranges, it means we don't have any overlap
+    // An implementation following the ideas of
+    // https://gamedev.stackexchange.com/questions/25397/obb-vs-obb-collision-detection
+    // For each pair of points in the first box, we create a normalized vector
+    // We get the 'range' of the first box on that vector and compare with the second
+    // If there are no intersections between ranges, it means we don't have any overlap
 
-	const std::vector<ofPoint> pointsA = Get8Corners();
-	const std::vector<ofPoint> pointsB = other.Get8Corners();
+    const std::vector<ofPoint> pointsA = Get8Corners();
+    const std::vector<ofPoint> pointsB = other.Get8Corners();
 
-	for (uint32_t i = 1; i < pointsA.size(); ++i) {
-		ofVec3f ref(pointsA[i].x - pointsA[i - 1].x,
-					pointsA[i].y - pointsA[i - 1].y,
-					pointsA[i].z - pointsA[i - 1].z);
-		ref.normalize();
+    for (uint32_t i = 1; i < pointsA.size(); ++i) {
+        ofVec3f ref(pointsA[i].x - pointsA[i - 1].x,
+                    pointsA[i].y - pointsA[i - 1].y,
+                    pointsA[i].z - pointsA[i - 1].z);
+        ref.normalize();
 
-		// project all points of box1 and search for min max
-		float minA, maxA;
-		getLowHighOnVector(minA, maxA, ref, pointsA[i - 1], pointsA);
+        // project all points of box1 and search for min max
+        float minA, maxA;
+        getLowHighOnVector(minA, maxA, ref, pointsA[i - 1], pointsA);
 
-		float minB, maxB;
-		getLowHighOnVector(minB, maxB, ref, pointsA[i - 1], pointsB);
+        float minB, maxB;
+        getLowHighOnVector(minB, maxB, ref, pointsA[i - 1], pointsB);
 
-		if (maxA < minB || maxB < minA)
-			return false; // No intersection
+        if (maxA < minB || maxB < minA)
+            return false; // No intersection
 
-		if (strictlyInside && (minA > minB || maxA < maxB))
-			return false; // Not all other projected points are inside current box
-	}
+        if (strictlyInside && (minA > minB || maxA < maxB))
+            return false; // Not all other projected points are inside current box
+    }
 
-	return true;
+    return true;
 }
 
 

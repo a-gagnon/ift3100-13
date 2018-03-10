@@ -92,17 +92,17 @@ namespace {
 
     void onDeleteSelectionPressed(datButton& button) {
 
-		datScene& scene = datApplication::GetApp().GetScene();
-		std::set<datId> ids = scene.GetSelection();
+        datScene& scene = datApplication::GetApp().GetScene();
+        std::set<datId> ids = scene.GetSelection();
 
-		scene.ClearSelection();
-		scene.DeleteMultipleGeometries(ids);
+        scene.ClearSelection();
+        scene.DeleteMultipleGeometries(ids);
         datApplication::GetApp().SupplyDefaultEditTool();
     }
 
     // Called when the selection changes
     void onSelectionChanged() {
-		const bool isVisible = !datApplication::GetApp().GetScene().GetSelection().empty();
+        const bool isVisible = !datApplication::GetApp().GetScene().GetSelection().empty();
 
         auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
         static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
@@ -110,39 +110,39 @@ namespace {
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
     }
-	// Called when undo/redo status changed
-	void onUndoRedoStatusChanged() {
+    // Called when undo/redo status changed
+    void onUndoRedoStatusChanged() {
 
-		datScene& scene = datApplication::GetApp().GetScene();
+        datScene& scene = datApplication::GetApp().GetScene();
 
-		auto pUndoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_UNDO);
-		static_cast<datButton*>(pUndoButton)->SetVisible(scene.CanUndo());
+        auto pUndoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_UNDO);
+        static_cast<datButton*>(pUndoButton)->SetEnabled(scene.CanUndo());
 
-		auto pRedoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_REDO);
-		static_cast<datButton*>(pRedoButton)->SetVisible(scene.CanRedo());
-	}
+        auto pRedoButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_REDO);
+        static_cast<datButton*>(pRedoButton)->SetEnabled(scene.CanRedo());
+    }
 
 
 
-	void onUndoPressed(datButton& button) {
+    void onUndoPressed(datButton& button) {
 
-		datScene& scene = datApplication::GetApp().GetScene();
-		assert(scene.CanUndo());
-		// To make sure we never interfere with any tool, start Select tool first
-		datApplication::GetApp().SupplyDefaultEditTool();
-		scene.ClearSelection();
-		scene.Undo();
-	}
+        datScene& scene = datApplication::GetApp().GetScene();
+        assert(scene.CanUndo());
+        // To make sure we never interfere with any tool, start Select tool first
+        datApplication::GetApp().SupplyDefaultEditTool();
+        scene.ClearSelection();
+        scene.Undo();
+    }
 
-	void onRedoPressed(datButton& button) {
+    void onRedoPressed(datButton& button) {
 
-		datScene& scene = datApplication::GetApp().GetScene();
-		assert(scene.CanRedo());
-		// To make sure we never interfere with any tool, start Select tool first
-		datApplication::GetApp().SupplyDefaultEditTool();
-		scene.ClearSelection();
-		scene.Redo();
-	}
+        datScene& scene = datApplication::GetApp().GetScene();
+        assert(scene.CanRedo());
+        // To make sure we never interfere with any tool, start Select tool first
+        datApplication::GetApp().SupplyDefaultEditTool();
+        scene.ClearSelection();
+        scene.Redo();
+    }
 
 
 
@@ -167,83 +167,83 @@ void datApplication::SetupUI() {
     mainView.setHeight(ofGetHeight());
 
     // Select tool
-    datButton* pSelectToolButton = new datButton(10, 20, 40, 40, datButtonStyle::createForToolButton());
-    pSelectToolButton->SetOnPressedCallback(onStartSelectToolPressed);
+    datButton* pSelectToolButton = new datButton(10, 20, 40, 40);
+    ofAddListener(pSelectToolButton->GetOnPressedEvent(), onStartSelectToolPressed);
     pSelectToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("cursor.png"));
     pSelectToolButton->SetTooltip(datLocalization::SelectTool_Tooltip());
     pSelectToolButton->SetName(DAT_BUTTON_NAME_SELECT);
     mainView.AddView(pSelectToolButton);
 
     // Place polyline tool
-    datButton* pPolylineToolButton = new datButton(10, 65, 40, 40, datButtonStyle::createForToolButton());
-    pPolylineToolButton->SetOnPressedCallback(onStartPlacePolylineToolPressed);
+    datButton* pPolylineToolButton = new datButton(10, 65, 40, 40);
+    ofAddListener(pPolylineToolButton->GetOnPressedEvent(), onStartPlacePolylineToolPressed);
     pPolylineToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("pencil.png"));
     pPolylineToolButton->SetTooltip(datLocalization::PlacePolylineTool_Tooltip());
     pPolylineToolButton->SetName(DAT_BUTTON_NAME_PLACEPOLYLINE);
     mainView.AddView(pPolylineToolButton);
 
     // Place text tool
-    datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40, datButtonStyle::createForToolButton());
-    pWriteTextToolButton->SetOnPressedCallback(onStartPlaceTextToolPressed);
+    datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40);
+    ofAddListener(pWriteTextToolButton->GetOnPressedEvent(), onStartPlaceTextToolPressed);
     pWriteTextToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("write_text.png"));
     pWriteTextToolButton->SetTooltip(datLocalization::PlaceTextTool_Tooltip());
     pWriteTextToolButton->SetName(DAT_BUTTON_NAME_PLACETEXT);
     mainView.AddView(pWriteTextToolButton);
 
     // Insert model tool
-    datButton* pPlaceModelToolButton = new datButton(10, 155, 40, 40, datButtonStyle::createForToolButton());
-    pPlaceModelToolButton->SetOnPressedCallback(onStartPlaceModelToolPressed);
+    datButton* pPlaceModelToolButton = new datButton(10, 155, 40, 40);
+    ofAddListener(pPlaceModelToolButton->GetOnPressedEvent(), onStartPlaceModelToolPressed);
     pPlaceModelToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_model.png"));
     pPlaceModelToolButton->SetTooltip(datLocalization::PlaceModelTool_Tooltip());
     pPlaceModelToolButton->SetName(DAT_BUTTON_NAME_PLACEMODEL);
     mainView.AddView(pPlaceModelToolButton);
 
     // Insert image tool
-    datButton* pPlaceImageToolButton = new datButton(10, 200, 40, 40, datButtonStyle::createForToolButton());
-    pPlaceImageToolButton->SetOnPressedCallback(onStartPlaceImageToolPressed);
+    datButton* pPlaceImageToolButton = new datButton(10, 200, 40, 40);
+    ofAddListener(pPlaceImageToolButton->GetOnPressedEvent(), onStartPlaceImageToolPressed);
     pPlaceImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
     pPlaceImageToolButton->SetTooltip(datLocalization::PlaceImageTool_Tooltip());
     pPlaceImageToolButton->SetName(DAT_BUTTON_NAME_PLACEIMAGE);
     mainView.AddView(pPlaceImageToolButton);
 
     // Export image tool
-    datButton* pExportImageToolButton = new datButton(10, 245, 40, 40, datButtonStyle::createForToolButton());
-    pExportImageToolButton->SetOnPressedCallback(onStartExportImageToolPressed);
+    datButton* pExportImageToolButton = new datButton(10, 245, 40, 40);
+    ofAddListener(pExportImageToolButton->GetOnPressedEvent(), onStartExportImageToolPressed);
     pExportImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("export_image.png"));
     pExportImageToolButton->SetTooltip(datLocalization::ExportImageTool_Tooltip());
     pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
     mainView.AddView(pExportImageToolButton);
 
-	// Undo button
-	datButton* pUndoButton = new datButton(55, 20, 40, 40, datButtonStyle::createForToolButton());
-	pUndoButton->SetOnPressedCallback(onUndoPressed);
-	pUndoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("undo.png"));
-	pUndoButton->SetTooltip(datLocalization::Undo());
-	pUndoButton->SetName(DAT_BUTTON_NAME_UNDO);
-	mainView.AddView(pUndoButton);
-	pUndoButton->SetVisible(false);
+    // Undo button
+    datButton* pUndoButton = new datButton(55, 20, 40, 40);
+    ofAddListener(pUndoButton->GetOnPressedEvent(), onUndoPressed);
+    pUndoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("undo.png"));
+    pUndoButton->SetTooltip(datLocalization::Undo());
+    pUndoButton->SetName(DAT_BUTTON_NAME_UNDO);
+    mainView.AddView(pUndoButton);
+    pUndoButton->SetEnabled(false);
 
-	// Redo button
-	datButton* pRedoButton = new datButton(100, 20, 40, 40, datButtonStyle::createForToolButton());
-	pRedoButton->SetOnPressedCallback(onRedoPressed);
-	pRedoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("redo.png"));
-	pRedoButton->SetTooltip(datLocalization::Redo());
-	pRedoButton->SetName(DAT_BUTTON_NAME_REDO);
-	mainView.AddView(pRedoButton);
-	pRedoButton->SetVisible(false);
+    // Redo button
+    datButton* pRedoButton = new datButton(100, 20, 40, 40);
+    ofAddListener(pRedoButton->GetOnPressedEvent(), onRedoPressed);
+    pRedoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("redo.png"));
+    pRedoButton->SetTooltip(datLocalization::Redo());
+    pRedoButton->SetName(DAT_BUTTON_NAME_REDO);
+    mainView.AddView(pRedoButton);
+    pRedoButton->SetEnabled(false);
 
     // Delete selection
-    datButton* pDeleteSelectionButton = new datButton(280, 20, 40, 40, datButtonStyle::createForToolButton());
-    pDeleteSelectionButton->SetOnPressedCallback(onDeleteSelectionPressed);
+    datButton* pDeleteSelectionButton = new datButton(280, 20, 40, 40);
+    ofAddListener(pDeleteSelectionButton->GetOnPressedEvent(), onDeleteSelectionPressed);
     pDeleteSelectionButton->SetImage(datUtilities::LoadImageFromAssetsFolder("trash_can.png"));
     pDeleteSelectionButton->SetTooltip(datLocalization::DeleteSelectedGeometries());
     pDeleteSelectionButton->SetName(DAT_BUTTON_NAME_DELETESELECTED);
     mainView.AddView(pDeleteSelectionButton);
     pDeleteSelectionButton->SetVisible(false);
 
-	// Edit attributes
-    datButton* pEditAttributesToolButton = new datButton(325, 20, 40, 40, datButtonStyle::createForToolButton());
-    pEditAttributesToolButton->SetOnPressedCallback(onStartEditAttributesToolPressed);
+    // Edit attributes
+    datButton* pEditAttributesToolButton = new datButton(325, 20, 40, 40);
+    ofAddListener(pEditAttributesToolButton->GetOnPressedEvent(), onStartEditAttributesToolPressed);
     pEditAttributesToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
     pEditAttributesToolButton->SetTooltip(datLocalization::EditAttributesTool_Tooltip());
     pEditAttributesToolButton->SetName(DAT_BUTTON_NAME_EDITATTRIBUTES);
@@ -252,7 +252,7 @@ void datApplication::SetupUI() {
 
     // Register all events
     ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
-	ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
+    ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
 
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onSelectToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
@@ -273,7 +273,7 @@ void datApplication::setup() {
     m_height = ofGetHeight();
 
     // Initialize common resources
-	GetScene();
+    GetScene();
     GetToolManager();
     GetViewManager();
     GetRenderer();
@@ -353,21 +353,21 @@ void datApplication::draw() {
     GetToolManager().DoDraw();
     GetRenderer().DrawCursorType();
 
-	string comment =  
-	"-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene, 'Bounding Box'.\n"
-	"-Place polyline tool: placer une ligne, changer couleur et epaisseur de ligne, changer couleur de remplissage.\n"
-	"-Place text tool: placer du texte dans la scene, changer la couleur du texte.\n"
-	"-Place image tool: placer une image dans la scene.\n"
-	"-Export image tool: sauver une photo de l'etat courant de la scene.";
+    string comment =  
+    "-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene, 'Bounding Box'.\n"
+    "-Place polyline tool: placer une ligne, changer couleur et epaisseur de ligne, changer couleur de remplissage.\n"
+    "-Place text tool: placer du texte dans la scene, changer la couleur du texte.\n"
+    "-Place image tool: placer une image dans la scene.\n"
+    "-Export image tool: sauver une photo de l'etat courant de la scene.";
 
-	rect = getBitmapStringBoudingBox(comment);
-	rect.x = 2;
-	rect.y = ofGetWindowHeight()-75;
-	ofSetColor(255,255,255,0);
-	ofRect(rect.x, rect.y, rect.width, rect.height);
-	ofSetColor(ofColor::black);
-	ofDrawBitmapString(comment, rect.x, rect.y + 11);
-	
+    rect = getBitmapStringBoudingBox(comment);
+    rect.x = 2;
+    rect.y = ofGetWindowHeight()-75;
+    ofSetColor(255,255,255,0);
+    ofRect(rect.x, rect.y, rect.width, rect.height);
+    ofSetColor(ofColor::black);
+    ofDrawBitmapString(comment, rect.x, rect.y + 11);
+    
 }
 
 void datApplication::mousePressed(ofMouseEventArgs& ev) {
@@ -413,38 +413,38 @@ void datApplication::windowResized(ofResizeEventArgs& resize) {
 }
 
 ofRectangle datApplication::getBitmapStringBoudingBox(string text) {
-	vector<string> lines = ofSplitString(text, "\n");
-	int maxLineLength = 0;
-	for (int i = 0; i < (int)lines.size(); i++) {
-		// tabs are not rendered
-		const string & line(lines[i]);
-		int currentLineLength = 0;
-		for (int j = 0; j < (int)line.size(); j++) {
-			if (line[j] == '\t') {
-				currentLineLength += 8 - (currentLineLength % 8);
-			}
-			else {
-				currentLineLength++;
-			}
-		}
-		maxLineLength = MAX(maxLineLength, currentLineLength);
-	}
+    vector<string> lines = ofSplitString(text, "\n");
+    int maxLineLength = 0;
+    for (int i = 0; i < (int)lines.size(); i++) {
+        // tabs are not rendered
+        const string & line(lines[i]);
+        int currentLineLength = 0;
+        for (int j = 0; j < (int)line.size(); j++) {
+            if (line[j] == '\t') {
+                currentLineLength += 8 - (currentLineLength % 8);
+            }
+            else {
+                currentLineLength++;
+            }
+        }
+        maxLineLength = MAX(maxLineLength, currentLineLength);
+    }
 
-	int padding = 4;
-	int fontSize = 8;
-	float leading = 1.7;
-	int height = lines.size() * fontSize * leading - 1;
-	int width = maxLineLength * fontSize;
-	return ofRectangle(0, 0, width, height);
+    int padding = 4;
+    int fontSize = 8;
+    float leading = 1.7;
+    int height = lines.size() * fontSize * leading - 1;
+    int width = maxLineLength * fontSize;
+    return ofRectangle(0, 0, width, height);
 
 }
 
 
 datScene& datApplication::GetScene() {
-	if (nullptr == m_scene)
-		m_scene = std::make_shared<datScene>();
+    if (nullptr == m_scene)
+        m_scene = std::make_shared<datScene>();
 
-	return *m_scene;
+    return *m_scene;
 }
 
 
@@ -467,9 +467,9 @@ datViewManager& datApplication::GetViewManager() {
 
 
 datRenderer& datApplication::GetRenderer() {
-	if (nullptr == m_renderer) {
-		m_renderer.reset(new datRenderer(*m_scene));
-	}
+    if (nullptr == m_renderer) {
+        m_renderer.reset(new datRenderer(*m_scene));
+    }
 
     return *m_renderer;
 }

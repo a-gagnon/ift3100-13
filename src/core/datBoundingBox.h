@@ -28,14 +28,14 @@ public:
     void InitInvalid();
 
     void Extend(ofPoint const& point);
-	void Expand(float delta);
+    void Expand(float delta);
     void Multiply(float factor);
     void Translate(ofPoint const& offset);
 
-	bool Intersects(datBoundingBox const& other, bool strictlyInside) const;
+    bool Intersects(datBoundingBox const& other, bool strictlyInside) const;
 
-	ofPoint GetCenter() const;
-	std::vector<ofPoint> Get8Corners() const;
+    ofPoint GetCenter() const;
+    std::vector<ofPoint> Get8Corners() const;
     float GetXLength() const { return high.x - low.x; }
     float GetYLength() const { return high.y - low.y; }
     float GetZLength() const { return high.z - low.z; }

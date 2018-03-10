@@ -7,7 +7,7 @@
 USING_DAT_NAMESPACE
 
 datRenderer::datRenderer(datScene& scene) : 
-	m_scene(scene),
+    m_scene(scene),
     m_activeCursorType(CursorType::Normal),
     m_drawBoundingBox(false),
     m_drawSelectedInHilite(true) {
@@ -25,7 +25,7 @@ datRenderer::~datRenderer() {
 
 void datRenderer::DrawCursorType() const {
 
-	if (CursorType::Normal == m_activeCursorType) {
+    if (CursorType::Normal == m_activeCursorType) {
         ofShowCursor();
         return;
     }
@@ -73,51 +73,51 @@ void datRenderer::DrawGeometry(datGeometry const& geometry, bool useDisplayParam
 
 void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
 
-	ofPushMatrix();
-	ofMultMatrix(geometry.GetTransform());
+    ofPushMatrix();
+    ofMultMatrix(geometry.GetTransform());
 
-	datBoundingBox const& box = geometry.GetBoundingBox();
-	const ofPoint center = box.GetCenter();
+    datBoundingBox const& box = geometry.GetBoundingBox();
+    const ofPoint center = box.GetCenter();
 
     ofSetColor(ofColor::darkMagenta);
     ofSetLineWidth(4.0);
-	ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
+    ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
 
-	ofSetColor(ofColor::white);
-	ofSetLineWidth(1.0);
-	ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
+    ofSetColor(ofColor::white);
+    ofSetLineWidth(1.0);
+    ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
 
-	ofPopMatrix();
+    ofPopMatrix();
 }
 
 
 void datRenderer::Render() const {
 
-	std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
-	std::vector<datGeometry const*> selectedGeometries;
+    std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
+    std::vector<datGeometry const*> selectedGeometries;
 
-	for (auto const& geometry : geometries) {
+    for (auto const& geometry : geometries) {
 
-		if (IsNeverDraw(geometry->GetId()))
-			continue;
+        if (IsNeverDraw(geometry->GetId()))
+            continue;
 
-		geometry->drawWithDisplayParams();
+        geometry->drawWithDisplayParams();
 
-		if (m_scene.IsSelected(geometry->GetId()))
-			selectedGeometries.push_back(geometry);
+        if (m_scene.IsSelected(geometry->GetId()))
+            selectedGeometries.push_back(geometry);
 
-		if (m_drawBoundingBox)
-			DrawBoundingBox(*geometry);
-	}
+        if (m_drawBoundingBox)
+            DrawBoundingBox(*geometry);
+    }
 
 
-	if (m_drawSelectedInHilite && !selectedGeometries.empty()) {
-		// Redraw elements that are selected. Just put their outline in a different color
-		ofSetColor(ofColor::darkBlue);
-		ofNoFill();
+    if (m_drawSelectedInHilite && !selectedGeometries.empty()) {
+        // Redraw elements that are selected. Just put their outline in a different color
+        ofSetColor(ofColor::darkBlue);
+        ofNoFill();
 
-		for (auto const& geometry : selectedGeometries) {
-			DrawGeometry(*geometry, false/*useDisplayParams*/);
-		}
-	}
+        for (auto const& geometry : selectedGeometries) {
+            DrawGeometry(*geometry, false/*useDisplayParams*/);
+        }
+    }
 }
