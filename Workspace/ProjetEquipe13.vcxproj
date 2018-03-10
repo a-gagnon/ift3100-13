@@ -107,7 +107,6 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\core\datImage.cpp" />
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datScene.cpp" />
-    <ClCompile Include="..\src\core\datSelectionSet.cpp" />
     <ClCompile Include="..\src\core\datTextString.cpp" />
     <ClCompile Include="..\src\core\datTransform.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
@@ -155,7 +154,6 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datNonCopyableClass.h" />
     <ClInclude Include="..\src\core\datRenderer.h" />
     <ClInclude Include="..\src\core\datScene.h" />
-    <ClInclude Include="..\src\core\datSelectionSet.h" />
     <ClInclude Include="..\src\core\datTextString.h" />
     <ClInclude Include="..\src\core\datTransform.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
