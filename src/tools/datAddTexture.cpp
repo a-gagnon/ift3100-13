@@ -76,9 +76,6 @@ void datAddTextureTool::applyTexture() {
 			mask.resize(image.m_width, image.m_height);
 			m_fbo.allocate(image.m_width, image.m_height);
 			m_fbo.begin();
-			ofClear(0, 0, 0, 0);			//Clear the FBO
-			m_fbo.end();
-			m_fbo.begin();
 			m_shader.begin();
 
 			m_shader.setUniformTexture("mask", mask.getTexture(), 1);
@@ -94,13 +91,7 @@ void datAddTextureTool::applyTexture() {
 			img.setFromPixels(pixels);
 			img.draw(img.getWidth(), 0);
 
-			geometry->GetAsImage().m_image = img; //image.m_image;
-												  //m_fbo.draw(image.m_position);
-												  //ofImage img;
-												  //ofPixels pixels;
-												  //m_fbo.readToPixels(pixels);
-												  //img.setFromPixels(pixels);
-												  //img.draw(image.m_position);
+			geometry->GetAsImage().m_image = img;
 			}	
 		}
 }

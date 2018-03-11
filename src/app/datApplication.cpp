@@ -264,8 +264,8 @@ void datApplication::SetupUI() {
     pEditAttributesToolButton->SetVisible(false);
 
 	// Add texture
-	datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40, datButtonStyle::createForToolButton());
-	pAddtextureToolButton->SetOnPressedCallback(onStartAddTextureToolPressed);
+	datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40);
+	ofAddListener(pAddtextureToolButton->GetOnPressedEvent(), onStartAddTextureToolPressed);
 	pAddtextureToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
 	pAddtextureToolButton->SetTooltip(datLocalization::AddTextureTool_Tooltip());
 	pAddtextureToolButton->SetName(DAT_BUTTON_NAME_ADDTEXTURE);
