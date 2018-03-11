@@ -101,6 +101,9 @@
     <ClCompile Include="..\src\core\datScene.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\tools\datAddTexture.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -251,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="..\src\core\datId.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datAddTextureTool.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

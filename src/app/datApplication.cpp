@@ -15,6 +15,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_PLACEIMAGE "btn_placeImageTool"
 #define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
+#define DAT_BUTTON_NAME_ADDTEXTURE "btn_addTextureTool"
 
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 #define DAT_BUTTON_NAME_UNDO "btn_undo"
@@ -59,6 +60,11 @@ namespace {
         datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
     }
+
+	void onAddTextureToolStarted(datEditTool& editTool) {
+		datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
+		static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
+	}
     
     // On-pressed button events
     void onStartSelectToolPressed(datButton& button) {
@@ -89,6 +95,10 @@ namespace {
         datApplication::GetApp().GetToolManager().StartTool(new datEditAttributesTool());
     }
 
+	void onStartAddTextureToolPressed(datButton& button) {
+		datApplication::GetApp().GetToolManager().StartTool(new datAddTextureTool());
+	}
+
 
     void onDeleteSelectionPressed(datButton& button) {
 
@@ -109,6 +119,9 @@ namespace {
 
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
+
+		auto pAddTextureButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
+		static_cast<datButton*>(pAddTextureButton)->SetVisible(isVisible);
     }
     // Called when undo/redo status changed
     void onUndoRedoStatusChanged() {
@@ -160,7 +173,7 @@ datApplication::~datApplication() {
 
 
 void datApplication::SetupUI() {
-
+	ofDisableArbTex();
     datView& mainView = GetViewManager().GetMainView();
     mainView.setPosition(0, 0);
     mainView.setWidth(ofGetWidth());
@@ -250,6 +263,15 @@ void datApplication::SetupUI() {
     mainView.AddView(pEditAttributesToolButton);
     pEditAttributesToolButton->SetVisible(false);
 
+	// Add texture
+	datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40, datButtonStyle::createForToolButton());
+	pAddtextureToolButton->SetOnPressedCallback(onStartAddTextureToolPressed);
+	pAddtextureToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
+	pAddtextureToolButton->SetTooltip(datLocalization::AddTextureTool_Tooltip());
+	pAddtextureToolButton->SetName(DAT_BUTTON_NAME_ADDTEXTURE);
+	mainView.AddView(pAddtextureToolButton);
+	pAddtextureToolButton->SetVisible(false);
+
     // Register all events
     ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
     ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
@@ -261,6 +283,7 @@ void datApplication::SetupUI() {
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceImagetoolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onExportImageToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onEditAttributesToolStarted);
+	ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onAddTextureToolStarted);
     
     ofAddListener(GetToolManager().GetOnSupplyEditToolEvent(), this, &datApplication::SupplyDefaultEditTool);
     SupplyDefaultEditTool();

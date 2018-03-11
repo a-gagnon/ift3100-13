@@ -123,6 +123,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\tools\datAddTexture.cpp" />
     <ClCompile Include="..\src\tools\datEditAttributesTool.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
@@ -171,6 +172,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSlider.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.h" />
+    <ClInclude Include="..\src\tools\datAddTextureTool.h" />
     <ClInclude Include="..\src\tools\datEditAttributesTool.h" />
     <ClInclude Include="..\src\tools\datExportImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />

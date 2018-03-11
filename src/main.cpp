@@ -7,9 +7,12 @@
 USING_DAT_NAMESPACE
 
 int main() {
+	ofGLFWWindowSettings windowSettings;
+	windowSettings.setGLVersion(3, 3);
+	ofCreateWindow(windowSettings);
 
-    ofSetupOpenGL(1024, 768, OF_WINDOW); // setup gl context
-    ofSetWindowTitle("IFT-3100 Equipe 13");
+    //ofSetupOpenGL(1024, 768, OF_WINDOW); // setup gl context
+	ofSetWindowTitle("IFT-3100 Equipe 13");
     ofSetBackgroundColor(ofColor::whiteSmoke);
 
     // Infinite loop!

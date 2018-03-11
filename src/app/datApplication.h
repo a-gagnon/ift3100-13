@@ -13,6 +13,7 @@
 #include "../tools/datPlaceImageTool.h"
 #include "../tools/datExportImageTool.h"
 #include "../tools/datEditAttributesTool.h"
+#include "../tools/datAddTextureTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
 

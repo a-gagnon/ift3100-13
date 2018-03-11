@@ -16,6 +16,7 @@ struct datLocalization {
     static std::string ChangeActiveColor()          { return "Change active color"; }
     static std::string DeleteSelectedGeometries()   { return "Delete selected geometries"; }
     static std::string EditAttributesTool_Tooltip() { return "Edit attributes of selected geometries"; }
+	static std::string AddTextureTool_Tooltip()		{ return "Add texture to image"; }
     static std::string ExportImageTool_Tooltip()    { return "Export image"; }
     static std::string PlaceImageTool_Tooltip()     { return "Place image tool"; }
     static std::string PlaceModelTool_Tooltip()     { return "Place model tool"; }
