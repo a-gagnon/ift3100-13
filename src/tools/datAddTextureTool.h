@@ -12,23 +12,22 @@ BEGIN_DAT_NAMESPACE
 struct datAddTextureTool : datEditTool {
 
 private:
-	std::vector<ofImage> m_mask;
-	ofShader m_shader;
-	ofFbo m_fbo;
+    std::unique_ptr<ofImage> m_mask;
+    ofShader m_shader;
+    ofFbo m_fbo;
 
-	std::vector<std::unique_ptr<datGeometry>> m_geometries;
-	std::vector<datTransform> m_originalTransforms;
+    std::vector<std::unique_ptr<datGeometry>> m_geometries;
 
-	void applyTexture();
+    void applyTexture();
 
 protected:
-	virtual void onStartTool() override;
-	virtual void onExitTool() override;
-	virtual void onDraw() override;
+    virtual void onStartTool() override;
+    virtual void onExitTool() override;
+    virtual void onDraw() override;
 
 public:
-	datAddTextureTool();
-	virtual ~datAddTextureTool();
+    datAddTextureTool();
+    virtual ~datAddTextureTool();
 };
 
 END_DAT_NAMESPACE

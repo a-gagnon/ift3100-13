@@ -123,7 +123,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\tools\datAddTexture.cpp" />
+    <ClCompile Include="..\src\tools\datAddTextureTool.cpp" />
     <ClCompile Include="..\src\tools\datEditAttributesTool.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />

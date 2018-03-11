@@ -101,7 +101,7 @@
     <ClCompile Include="..\src\core\datScene.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\tools\datAddTexture.cpp">
+    <ClCompile Include="..\src\tools\datAddTextureTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>

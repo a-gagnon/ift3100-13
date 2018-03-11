@@ -61,10 +61,10 @@ namespace {
         static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
     }
 
-	void onAddTextureToolStarted(datEditTool& editTool) {
-		datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
-		static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
-	}
+    void onAddTextureToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datEditAttributesTool*>(&editTool));
+    }
     
     // On-pressed button events
     void onStartSelectToolPressed(datButton& button) {
@@ -95,9 +95,9 @@ namespace {
         datApplication::GetApp().GetToolManager().StartTool(new datEditAttributesTool());
     }
 
-	void onStartAddTextureToolPressed(datButton& button) {
-		datApplication::GetApp().GetToolManager().StartTool(new datAddTextureTool());
-	}
+    void onStartAddTextureToolPressed(datButton& button) {
+        datApplication::GetApp().GetToolManager().StartTool(new datAddTextureTool());
+    }
 
 
     void onDeleteSelectionPressed(datButton& button) {
@@ -112,7 +112,10 @@ namespace {
 
     // Called when the selection changes
     void onSelectionChanged() {
-        const bool isVisible = !datApplication::GetApp().GetScene().GetSelection().empty();
+
+        datScene& scene = datApplication::GetApp().GetScene();
+        std::set<datId> selectedIds = scene.GetSelection();
+        const bool isVisible = !selectedIds.empty();
 
         auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
         static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
@@ -120,8 +123,17 @@ namespace {
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
         static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
 
-		auto pAddTextureButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
-		static_cast<datButton*>(pAddTextureButton)->SetVisible(isVisible);
+
+        bool hasImage = false;
+        for (auto const& id : selectedIds) {
+            if (datGeometry::GeometryType::Image == scene.GetGeometry(id)->GetType()) {
+                hasImage = true;
+                break;
+            }
+        }
+
+        auto pAddTextureButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
+        static_cast<datButton*>(pAddTextureButton)->SetVisible(isVisible && hasImage);
     }
     // Called when undo/redo status changed
     void onUndoRedoStatusChanged() {
@@ -173,7 +185,7 @@ datApplication::~datApplication() {
 
 
 void datApplication::SetupUI() {
-	ofDisableArbTex();
+    ofDisableArbTex();
     datView& mainView = GetViewManager().GetMainView();
     mainView.setPosition(0, 0);
     mainView.setWidth(ofGetWidth());
@@ -263,14 +275,14 @@ void datApplication::SetupUI() {
     mainView.AddView(pEditAttributesToolButton);
     pEditAttributesToolButton->SetVisible(false);
 
-	// Add texture
-	datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40);
-	ofAddListener(pAddtextureToolButton->GetOnPressedEvent(), onStartAddTextureToolPressed);
-	pAddtextureToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
-	pAddtextureToolButton->SetTooltip(datLocalization::AddTextureTool_Tooltip());
-	pAddtextureToolButton->SetName(DAT_BUTTON_NAME_ADDTEXTURE);
-	mainView.AddView(pAddtextureToolButton);
-	pAddtextureToolButton->SetVisible(false);
+    // Add texture
+    datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40);
+    ofAddListener(pAddtextureToolButton->GetOnPressedEvent(), onStartAddTextureToolPressed);
+    pAddtextureToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
+    pAddtextureToolButton->SetTooltip(datLocalization::AddTextureTool_Tooltip());
+    pAddtextureToolButton->SetName(DAT_BUTTON_NAME_ADDTEXTURE);
+    mainView.AddView(pAddtextureToolButton);
+    pAddtextureToolButton->SetVisible(false);
 
     // Register all events
     ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
@@ -283,7 +295,7 @@ void datApplication::SetupUI() {
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceImagetoolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onExportImageToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onEditAttributesToolStarted);
-	ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onAddTextureToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onAddTextureToolStarted);
     
     ofAddListener(GetToolManager().GetOnSupplyEditToolEvent(), this, &datApplication::SupplyDefaultEditTool);
     SupplyDefaultEditTool();
