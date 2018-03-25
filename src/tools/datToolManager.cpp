@@ -107,29 +107,37 @@ bool datToolManager::SendMouseEvent(datMouseEvent ev) const {
     if (nullptr == pTool)
         return false;
 
-    if (ofMouseEventArgs::Type::Pressed == ev.type) {
+    if (ofMouseEventArgs::Type::Pressed == ev.GetType()) {
 
-        if (OF_MOUSE_BUTTON_LEFT == ev.button) {
+        if (OF_MOUSE_BUTTON_LEFT == ev.GetButton()) {
             pTool->onLeftMouseButtonDown(ev);
             return true;
         }
-        else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
+        else if (OF_MOUSE_BUTTON_RIGHT == ev.GetButton()) {
             pTool->onRightMouseButtonDown(ev);
             return true;
         }
+        else if (OF_MOUSE_BUTTON_MIDDLE == ev.GetButton()) {
+            pTool->onMiddleMouseButtonDown(ev);
+            return true;
+        }
     }
-    else if (ofMouseEventArgs::Type::Released == ev.type) {
+    else if (ofMouseEventArgs::Type::Released == ev.GetType()) {
 
-        if (OF_MOUSE_BUTTON_LEFT == ev.button) {
+        if (OF_MOUSE_BUTTON_LEFT == ev.GetButton()) {
             pTool->onLeftMouseButtonUp(ev);
             return true;
         }
-        else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
+        else if (OF_MOUSE_BUTTON_RIGHT == ev.GetButton()) {
             pTool->onRightMouseButtonUp(ev);
             return true;
         }
+        else if (OF_MOUSE_BUTTON_MIDDLE == ev.GetButton()) {
+            pTool->onMiddleMouseButtonUp(ev);
+            return true;
+        }
     }
-    else if (ofMouseEventArgs::Type::Moved == ev.type || ofMouseEventArgs::Type::Dragged == ev.type) {
+    else if (ofMouseEventArgs::Type::Moved == ev.GetType() || ofMouseEventArgs::Type::Dragged == ev.GetType()) {
 
         pTool->onMouseMotion(ev);
         return true;
@@ -152,7 +160,7 @@ bool datToolManager::SendKeyEvent(ofKeyEventArgs const& ev) const {
 }
 
 
-void datToolManager::DoDraw() {
+void datToolManager::DoDraw(datRenderer& renderer) {
 
     if (nullptr != m_editTool) {
         m_editTool->onDraw();

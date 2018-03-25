@@ -317,7 +317,7 @@ void datApplication::setup() {
 }
 
 
-void datApplication::ClampEvent(datMouseEvent& ev) const {
+void datApplication::ClampEvent(ofMouseEventArgs& ev) const {
     ev.x = CLAMP(ev.x, 1, m_width);
     ev.y = CLAMP(ev.y, 1, m_height);
 }
@@ -325,8 +325,37 @@ void datApplication::ClampEvent(datMouseEvent& ev) const {
 
 bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
 
+    ClampEvent(ev);
+    size_t viewportIdx = GetRenderer().GetViewportIndex(ev);
+    datViewport& vp = GetRenderer().GetViewport(viewportIdx);
+
+//&&AG needswork. some kind of projection to get a valid 3d point
+
+    // Calculate point in app coordinates
+    float xApp = ofGetWidth() * (ev.x - vp.rect.x) / vp.rect.width;
+    float yApp = ofGetHeight() * (ev.y - vp.rect.y) / vp.rect.height;
+
+    ofPoint ray[2];
+    // Define ray in screen space
+    ray[0] = ofVec3f(xApp, yApp, -1);
+    ray[1] = ofVec3f(xApp, yApp, 1);
+
+    // Transform ray into world space
+    ray[0] = vp.camera.screenToWorld(ray[0]);
+    ray[1] = vp.camera.screenToWorld(ray[1]);
+
+    ofPoint vec = ray[1] - ray[0];
+    vec.normalize();
+    ofPoint worldPoint = ray[0] + (vec * ray[0].z);
+
     datMouseEvent datEvent(ev);
-    ClampEvent(datEvent);
+    datEvent.InitEvent(ev, worldPoint, ofGetKeyPressed(OF_KEY_CONTROL), ofGetKeyPressed(OF_KEY_SHIFT), ofGetKeyPressed(OF_KEY_ALT));
+
+
+    if (ofMouseEventArgs::Type::Pressed == ev.type && ev.button == OF_MOUSE_BUTTON_MIDDLE) {
+        GetToolManager().StartTool(new datViewManipTool(datEvent));
+        return true;
+    }
 
     if (GetViewManager().SendMouseEvent(datEvent))
         return true;
@@ -384,9 +413,8 @@ void datApplication::draw() {
     T_Super::draw();
 
     GetRenderer().Render();
-    GetViewManager().DoDraw();
-    GetToolManager().DoDraw();
-    GetRenderer().DrawCursorType();
+    GetToolManager().DoDraw(GetRenderer());
+    GetViewManager().DoDraw(GetRenderer());
 
     string comment =  
     "-Select tool: changer le curseur, changer la couleur de background, selectionner des elements dans la scene, 'Bounding Box'.\n"
@@ -429,6 +457,18 @@ void datApplication::mouseDragged(ofMouseEventArgs& ev) {
 }
 
 
+void datApplication::mouseScrolled(ofMouseEventArgs & mouse) {
+
+    size_t viewportIdx = GetRenderer().GetViewportIndex(mouse);
+    datViewport& vp = GetRenderer().GetViewport(viewportIdx);
+    
+    float zOffset = -mouse.scrollY * 120.0;
+
+    ofPoint offset = vp.camera.getZAxis() * zOffset;
+    vp.camera.move(offset);
+}
+
+
 void datApplication::keyPressed(ofKeyEventArgs& ev) {
     if (!SendKeyEvent(ev))
         T_Super::keyPressed(ev);
@@ -445,6 +485,8 @@ void datApplication::windowResized(ofResizeEventArgs& resize) {
     datView& mainView = GetViewManager().GetMainView();
     mainView.setWidth(resize.width);
     mainView.setHeight(resize.height);
+
+    GetRenderer().ResizeViewports();
 }
 
 ofRectangle datApplication::getBitmapStringBoudingBox(string text) {

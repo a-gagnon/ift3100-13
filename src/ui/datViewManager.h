@@ -26,7 +26,7 @@ private:
     // Returns the view that is most suitable to get the event
     datView* FindTargetView(ofVec2f const& point) const;
     datView* GetViewByNameInternal(datView& view, std::string const& name) const;
-    void DoDrawInternal(datView& view) const;
+    void DoDrawInternal(datRenderer& renderer, datView& view) const;
 
 public:
     datViewManager();
@@ -39,7 +39,7 @@ public:
     // Sends the mouse event to the appropriate view
     // @remarks returns true if the event is handled by the view
     bool SendMouseEvent(datMouseEvent const& ev);
-    void DoDraw();
+    void DoDraw(datRenderer& renderer);
 };
 
 END_DAT_NAMESPACE

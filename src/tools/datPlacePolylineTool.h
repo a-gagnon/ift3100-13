@@ -12,6 +12,7 @@ BEGIN_DAT_NAMESPACE
 struct datPlacePolylineTool : datEditTool {
 
 private:
+    std::unique_ptr<datGeometry> m_transient;
     ofPolyline m_polyline;
 
     ofxPanel m_panel;
@@ -20,9 +21,10 @@ private:
     ofParameter<ofColor> m_paramFillColor;
 
 private:
-    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; }
-    void onLineWidthChanged(float& value)   { GetRenderer().GetActiveDisplayParamsR().lineWidth = value; }
-    void onFillColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().fillColor = color; }
+    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; updateTransient(); }
+    void onLineWidthChanged(float& value)   { GetRenderer().GetActiveDisplayParamsR().lineWidth = value; updateTransient(); }
+    void onFillColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().fillColor = color; updateTransient(); }
+    void updateTransient();
 
 protected:
     virtual void onStartTool() override;

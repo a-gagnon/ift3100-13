@@ -49,7 +49,7 @@ public:
     bool SendKeyEvent(ofKeyEventArgs const& ev) const;
 
     // Calls the available tools to draw
-    void DoDraw();
+    void DoDraw(datRenderer& renderer);
 };
 
 END_DAT_NAMESPACE

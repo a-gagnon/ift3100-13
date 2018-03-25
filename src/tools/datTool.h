@@ -27,6 +27,8 @@ protected:
     virtual void onLeftMouseButtonUp(datMouseEvent const& ev) {}
     virtual void onRightMouseButtonDown(datMouseEvent const& ev) {}
     virtual void onRightMouseButtonUp(datMouseEvent const& ev) {}
+    virtual void onMiddleMouseButtonDown(datMouseEvent const& ev) {}
+    virtual void onMiddleMouseButtonUp(datMouseEvent const& ev) {}
     virtual void onMouseMotion(datMouseEvent const& ev) {}
     virtual void onKeyPressed(ofKeyEventArgs const& ev) {}
     virtual void onDraw() {}

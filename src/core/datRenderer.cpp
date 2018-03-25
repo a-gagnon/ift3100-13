@@ -6,7 +6,7 @@
 
 USING_DAT_NAMESPACE
 
-datRenderer::datRenderer(datScene& scene) : 
+datRenderer::datRenderer(datScene& scene) :
     m_scene(scene),
     m_activeCursorType(CursorType::Normal),
     m_drawBoundingBox(false),
@@ -15,11 +15,94 @@ datRenderer::datRenderer(datScene& scene) :
     m_activeDisplayParams.fillColor = ofColor(120, 120, 120, 255);
     m_activeDisplayParams.lineColor = ofColor(160, 160, 160, 255);
     m_activeDisplayParams.lineWidth = 4.0f;
+
+    AddViewport();
+    ResizeViewports();
 }
 
 
 datRenderer::~datRenderer() {
 
+}
+
+
+size_t datRenderer::GetViewportIndex(ofPoint const& viewPoint) const {
+
+    for (size_t i = 0; i < m_viewports.size(); ++i) {
+
+        ofRectangle const& rect = m_viewports[i].rect;
+        const ofPoint low = rect.getTopLeft();
+        const ofPoint high = rect.getBottomRight();
+
+        // ofRectangle::inside ignores the case where we're equal
+        if (low.x <= viewPoint.x && viewPoint.x <= high.x &&
+            low.y <= viewPoint.y && viewPoint.y <= high.y)
+            return i;
+    }
+
+    assert(false);
+    return 0;
+}
+
+
+void datRenderer::SetUseTwoViewports(bool yesNo) {
+
+    if (yesNo && 2 != m_viewports.size()) {
+        AddViewport();
+    }
+    else if (!yesNo && 1 != m_viewports.size()) {
+        m_viewports.pop_back();
+    }
+
+    ResizeViewports();
+}
+
+
+void datRenderer::ResizeViewports() {
+
+    int vpWidth = ofGetWidth() / m_viewports.size();
+    int vpHeight = ofGetHeight();
+
+    for (size_t i = 0; i < m_viewports.size(); ++i) {
+
+        datViewport& vp = m_viewports[i];
+        vp.rect.set(i * vpWidth, 0, vpWidth, vpHeight);
+    }
+
+    ofRectangle& lastRect = m_viewports.back().rect;
+    lastRect.setWidth(vpWidth + 1);
+}
+
+
+void datRenderer::SetUseOrthoCamera(bool yesNo) {
+
+    for (auto& vp : m_viewports) {
+
+        if (yesNo)
+            vp.camera.enableOrtho();
+        else
+            vp.camera.disableOrtho();
+    }
+}
+
+
+void datRenderer::AddViewport() {
+    
+    datViewport vp;
+
+    if (!m_viewports.empty()) {
+        // Copy settings from first viewport
+        vp = m_viewports.front();
+    }
+    else {
+        vp.camera.setPosition(ofPoint(0, 0, 500.0));
+        vp.camera.lookAt(ofPoint(0, 0, 0));
+        vp.camera.setOrientation(ofQuaternion());
+        vp.camera.disableMouseInput();
+        vp.camera.setVFlip(false);
+    }
+
+    m_viewports.push_back(vp);
 }
 
 
@@ -31,6 +114,7 @@ void datRenderer::DrawCursorType() const {
     }
 
     ofHideCursor();
+    ofNoFill();
     ofSetColor(80);
     ofSetLineWidth(3);
 
@@ -62,14 +146,6 @@ void datRenderer::DrawCursorType() const {
     }
 }
 
-void datRenderer::DrawGeometry(datGeometry const& geometry, bool useDisplayParams) const {
-
-    if (useDisplayParams)
-        geometry.drawWithDisplayParams();
-    else
-        geometry.draw();
-}
-
 
 void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
 
@@ -91,42 +167,67 @@ void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
 }
 
 
-void datRenderer::Render() const {
-
-    std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
-    std::vector<datGeometry const*> selectedGeometries;
-    std::vector<datGeometry const*> bBoxGeometries;
+void datRenderer::Render() {
 
     ofEnableDepthTest();
 
-    for (auto const& geometry : geometries) {
+    for (auto& vp : m_viewports) {
 
-        if (IsNeverDraw(geometry->GetId()))
-            continue;
+        std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
+        std::vector<datGeometry const*> selectedGeometries;
+        std::vector<datGeometry const*> bBoxGeometries;
 
-        geometry->drawWithDisplayParams();
+        vp.camera.begin(vp.rect);
 
-        if (m_drawSelectedInHilite && m_scene.IsSelected(geometry->GetId()))
-            selectedGeometries.push_back(geometry);
+        for (auto const& geometry : geometries) {
 
-        if (m_drawBoundingBox)
-            bBoxGeometries.push_back(geometry);
+            if (IsNeverDraw(geometry->GetId()))
+                continue;
+
+            geometry->drawWithDisplayParams();
+
+            if (m_drawSelectedInHilite && m_scene.IsSelected(geometry->GetId()))
+                selectedGeometries.push_back(geometry);
+
+            if (m_drawBoundingBox)
+                bBoxGeometries.push_back(geometry);
+        }
+
+        // Redraw elements that are selected. Just put their outline in a different color
+        if (!selectedGeometries.empty()) {
+            ofSetColor(ofColor::darkBlue);
+            ofNoFill();
+            ofSetLineWidth(20.0);
+
+            for (auto const& geometry : selectedGeometries) {
+                geometry->draw();
+            }
+        }
+
+        // Draw bounding box
+        if (!bBoxGeometries.empty()) {
+            for (auto const& geometry : bBoxGeometries)
+                DrawBoundingBox(*geometry);
+        }
+
+        // Draw transient graphics
+        for (auto const& pTransient : m_transients) {
+            pTransient->drawWithDisplayParams();
+        }
+
+        vp.camera.end();
     }
 
     ofDisableDepthTest();
 
-    if (!selectedGeometries.empty()) {
-        // Redraw elements that are selected. Just put their outline in a different color
-        ofSetColor(ofColor::darkBlue);
-        ofNoFill();
+    ofNoFill();
+    ofSetColor(ofColor::black);
+    ofSetLineWidth(10.0);
 
-        for (auto const& geometry : selectedGeometries) {
-            DrawGeometry(*geometry, false/*useDisplayParams*/);
-        }
+    for (auto const& vp : m_viewports) {
+        ofDrawRectangle(vp.rect);
     }
 
-    if (!bBoxGeometries.empty()) {
-        for (auto const& geometry : bBoxGeometries)
-            DrawBoundingBox(*geometry);
-    }
+
+    DrawCursorType();
 }

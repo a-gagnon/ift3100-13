@@ -14,6 +14,7 @@
 #include "../tools/datExportImageTool.h"
 #include "../tools/datEditAttributesTool.h"
 #include "../tools/datAddTextureTool.h"
+#include "../tools/datViewManipTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
 
@@ -37,7 +38,7 @@ protected:
     void SetupUI();
 
     // Make sure x and y values are inside the app window
-    void ClampEvent(datMouseEvent& ev) const;
+    void ClampEvent(ofMouseEventArgs& ev) const;
     bool SendMouseEvent(ofMouseEventArgs& ev);
     bool SendKeyEvent(ofKeyEventArgs& ev);
 
@@ -48,6 +49,7 @@ protected:
     virtual void mouseReleased(ofMouseEventArgs& ev) override;
     virtual void mouseMoved(ofMouseEventArgs& ev) override;
     virtual void mouseDragged(ofMouseEventArgs & ev) override;
+    virtual void mouseScrolled(ofMouseEventArgs & mouse) override;
     virtual void keyPressed(ofKeyEventArgs& ev) override;
     virtual void windowResized(ofResizeEventArgs& resize) override;
 

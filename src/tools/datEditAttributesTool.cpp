@@ -6,6 +6,15 @@
 
 USING_DAT_NAMESPACE
 
+#define LINEWIDTH_MIN 0.01f
+#define LINEWIDTH_MAX 12.0f
+#define ROTATE_MIN -180
+#define ROTATE_MAX 180
+#define SCALE_MIN 0.5
+#define SCALE_MAX 2.0
+#define TRANSLATE_MIN -500
+#define TRANSLATE_MAX 500
+
 datEditAttributesTool::datEditAttributesTool() {
 }
 
@@ -23,6 +32,7 @@ void datEditAttributesTool::onStartTool() {
     for (auto const& id : selectedIds) {
         m_geometries.push_back(scene.GetGeometry(id)->Clone());
         m_originalTransforms.push_back(m_geometries.back()->GetTransform());
+        GetRenderer().AddTransient(m_geometries.back().get());
     }
 
     GetRenderer().SetNeverDraw(selectedIds);
@@ -32,13 +42,13 @@ void datEditAttributesTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
     m_panel.add(m_styleGroup.setup(datLocalization::DisplayParams()));
     m_styleGroup.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
-    m_styleGroup.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
+    m_styleGroup.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, LINEWIDTH_MIN, LINEWIDTH_MAX));
     m_styleGroup.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
 
     m_panel.add(m_geometryGroup.setup(datLocalization::GeometryParams()));
-    m_geometryGroup.add(m_paramScale.set(datLocalization::GeometryParams_Scale(), 1.0, 0.5, 2.0));
-    m_geometryGroup.add(m_paramRotate.set(datLocalization::GeometryParams_Rotate(), 0.0, -180, 180));
-    m_geometryGroup.add(m_paramTranslate.set(datLocalization::GeometryParams_Translate(), ofVec2f(0, 0), ofVec2f(-500, -500), ofVec2f(500, 500)));
+    m_geometryGroup.add(m_paramScale.set(datLocalization::GeometryParams_Scale(), 1.0, SCALE_MIN, SCALE_MAX));
+    m_geometryGroup.add(m_paramRotate.set(datLocalization::GeometryParams_Rotate(), 0.0, ROTATE_MIN, ROTATE_MAX));
+    m_geometryGroup.add(m_paramTranslate.set(datLocalization::GeometryParams_Translate(), ofVec2f(0, 0), ofVec2f(TRANSLATE_MIN, TRANSLATE_MIN), ofVec2f(TRANSLATE_MAX, TRANSLATE_MAX)));
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_paramLineColor.addListener(this, &datEditAttributesTool::onLineColorChanged);
@@ -55,6 +65,7 @@ void datEditAttributesTool::onExitTool() {
     // Commit changes to elements
     GetRenderer().GetScene().UpdateMultipleGeometries(std::move(m_geometries));
     GetRenderer().ClearNeverDraw();
+    GetRenderer().ClearTransients();
 
     m_paramLineColor.removeListener(this, &datEditAttributesTool::onLineColorChanged);
     m_paramLineWidth.removeListener(this, &datEditAttributesTool::onLineWidthChanged);
@@ -121,13 +132,4 @@ void datEditAttributesTool::applyTransforms() {
 
 void datEditAttributesTool::onDraw() {
     m_panel.draw();
-    datRenderer& renderer = GetRenderer();
-
-    ofEnableDepthTest();
-
-    for (auto const& geometry : m_geometries) {
-        renderer.DrawGeometry(*geometry, true);
-    }
-
-    ofDisableDepthTest();
 }

@@ -89,7 +89,7 @@ datView* datViewManager::GetViewByName(std::string const& name) const {
 
 bool datViewManager::SendMouseEvent(datMouseEvent const& ev) {
 
-    datView* pTarget = FindTargetView(ev);
+    datView* pTarget = FindTargetView(ev.GetViewPoint());
     
     if (nullptr != m_viewWithMouseInside && (nullptr == pTarget || pTarget != m_viewWithMouseInside)) {
         m_viewWithMouseInside->m_isMouseInside = false;
@@ -108,25 +108,25 @@ bool datViewManager::SendMouseEvent(datMouseEvent const& ev) {
 
     bool isHandled = false;
 
-    if (ofMouseEventArgs::Type::Pressed == ev.type) {
+    if (ofMouseEventArgs::Type::Pressed == ev.GetType()) {
 
-        if (OF_MOUSE_BUTTON_LEFT == ev.button) {
+        if (OF_MOUSE_BUTTON_LEFT == ev.GetButton()) {
             isHandled = m_viewWithMouseInside->onLeftMouseButtonDown(ev);
         }
-        else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
+        else if (OF_MOUSE_BUTTON_RIGHT == ev.GetButton()) {
             isHandled = m_viewWithMouseInside->onRightMouseButtonDown(ev);
         }
     }
-    else if (ofMouseEventArgs::Type::Released == ev.type) {
+    else if (ofMouseEventArgs::Type::Released == ev.GetType()) {
 
-        if (OF_MOUSE_BUTTON_LEFT == ev.button) {
+        if (OF_MOUSE_BUTTON_LEFT == ev.GetButton()) {
             isHandled = m_viewWithMouseInside->onLeftMouseButtonUp(ev);
         }
-        else if (OF_MOUSE_BUTTON_RIGHT == ev.button) {
+        else if (OF_MOUSE_BUTTON_RIGHT == ev.GetButton()) {
             isHandled = m_viewWithMouseInside->onRightMouseButtonUp(ev);
         }
     }
-    else if (ofMouseEventArgs::Type::Moved == ev.type) {
+    else if (ofMouseEventArgs::Type::Moved == ev.GetType()) {
         m_viewWithMouseInside->onMouseMotion(ev);
     }
 
@@ -134,7 +134,7 @@ bool datViewManager::SendMouseEvent(datMouseEvent const& ev) {
 }
 
 
-void datViewManager::DoDrawInternal(datView& view) const {
+void datViewManager::DoDrawInternal(datRenderer& renderer, datView& view) const {
 
     if (!view.IsVisible())
         return;
@@ -144,12 +144,14 @@ void datViewManager::DoDrawInternal(datView& view) const {
     for (auto& pChild : view.m_views) {
 
         if (nullptr != pChild) {
-            DoDrawInternal(*pChild);
+            DoDrawInternal(renderer, *pChild);
         }
     }
 }
 
 
-void datViewManager::DoDraw() {
-    DoDrawInternal(GetMainView());
+void datViewManager::DoDraw(datRenderer& renderer) {
+
+    ofDisableDepthTest();
+    DoDrawInternal(renderer, GetMainView());
 }

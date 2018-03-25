@@ -29,13 +29,16 @@ private:
     SelectionMode m_mode;
 
     ofxPanel m_panel;
-    datofxRadioButton m_radio1;
-    datofxRadioButton m_radio2;
-    datofxRadioButton m_radio3;
-    datofxRadioButton m_radio4;
-    datofxRadioButton m_radio5;
+    datofxRadioButton m_cursorTypeRadio1;
+    datofxRadioButton m_cursorTypeRadio2;
+    datofxRadioButton m_cursorTypeRadio3;
+    datofxRadioButton m_cursorTypeRadio4;
+    datofxRadioButton m_cursorTypeRadio5;
     ofParameter<ofColor> m_appBackgroundColor;
     ofParameter<bool> m_boundingBoxDisplay;
+    datofxRadioButton m_cameraTypeRadio1;
+    datofxRadioButton m_cameraTypeRadio2;
+    ofParameter<bool> m_twoViewports;
 
 private:
     void selectObjectsAndClearState();
@@ -43,6 +46,7 @@ private:
     void updateSelectionMode(datMouseEvent const& ev);
     void setBackgroundColor(ofColor& color) { GetRenderer().SetBackgroundColor(color); }
     void setBoundingBoxDisplay(bool& yesNo) { GetRenderer().SetDrawBoundingBox(yesNo); }
+    void setUseTwoViewports(bool& yesNo) { GetRenderer().SetUseTwoViewports(yesNo); }
 
 protected:
     virtual void onStartTool() override;

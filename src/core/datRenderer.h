@@ -12,6 +12,18 @@
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
+// Simple viewport class
+//=======================================================================================
+struct datViewport {
+
+public:
+    ofEasyCam camera;
+    ofRectangle rect;
+
+    ofPoint GetCenter() const { return rect.getCenter(); }
+};
+
+//=======================================================================================
 // Class that takes care of rendering graphical objects to screen
 // The app is expected to hold the renderer
 //=======================================================================================
@@ -29,12 +41,19 @@ public:
 
 private:
     datScene& m_scene;
-    
+    std::vector<datGeometry*> m_transients;
+    std::vector<datViewport> m_viewports;
+
     std::set<datId> m_neverDraw;
     datDisplayParams m_activeDisplayParams;
     CursorType m_activeCursorType;
     bool m_drawBoundingBox;
     bool m_drawSelectedInHilite;
+
+private:
+    void AddViewport();
+    void DrawCursorType() const;
+    void DrawBoundingBox(datGeometry const& geometry) const;
 
 public:
     datRenderer(datScene& scene);
@@ -42,10 +61,19 @@ public:
 
     datScene& GetScene() { return m_scene; }
 
-    void Render() const;
-    void DrawCursorType() const;
-    void DrawGeometry(datGeometry const& geometry, bool useDisplayParams = true) const;
-    void DrawBoundingBox(datGeometry const& geometry) const;
+    datViewport& GetFirstViewport() { return m_viewports[0]; }
+    datViewport& GetViewport(size_t index)  { assert(index < m_viewports.size()); return m_viewports[index]; }
+    size_t GetViewportIndex(ofPoint const& viewPoint) const;
+    void SetUseTwoViewports(bool yesNo);
+    bool GetUseTwoViewports() const { return 2 == m_viewports.size(); }
+    void ResizeViewports();
+    void SetUseOrthoCamera(bool yesNo); // true = orthographic, false = perspective
+
+
+    void Render();
+
+    void AddTransient(datGeometry* transient) { m_transients.push_back(transient); }
+    void ClearTransients() { m_transients.clear(); }
 
     void SetNeverDraw(std::set<datId> const& ids) { m_neverDraw = ids; }
     void ClearNeverDraw() { m_neverDraw.clear(); }

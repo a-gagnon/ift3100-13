@@ -26,11 +26,14 @@ struct datLocalization {
     static std::string SelectTool_BackgroundColor() { return "Background color"; }
     static std::string SelectTool_BoundingBox()     { return "Display bounding box"; }
     static std::string SelectTool_Tooltip()         { return "Select tool"; }
+    static std::string SelectTool_CameraOrtho()     { return "'6': Orthographic cam."; }
+    static std::string SelectTool_CameraPerspective() { return "'7': Perspective cam."; }
     static std::string SelectTool_CursorNormal()    { return "'1': Normal cursor"; }
     static std::string SelectTool_CursorCircle()    { return "'2': Circle"; }
     static std::string SelectTool_CursorX()         { return "'3': X"; }
     static std::string SelectTool_CursorCross()     { return "'4': Cross"; }
     static std::string SelectTool_CursorTriangle()  { return "'5': Triangle"; }
+    static std::string SelectTool_TwoViewports()    { return "Two viewports"; }
 
     static std::string Redo()                       { return "Redo"; }
     static std::string Undo()                       { return "Undo"; }

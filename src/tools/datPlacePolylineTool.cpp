@@ -36,7 +36,6 @@ void datPlacePolylineTool::onExitTool() {
 }
 
 
-
 void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
 
     if (2 <= m_polyline.size()) {
@@ -62,22 +61,24 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
     }
 
     m_polyline.clear();
+    GetRenderer().ClearTransients();
+    m_transient = nullptr;
 }
 
 
 void datPlacePolylineTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-    if (2 <= m_polyline.size() && datEpsilon > m_polyline[m_polyline.size() - 2].squareDistance(ev)) {
+    if (2 <= m_polyline.size() && datEpsilon > m_polyline[m_polyline.size() - 2].squareDistance(ev.GetWorldPoint())) {
         saveAndClearShape(false);
         return;
     }
 
     // Add first point twice and use the last one as dynamic
     if (0 == m_polyline.size())
-        m_polyline.addVertex(ev);
+        m_polyline.addVertex(ev.GetWorldPoint());
 
-    m_polyline.addVertex(ev);
-
+    m_polyline.addVertex(ev.GetWorldPoint());
+    updateTransient();
 }
 
 
@@ -94,19 +95,24 @@ void datPlacePolylineTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 
     if (0 < m_polyline.size()) {
-        m_polyline[m_polyline.size() - 1] = ev;
+        m_polyline[m_polyline.size() - 1] = ev.GetWorldPoint();
+        updateTransient();
     }
 }
 
 
-void datPlacePolylineTool::onDraw() {
+void datPlacePolylineTool::updateTransient() {
 
-    if (0 < m_polyline.size()) {
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
-        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
-        GetRenderer().DrawGeometry(*geometry);
+    if (nullptr == m_transient) {
+        m_transient = datGeometry::Create(m_polyline);
+        GetRenderer().AddTransient(m_transient.get());
     }
 
+    m_transient->GetAsPolyline() = m_polyline;
+    m_transient->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+}
+
+void datPlacePolylineTool::onDraw() {
     m_panel.draw();
 }
 

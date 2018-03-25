@@ -60,7 +60,7 @@ void datPlaceTextTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceTextTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev;
+    m_position = ev.GetViewPoint();
 }
 
 

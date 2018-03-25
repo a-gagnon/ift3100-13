@@ -50,7 +50,7 @@ void datPlaceModelTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
     if (!m_modelsToPlace.empty()) {
 
         ofxAssimpModelLoader const& model = m_modelsToPlace.back();
-        const ofVec2f position = ev;
+        const ofVec2f position = ev.GetViewPoint();
 
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(model);
         GetRenderer().GetScene().InsertGeometry(std::move(geometry));
@@ -80,7 +80,7 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev;
+    m_position = ev.GetViewPoint();
 }
 
 

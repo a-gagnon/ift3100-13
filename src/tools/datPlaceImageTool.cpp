@@ -54,7 +54,7 @@ void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
     if (!m_imagesToPlace.empty()) {
 
         ofImage const& image = m_imagesToPlace.back();
-        const ofVec2f position = ev;
+        const ofVec2f position = ev.GetViewPoint();
         datImage wrappedImage(image, position, m_paramWidth, m_paramHeight);
 
         std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
@@ -85,7 +85,7 @@ void datPlaceImageTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceImageTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev;
+    m_position = ev.GetViewPoint();
 }
 
 
