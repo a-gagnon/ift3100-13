@@ -10,6 +10,7 @@ BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
 // Defines a range in 3d that the geometry occupies
+// This box should be aligned with the axis!
 //=======================================================================================
 struct datBoundingBox {
 
@@ -26,13 +27,17 @@ public:
 
     void Init(ofPoint const& point);
     void InitInvalid();
+    bool IsValid() const;
 
     void Extend(ofPoint const& point);
+    void Extend(datBoundingBox const& box);
     void Expand(float delta);
     void Multiply(float factor);
     void Translate(ofPoint const& offset);
 
-    bool Intersects(datBoundingBox const& other, bool strictlyInside) const;
+    bool ContainsInclusive(ofPoint const& point) const;
+    bool ContainsInclusive(datBoundingBox const& box) const;
+    bool Intersects(datBoundingBox const& box, bool strictlyInsideOrEqual) const;
 
     ofPoint GetCenter() const;
     std::vector<ofPoint> Get8Corners() const;

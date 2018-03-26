@@ -136,7 +136,7 @@ void datGeometry::draw() const {
             if (m_polylineData.isClosed()) {
                 ofBeginShape();
                 for (uint32_t i = 0; i < m_polylineData.getVertices().size(); ++i) {
-                    ofVertex(m_polylineData[i].x, m_polylineData[i].y);
+                    ofVertex(m_polylineData[i].x, m_polylineData[i].y, m_polylineData[i].z);
                 }
                 ofEndShape();
             }

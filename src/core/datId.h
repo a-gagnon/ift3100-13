@@ -25,6 +25,7 @@ public:
     bool operator< (datId const& rhs) const { return m_id < rhs.m_id; }
     bool operator==(datId const& rhs) const { return m_id == rhs.m_id; }
     bool IsValid() const { return 0 != m_id; }
+    void Invalidate() { m_id = 0; }
 };
 
 END_DAT_NAMESPACE

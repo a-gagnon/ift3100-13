@@ -32,6 +32,12 @@ void datScene::CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) c
 }
 
 
+void datScene::RecalculateBVHierarchy() {
+    const std::vector<datGeometry const*> geometries = QueryAllGeometries();
+    m_boundingVolumeHierarchy.Build(geometries);
+}
+
+
 void datScene::SetWorldToView(datTransform const& transform) {
     m_worldToView = transform;
     m_viewToWorld.makeInvertOf(transform);
@@ -62,6 +68,7 @@ datId datScene::InsertGeometry(std::unique_ptr<datGeometry>&& geometry) {
     m_geometryMap.insert(std::make_pair(id, std::move(geometry)));
     geometry.reset();
 
+    RecalculateBVHierarchy();
     ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     return id;
 }
@@ -80,6 +87,7 @@ void datScene::UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>
     }
 
     geometries.clear();
+    RecalculateBVHierarchy();
     ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
 }
 
@@ -95,6 +103,7 @@ void datScene::DeleteMultipleGeometries(std::set<datId> const& ids) {
         m_geometryMap.erase(id);
     }
 
+    RecalculateBVHierarchy();
     ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
 }
 
@@ -105,6 +114,7 @@ void datScene::Undo() {
         m_redoStack.push_back(std::move(m_geometryMap));
         m_geometryMap = std::move(m_undoStack.back());
         m_undoStack.pop_back();
+        RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }
 }
@@ -116,6 +126,7 @@ void datScene::Redo() {
         m_undoStack.push_back(std::move(m_geometryMap));
         m_geometryMap = std::move(m_redoStack.back());
         m_redoStack.pop_back();
+        RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }
 }
@@ -163,12 +174,10 @@ void datScene::ClearSelection() {
 }
 
 
-std::vector<datGeometry const*> datScene::QueryGeometries() const {
+std::vector<datGeometry const*> datScene::QueryAllGeometries() const {
 
     std::vector<datGeometry const*> results;
 
-    //&&AG return all elements for now.
-    // We might want to filter out based on the position of the element and current view parameters!
     for (auto const& entry : m_geometryMap) {
         results.push_back(entry.second.get());
     }
@@ -179,15 +188,11 @@ std::vector<datGeometry const*> datScene::QueryGeometries() const {
 
 std::vector<datGeometry const*> datScene::QueryGeometries(datBoundingBox const& box, bool strictlyInside) const {
 
+    const std::set<datId> ids = m_boundingVolumeHierarchy.Query(box, strictlyInside);
     std::vector<datGeometry const*> results;
 
-    for (auto const& entry : m_geometryMap) {
-
-        datBoundingBox geometryBox = entry.second->GetBoundingBox();
-        entry.second->GetTransform().Multiply(geometryBox);
-        
-        if (box.Intersects(geometryBox, strictlyInside))
-            results.push_back(entry.second.get());
+    for (auto const& id : ids) {
+        results.push_back(m_geometryMap.find(id)->second.get());
     }
 
     return results;

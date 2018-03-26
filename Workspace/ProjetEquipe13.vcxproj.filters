@@ -107,6 +107,9 @@
     <ClCompile Include="..\src\tools\datViewManipTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datBVHierarchy.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -263,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="..\src\tools\datViewManipTool.h">
       <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datBVHierarchy.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

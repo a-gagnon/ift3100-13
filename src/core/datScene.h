@@ -9,6 +9,7 @@
 #include "datEvents.h"
 #include "datGeometry.h"
 #include "datTransform.h"
+#include "datBVHierarchy.h"
 
 BEGIN_DAT_NAMESPACE
 
@@ -30,12 +31,15 @@ private:
     ofEvent<void> m_onUndoRedoStatusChangedEvent;
 
     GeometryMap m_geometryMap;
+    datBVHierarchy m_boundingVolumeHierarchy;
+
     std::set<datId> m_selectionSet;
     ofEvent<void> m_onSelectionChangedEvent;
 
 private:
     datId GetNextId();
     void CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) const;
+    void RecalculateBVHierarchy();
     
 public:
     datScene();
@@ -64,8 +68,7 @@ public:
     void SetSelection(std::set<datId> const& ids);
     void ClearSelection();
 
-    // Returns all geometries
-    std::vector<datGeometry const*> QueryGeometries() const;
+    std::vector<datGeometry const*> QueryAllGeometries() const;
     std::vector<datGeometry const*> QueryGeometries(datBoundingBox const& box, bool strictlyInside) const;
 };
 

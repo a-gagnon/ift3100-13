@@ -173,7 +173,7 @@ void datRenderer::Render() {
 
     for (auto& vp : m_viewports) {
 
-        std::vector<datGeometry const*> geometries = m_scene.QueryGeometries();
+        std::vector<datGeometry const*> geometries = m_scene.QueryAllGeometries(); //&&AG needswork change that to get query with bounding box
         std::vector<datGeometry const*> selectedGeometries;
         std::vector<datGeometry const*> bBoxGeometries;
 

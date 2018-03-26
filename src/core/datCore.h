@@ -13,6 +13,7 @@
 #include "datImage.h"
 #include "datLocalization.h"
 #include "datNonCopyableClass.h"
+#include "datBVHierarchy.h"
 #include "datRenderer.h"
 #include "datScene.h"
 #include "datTextString.h"

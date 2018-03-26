@@ -47,6 +47,12 @@ void datBoundingBox::InitInvalid() {
 }
 
 
+bool datBoundingBox::IsValid() const {
+    return low.x > high.x &&
+           low.y > high.y &&
+           low.z > high.z;
+}
+
 void datBoundingBox::Extend(ofPoint const& point) {
 
     low.x = MIN(low.x, point.x);
@@ -55,6 +61,16 @@ void datBoundingBox::Extend(ofPoint const& point) {
     high.x = MAX(high.x, point.x);
     high.y = MAX(high.y, point.y);
     high.z = MAX(high.z, point.z);
+}
+
+void datBoundingBox::Extend(datBoundingBox const& box) {
+
+    low.x = MIN(low.x, box.low.x);
+    low.y = MIN(low.y, box.low.y);
+    low.z = MIN(low.z, box.low.z);
+    high.x = MAX(high.x, box.high.x);
+    high.y = MAX(high.y, box.high.y);
+    high.z = MAX(high.z, box.high.z);
 }
 
 
@@ -118,60 +134,32 @@ std::vector<ofPoint> datBoundingBox::Get8Corners() const {
     }
 
 
+bool datBoundingBox::ContainsInclusive(ofPoint const& point) const {
 
-namespace {
-
-    void getLowHighOnVector(float& min, float& max, ofVec3f const& vector, ofPoint const& refPoint, std::vector<ofPoint> const& points) {
-
-        min = std::numeric_limits<float>::max();
-        max = std::numeric_limits<float>::lowest();
-
-        for (auto const& point : points) {
-            const ofVec3f refToPoint(point.x - refPoint.x, point.y - refPoint.y, point.z - refPoint.z);
-            const float distance = vector.dot(refToPoint);
-
-            if (min > distance)
-                min = distance;
-            if (max < distance)
-                max = distance;
-        }
-    }
-    
-};
+    return  low.x <= point.x && point.x <= high.x &&
+            low.y <= point.y && point.y <= high.y &&
+            low.z <= point.z && point.z <= high.z;
+}
 
 
-bool datBoundingBox::Intersects(datBoundingBox const& other, bool strictlyInside) const {
+bool datBoundingBox::ContainsInclusive(datBoundingBox const& box) const {
+    return Intersects(box, true);
+}
 
-    // An implementation following the ideas of
-    // https://gamedev.stackexchange.com/questions/25397/obb-vs-obb-collision-detection
-    // For each pair of points in the first box, we create a normalized vector
-    // We get the 'range' of the first box on that vector and compare with the second
-    // If there are no intersections between ranges, it means we don't have any overlap
 
-    const std::vector<ofPoint> pointsA = Get8Corners();
-    const std::vector<ofPoint> pointsB = other.Get8Corners();
+bool datBoundingBox::Intersects(datBoundingBox const& box, bool strictlyInsideOrEqual) const {
 
-    for (uint32_t i = 1; i < pointsA.size(); ++i) {
-        ofVec3f ref(pointsA[i].x - pointsA[i - 1].x,
-                    pointsA[i].y - pointsA[i - 1].y,
-                    pointsA[i].z - pointsA[i - 1].z);
-        ref.normalize();
+    if (high.x < box.low.x || low.x > box.high.x ||
+        high.y < box.low.y || low.y > box.high.y ||
+        high.z < box.low.z || high.z > box.high.z)
+        return false;
 
-        // project all points of box1 and search for min max
-        float minA, maxA;
-        getLowHighOnVector(minA, maxA, ref, pointsA[i - 1], pointsA);
+    if (!strictlyInsideOrEqual)
+        return true;
 
-        float minB, maxB;
-        getLowHighOnVector(minB, maxB, ref, pointsA[i - 1], pointsB);
-
-        if (maxA < minB || maxB < minA)
-            return false; // No intersection
-
-        if (strictlyInside && (minA > minB || maxA < maxB))
-            return false; // Not all other projected points are inside current box
-    }
-
-    return true;
+    return low.x <= box.low.x && box.high.x <= high.x &&
+        low.y <= box.low.y && box.high.y <= high.y &&
+        low.z <= box.low.z && box.high.z <= high.z;
 }
 
 
