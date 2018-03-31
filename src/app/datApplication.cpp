@@ -329,20 +329,16 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
     size_t viewportIdx = GetRenderer().GetViewportIndex(ev);
     datViewport& vp = GetRenderer().GetViewport(viewportIdx);
 
-//&&AG needswork. some kind of projection to get a valid 3d point
-
     // Calculate point in app coordinates
-    float xApp = ofGetWidth() * (ev.x - vp.rect.x) / vp.rect.width;
-    float yApp = ofGetHeight() * (ev.y - vp.rect.y) / vp.rect.height;
 
+    // Define ray in screen space, with NDC z
     ofPoint ray[2];
-    // Define ray in screen space
-    ray[0] = ofVec3f(xApp, yApp, -1);
-    ray[1] = ofVec3f(xApp, yApp, 1);
+    ray[0] = ofVec3f(ev.x, ev.y, -1);
+    ray[1] = ofVec3f(ev.x, ev.y, 1);
 
     // Transform ray into world space
-    ray[0] = vp.camera.screenToWorld(ray[0]);
-    ray[1] = vp.camera.screenToWorld(ray[1]);
+    ray[0] = vp.camera.screenToWorld(ray[0], vp.rect);
+    ray[1] = vp.camera.screenToWorld(ray[1], vp.rect);
 
     ofPoint vec = ray[1] - ray[0];
     vec.normalize();
