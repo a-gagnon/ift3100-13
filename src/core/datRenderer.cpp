@@ -179,6 +179,10 @@ void datRenderer::Render() {
 
         vp.camera.begin(vp.rect);
 
+        // Draw cameras
+        for (auto const& vp : m_viewports)
+            vp.camera.draw();
+
         for (auto const& geometry : geometries) {
 
             if (IsNeverDraw(geometry->GetId()))

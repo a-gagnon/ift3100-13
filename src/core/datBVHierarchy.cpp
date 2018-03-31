@@ -28,6 +28,9 @@ void datBVHierarchy::Build(std::vector<datGeometry const*> geometries) {
 
     Clear();
 
+    if (geometries.empty())
+        return;
+
     for (auto const& geometry : geometries) {
         m_box.Extend(geometry->GetBoundingBox());
     }
@@ -72,6 +75,9 @@ void datBVHierarchy::Build(std::vector<datGeometry const*> geometries) {
 
 
 void datBVHierarchy::_Query(std::set<datId>& ids, datBoundingBox const& box, bool strictlyInside) const {
+
+    if (!m_box.IsValid())
+        return;
 
     if (box.Intersects(m_box, strictlyInside)) {
 
