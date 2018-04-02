@@ -19,21 +19,29 @@ struct datLocalization {
 	static std::string AddTextureTool_Tooltip()		{ return "Add texture to image"; }
     static std::string ExportImageTool_Tooltip()    { return "Export image"; }
     static std::string PlaceImageTool_Tooltip()     { return "Place image tool"; }
+    static std::string PlaceLightTool_Point()       { return "Point"; }
+    static std::string PlaceLightTool_Area()        { return "Area"; }
+    static std::string PlaceLightTool_Spot()        { return "Spot"; }
+    static std::string PlaceLightTool_Directional() { return "Directional"; }
+    static std::string PlaceLightTool_Tooltip()     { return "Place light tool"; }
+    static std::string PlaceLightTool_ColorAmbient()    { return "Color ambient"; }
+    static std::string PlaceLightTool_ColorDiffuse()    { return "Color diffuse"; }
+    static std::string PlaceLightTool_ColorSpecular()   { return "Color specular"; }
+
     static std::string PlaceModelTool_Tooltip()     { return "Place model tool"; }
     static std::string PlacePolylineTool_Tooltip()  { return "Place polyline tool"; }
     static std::string PlaceTextTool_Placeholder()  { return "Placeholder"; }
     static std::string PlaceTextTool_Tooltip()      { return "Place text tool"; }
     static std::string SelectTool_BackgroundColor() { return "Background color"; }
-    static std::string SelectTool_BoundingBox()     { return "Display bounding box"; }
     static std::string SelectTool_Tooltip()         { return "Select tool"; }
-    static std::string SelectTool_CameraOrtho()     { return "'6': Orthographic cam."; }
-    static std::string SelectTool_CameraPerspective() { return "'7': Perspective cam."; }
     static std::string SelectTool_CursorNormal()    { return "'1': Normal cursor"; }
     static std::string SelectTool_CursorCircle()    { return "'2': Circle"; }
     static std::string SelectTool_CursorX()         { return "'3': X"; }
     static std::string SelectTool_CursorCross()     { return "'4': Cross"; }
     static std::string SelectTool_CursorTriangle()  { return "'5': Triangle"; }
-    static std::string SelectTool_TwoViewports()    { return "Two viewports"; }
+    static std::string TwoViewports_Tooltip()       { return "Toggle two viewports"; }
+    static std::string BoundingBox_ToolTip()        { return "Toggle bounding box display"; }
+    static std::string Orthographic_Tooltip()       { return "Toggle orthographic camera"; }
 
     static std::string Redo()                       { return "Redo"; }
     static std::string Undo()                       { return "Undo"; }

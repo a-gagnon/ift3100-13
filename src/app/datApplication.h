@@ -7,6 +7,7 @@
 #include "../core/datCore.h"
 #include "../tools/datToolManager.h"
 #include "../tools/datPlacePolylineTool.h"
+#include "../tools/datPlaceLightTool.h"
 #include "../tools/datPlaceTextTool.h"
 #include "../tools/datSelectTool.h"
 #include "../tools/datPlaceModelTool.h"
@@ -17,6 +18,7 @@
 #include "../tools/datViewManipTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
+#include "../ui/datMenu.h"
 
 BEGIN_DAT_NAMESPACE
 

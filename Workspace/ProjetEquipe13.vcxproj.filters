@@ -110,6 +110,12 @@
     <ClCompile Include="..\src\core\datBVHierarchy.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceLightTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\datMenu.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -269,6 +275,12 @@
     </ClInclude>
     <ClInclude Include="..\src\core\datBVHierarchy.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceLightTool.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\datMenu.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

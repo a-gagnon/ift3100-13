@@ -16,7 +16,7 @@ struct datView : ofRectangle, datNonCopyableClass {
 DEFINE_T_SUPER(ofRectangle)
 friend struct datViewManager;
 
-private:
+protected:
     datView* m_pParentView;
     std::vector<std::unique_ptr<datView>> m_views;
 
@@ -37,9 +37,13 @@ protected:
     virtual void onHover();
     virtual void onBlur();
     virtual void onDraw();
+    virtual void onViewAdded();
+    virtual void onViewRemoved();
 
 public:
     virtual ~datView() {}
+
+    std::vector<std::unique_ptr<datView>> const& GetViews() const { return m_views; }
 
     datView* GetParentView() const { return m_pParentView; }
     // Takes ownership of the view using a unique_ptr

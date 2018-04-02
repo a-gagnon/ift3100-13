@@ -23,6 +23,7 @@ private:
     bool m_isMouseDrag;
     bool m_hasFirstPoint;
     ofVec2f m_downPoint;
+    ofRectangle m_downPointRect;
 
     ofColor m_color;
     ofRectangle m_rectangle;
@@ -35,18 +36,12 @@ private:
     datofxRadioButton m_cursorTypeRadio4;
     datofxRadioButton m_cursorTypeRadio5;
     ofParameter<ofColor> m_appBackgroundColor;
-    ofParameter<bool> m_boundingBoxDisplay;
-    datofxRadioButton m_cameraTypeRadio1;
-    datofxRadioButton m_cameraTypeRadio2;
-    ofParameter<bool> m_twoViewports;
 
 private:
-    void selectObjectsAndClearState();
+    void selectObjectsAndClearState(datMouseEvent const& ev);
     void updateRectangle(datMouseEvent const& ev);
     void updateSelectionMode(datMouseEvent const& ev);
     void setBackgroundColor(ofColor& color) { GetRenderer().SetBackgroundColor(color); }
-    void setBoundingBoxDisplay(bool& yesNo) { GetRenderer().SetDrawBoundingBox(yesNo); }
-    void setUseTwoViewports(bool& yesNo) { GetRenderer().SetUseTwoViewports(yesNo); }
 
 protected:
     virtual void onStartTool() override;

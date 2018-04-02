@@ -8,6 +8,8 @@
 
 BEGIN_DAT_NAMESPACE
 
+struct datViewport;
+
 //=======================================================================================
 // Basic wrapper around mouse events
 // Also contains ctrl/alt/shift key modifiers
@@ -15,6 +17,7 @@ BEGIN_DAT_NAMESPACE
 struct datMouseEvent {
 
 public:
+    datViewport* m_viewport;
     ofMouseEventArgs m_ofEvent;
     ofPoint m_viewPoint;
     ofPoint m_worldPoint;
@@ -26,7 +29,8 @@ public:
     // Create from a ofMouseEvent
     explicit datMouseEvent(ofMouseEventArgs const& ev) : m_ofEvent(ev) {}
 
-    void InitEvent(ofPoint const& viewPoint, ofPoint const& worldPoint, bool isCtrlKey, bool isShiftKey, bool isAltKey) {
+    void InitEvent(datViewport& vp, ofPoint const& viewPoint, ofPoint const& worldPoint, bool isCtrlKey, bool isShiftKey, bool isAltKey) {
+        m_viewport = &vp;
         m_viewPoint = viewPoint;
         m_worldPoint = worldPoint;
         m_isCtrlKey = isCtrlKey;
@@ -34,6 +38,7 @@ public:
         m_isAltKey = isAltKey;
     }
 
+    datViewport& GetViewport() const { return *m_viewport;  }
     ofPoint const& GetViewPoint() const { return m_viewPoint; }
     ofPoint const& GetWorldPoint() const { return m_worldPoint; }
     bool IsCtrlKey() const { return m_isCtrlKey; }

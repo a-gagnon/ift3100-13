@@ -10,8 +10,6 @@ USING_DAT_NAMESPACE
 
 datScene::datScene():
     m_nextId(1) {
-    m_worldToView.makeIdentityMatrix();
-    m_viewToWorld.makeIdentityMatrix();
 }
 
 
@@ -35,12 +33,6 @@ void datScene::CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) c
 void datScene::RecalculateBVHierarchy() {
     const std::vector<datGeometry const*> geometries = QueryAllGeometries();
     m_boundingVolumeHierarchy.Build(geometries);
-}
-
-
-void datScene::SetWorldToView(datTransform const& transform) {
-    m_worldToView = transform;
-    m_viewToWorld.makeInvertOf(transform);
 }
 
 

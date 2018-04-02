@@ -39,7 +39,8 @@ public:
         Mesh,
         TextString,
         Image,
-        AssimpModel
+        AssimpModel,
+        Light
     };
 
 private:
@@ -57,6 +58,7 @@ private:
         datTextString m_textStringData;
         datImage m_imageData;
         ofxAssimpModelLoader m_modelData;
+        ofLight m_lightData;
     };
 
 private:
@@ -65,6 +67,7 @@ private:
     datGeometry(datTextString const& textString);
     datGeometry(datImage const& image);
     datGeometry(ofxAssimpModelLoader const& model);
+    datGeometry(ofLight const& light);
     datGeometry(datGeometry const&);
     datGeometry& operator= (datGeometry const&) = delete;
 
@@ -75,6 +78,7 @@ public:
     static std::unique_ptr<datGeometry> Create(ofMesh const& mesh);
     static std::unique_ptr<datGeometry> Create(datTextString const& textString);
     static std::unique_ptr<datGeometry> Create(datImage const& image);
+    static std::unique_ptr<datGeometry> Create(ofLight const& light);
     static std::unique_ptr<datGeometry> Create(ofxAssimpModelLoader const& model);
 
     std::unique_ptr<datGeometry> Clone() const;
@@ -102,6 +106,7 @@ public:
     datTextString& GetAsTextString()    { assert(GeometryType::TextString == m_type); return m_textStringData; }
     datImage& GetAsImage()              { assert(GeometryType::Image == m_type); return m_imageData; }
     ofxAssimpModelLoader& GetAsModel()  { assert(GeometryType::AssimpModel == m_type); return m_modelData; }
+    ofLight& GetAsLight()               { assert(GeometryType::Light == m_type); return m_lightData; }
 };
 
 

@@ -16,10 +16,14 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_EXPORTIMAGE "btn_exportImageTool"
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
 #define DAT_BUTTON_NAME_ADDTEXTURE "btn_addTextureTool"
+#define DAT_BUTTON_NAME_PLACELIGHT "btn_placeLightTool"
 
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 #define DAT_BUTTON_NAME_UNDO "btn_undo"
 #define DAT_BUTTON_NAME_REDO "btn_redo"
+#define DAT_BUTTON_NAME_VIEWPORTS "btn_Viewports"
+#define DAT_BUTTON_NAME_BBOX "btn_BoundingBox"
+#define DAT_BUTTON_NAME_ORTHO_CAM "btn_Orthographic"
 
 
 namespace {
@@ -34,6 +38,11 @@ namespace {
     void onPlacePolylineToolStarted(datEditTool& editTool) {
         datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEPOLYLINE);
         static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlacePolylineTool*>(&editTool));
+    }
+
+    void onPlaceLightToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACELIGHT);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceLightTool*>(&editTool));
     }
 
     void onPlaceTextToolStarted(datEditTool& editTool) {
@@ -75,6 +84,10 @@ namespace {
         datApplication::GetApp().GetToolManager().StartTool(new datPlacePolylineTool());
     }
 
+    void onStartPlaceLightToolPressed(datButton& button) {
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceLightTool());
+    }
+
     void onStartPlaceTextToolPressed(datButton& button) {
         datApplication::GetApp().GetToolManager().StartTool(new datPlaceTextTool());
     }
@@ -99,6 +112,21 @@ namespace {
         datApplication::GetApp().GetToolManager().StartTool(new datAddTextureTool());
     }
 
+    void onViewportsButtonPressed(datButton& button) {
+        datApplication::GetApp().GetRenderer().SetUseTwoViewports(!button.IsToggled());
+        button.SetToggle(!button.IsToggled());
+    }
+
+    void onBoundingBoxButtonPressed(datButton& button) {
+        datApplication::GetApp().GetRenderer().SetDrawBoundingBox(!button.IsToggled());
+        button.SetToggle(!button.IsToggled());
+    }
+
+    void onOrthoCamButtonPressed(datButton& button) {
+        datApplication::GetApp().GetRenderer().SetUseOrthoCamera(!button.IsToggled());
+        button.SetToggle(!button.IsToggled());
+    }
+
 
     void onDeleteSelectionPressed(datButton& button) {
 
@@ -115,13 +143,13 @@ namespace {
 
         datScene& scene = datApplication::GetApp().GetScene();
         std::set<datId> selectedIds = scene.GetSelection();
-        const bool isVisible = !selectedIds.empty();
+        const bool isEnabled = !selectedIds.empty();
 
         auto pDeleteSelectionButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_DELETESELECTED);
-        static_cast<datButton*>(pDeleteSelectionButton)->SetVisible(isVisible);
+        static_cast<datButton*>(pDeleteSelectionButton)->SetEnabled(isEnabled);
 
         auto pEditAttributesButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_EDITATTRIBUTES);
-        static_cast<datButton*>(pEditAttributesButton)->SetVisible(isVisible);
+        static_cast<datButton*>(pEditAttributesButton)->SetEnabled(isEnabled);
 
 
         bool hasImage = false;
@@ -133,7 +161,7 @@ namespace {
         }
 
         auto pAddTextureButton = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_ADDTEXTURE);
-        static_cast<datButton*>(pAddTextureButton)->SetVisible(isVisible && hasImage);
+        static_cast<datButton*>(pAddTextureButton)->SetVisible(isEnabled && hasImage);
     }
     // Called when undo/redo status changed
     void onUndoRedoStatusChanged() {
@@ -191,113 +219,80 @@ void datApplication::SetupUI() {
     mainView.setWidth(ofGetWidth());
     mainView.setHeight(ofGetHeight());
 
-    // Select tool
-    datButton* pSelectToolButton = new datButton(10, 20, 40, 40);
+    // Menu for tools (always present)
+    datMenu* pToolMenu = new datMenu(10, 10, datMenu::Layout::Vertical);
+    mainView.AddView(pToolMenu);
+
+    datButton* pSelectToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_SELECT, datLocalization::SelectTool_Tooltip(), "cursor.png");
     ofAddListener(pSelectToolButton->GetOnPressedEvent(), onStartSelectToolPressed);
-    pSelectToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("cursor.png"));
-    pSelectToolButton->SetTooltip(datLocalization::SelectTool_Tooltip());
-    pSelectToolButton->SetName(DAT_BUTTON_NAME_SELECT);
-    mainView.AddView(pSelectToolButton);
 
-    // Place polyline tool
-    datButton* pPolylineToolButton = new datButton(10, 65, 40, 40);
+    datButton* pPolylineToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACEPOLYLINE, datLocalization::PlacePolylineTool_Tooltip(), "pencil.png");
     ofAddListener(pPolylineToolButton->GetOnPressedEvent(), onStartPlacePolylineToolPressed);
-    pPolylineToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("pencil.png"));
-    pPolylineToolButton->SetTooltip(datLocalization::PlacePolylineTool_Tooltip());
-    pPolylineToolButton->SetName(DAT_BUTTON_NAME_PLACEPOLYLINE);
-    mainView.AddView(pPolylineToolButton);
 
-    // Place text tool
-    datButton* pWriteTextToolButton = new datButton(10, 110, 40, 40);
+    datButton* pPlaceLightToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACELIGHT, datLocalization::PlaceLightTool_Tooltip(), "add_light.png");
+    ofAddListener(pPlaceLightToolButton->GetOnPressedEvent(), onStartPlaceLightToolPressed);
+
+    datButton* pWriteTextToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACETEXT, datLocalization::PlaceTextTool_Tooltip(), "write_text.png");
     ofAddListener(pWriteTextToolButton->GetOnPressedEvent(), onStartPlaceTextToolPressed);
-    pWriteTextToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("write_text.png"));
-    pWriteTextToolButton->SetTooltip(datLocalization::PlaceTextTool_Tooltip());
-    pWriteTextToolButton->SetName(DAT_BUTTON_NAME_PLACETEXT);
-    mainView.AddView(pWriteTextToolButton);
 
-    // Insert model tool
-    datButton* pPlaceModelToolButton = new datButton(10, 155, 40, 40);
+    datButton* pPlaceModelToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACEMODEL, datLocalization::PlaceModelTool_Tooltip(), "add_model.png");
     ofAddListener(pPlaceModelToolButton->GetOnPressedEvent(), onStartPlaceModelToolPressed);
-    pPlaceModelToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_model.png"));
-    pPlaceModelToolButton->SetTooltip(datLocalization::PlaceModelTool_Tooltip());
-    pPlaceModelToolButton->SetName(DAT_BUTTON_NAME_PLACEMODEL);
-    mainView.AddView(pPlaceModelToolButton);
 
-    // Insert image tool
-    datButton* pPlaceImageToolButton = new datButton(10, 200, 40, 40);
+    datButton* pPlaceImageToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACEIMAGE, datLocalization::PlaceImageTool_Tooltip(), "add_image.png");
     ofAddListener(pPlaceImageToolButton->GetOnPressedEvent(), onStartPlaceImageToolPressed);
-    pPlaceImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
-    pPlaceImageToolButton->SetTooltip(datLocalization::PlaceImageTool_Tooltip());
-    pPlaceImageToolButton->SetName(DAT_BUTTON_NAME_PLACEIMAGE);
-    mainView.AddView(pPlaceImageToolButton);
 
-    // Export image tool
-    datButton* pExportImageToolButton = new datButton(10, 245, 40, 40);
+    datButton* pExportImageToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_EXPORTIMAGE, datLocalization::ExportImageTool_Tooltip(), "export_image.png");
     ofAddListener(pExportImageToolButton->GetOnPressedEvent(), onStartExportImageToolPressed);
-    pExportImageToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("export_image.png"));
-    pExportImageToolButton->SetTooltip(datLocalization::ExportImageTool_Tooltip());
-    pExportImageToolButton->SetName(DAT_BUTTON_NAME_EXPORTIMAGE);
-    mainView.AddView(pExportImageToolButton);
 
-    // Undo button
-    datButton* pUndoButton = new datButton(55, 20, 40, 40);
+
+    // Menu for contextual actions/tools
+    datMenu* pContextMenu = new datMenu(60, 10, datMenu::Layout::Horizontal);
+    mainView.AddView(pContextMenu);
+
+    datButton* pViewportsButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_VIEWPORTS, datLocalization::TwoViewports_Tooltip(), "screen.png");
+    ofAddListener(pViewportsButton->GetOnPressedEvent(), onViewportsButtonPressed);
+
+    datButton* pBoundingBoxButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_BBOX, datLocalization::BoundingBox_ToolTip(), "bounding_box.png");
+    ofAddListener(pBoundingBoxButton->GetOnPressedEvent(), onBoundingBoxButtonPressed);
+
+    datButton* pOrthoCamButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_ORTHO_CAM, datLocalization::Orthographic_Tooltip(), "orthographic.png");
+    ofAddListener(pOrthoCamButton->GetOnPressedEvent(), onOrthoCamButtonPressed);
+
+    datButton* pUndoButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_UNDO, datLocalization::Undo(), "undo.png");
     ofAddListener(pUndoButton->GetOnPressedEvent(), onUndoPressed);
-    pUndoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("undo.png"));
-    pUndoButton->SetTooltip(datLocalization::Undo());
-    pUndoButton->SetName(DAT_BUTTON_NAME_UNDO);
-    mainView.AddView(pUndoButton);
     pUndoButton->SetEnabled(false);
 
-    // Redo button
-    datButton* pRedoButton = new datButton(100, 20, 40, 40);
+    datButton* pRedoButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_REDO, datLocalization::Redo(), "redo.png");
     ofAddListener(pRedoButton->GetOnPressedEvent(), onRedoPressed);
-    pRedoButton->SetImage(datUtilities::LoadImageFromAssetsFolder("redo.png"));
-    pRedoButton->SetTooltip(datLocalization::Redo());
-    pRedoButton->SetName(DAT_BUTTON_NAME_REDO);
-    mainView.AddView(pRedoButton);
     pRedoButton->SetEnabled(false);
 
-    // Delete selection
-    datButton* pDeleteSelectionButton = new datButton(280, 20, 40, 40);
-    ofAddListener(pDeleteSelectionButton->GetOnPressedEvent(), onDeleteSelectionPressed);
-    pDeleteSelectionButton->SetImage(datUtilities::LoadImageFromAssetsFolder("trash_can.png"));
-    pDeleteSelectionButton->SetTooltip(datLocalization::DeleteSelectedGeometries());
-    pDeleteSelectionButton->SetName(DAT_BUTTON_NAME_DELETESELECTED);
-    mainView.AddView(pDeleteSelectionButton);
-    pDeleteSelectionButton->SetVisible(false);
+    datButton* pDeleteButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_DELETESELECTED, datLocalization::DeleteSelectedGeometries(), "trash_can.png");
+    ofAddListener(pDeleteButton->GetOnPressedEvent(), onDeleteSelectionPressed);
+    pDeleteButton->SetEnabled(false);
 
-    // Edit attributes
-    datButton* pEditAttributesToolButton = new datButton(325, 20, 40, 40);
-    ofAddListener(pEditAttributesToolButton->GetOnPressedEvent(), onStartEditAttributesToolPressed);
-    pEditAttributesToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("palette.png"));
-    pEditAttributesToolButton->SetTooltip(datLocalization::EditAttributesTool_Tooltip());
-    pEditAttributesToolButton->SetName(DAT_BUTTON_NAME_EDITATTRIBUTES);
-    mainView.AddView(pEditAttributesToolButton);
-    pEditAttributesToolButton->SetVisible(false);
+    datButton* pEditAttributes = pContextMenu->AddToolButton(DAT_BUTTON_NAME_EDITATTRIBUTES, datLocalization::EditAttributesTool_Tooltip(), "palette.png");
+    ofAddListener(pEditAttributes->GetOnPressedEvent(), onStartEditAttributesToolPressed);
+    pEditAttributes->SetEnabled(false);
 
-    // Add texture
-    datButton* pAddtextureToolButton = new datButton(370, 20, 40, 40);
-    ofAddListener(pAddtextureToolButton->GetOnPressedEvent(), onStartAddTextureToolPressed);
-    pAddtextureToolButton->SetImage(datUtilities::LoadImageFromAssetsFolder("add_image.png"));
-    pAddtextureToolButton->SetTooltip(datLocalization::AddTextureTool_Tooltip());
-    pAddtextureToolButton->SetName(DAT_BUTTON_NAME_ADDTEXTURE);
-    mainView.AddView(pAddtextureToolButton);
-    pAddtextureToolButton->SetVisible(false);
+    datButton* pAddTexture = pContextMenu->AddToolButton(DAT_BUTTON_NAME_ADDTEXTURE, datLocalization::AddTextureTool_Tooltip(), "add_image.png");
+    ofAddListener(pAddTexture->GetOnPressedEvent(), onStartAddTextureToolPressed);
+    pAddTexture->SetEnabled(false);
 
     // Register all events
-    ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
-    ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
-
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onSelectToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceLightToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceTextToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceModelToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceImagetoolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onExportImageToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onEditAttributesToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onAddTextureToolStarted);
-    
+
+    ofAddListener(GetScene().GetOnSelectionChangedEvent(), onSelectionChanged);
+    ofAddListener(GetScene().GetOnUndoRedoStatusChangedEvent(), onUndoRedoStatusChanged);
     ofAddListener(GetToolManager().GetOnSupplyEditToolEvent(), this, &datApplication::SupplyDefaultEditTool);
+
     SupplyDefaultEditTool();
 }
 
@@ -345,7 +340,7 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
     ofPoint worldPoint = ray[0] + (vec * ray[0].z);
 
     datMouseEvent datEvent(ev);
-    datEvent.InitEvent(ev, worldPoint, ofGetKeyPressed(OF_KEY_CONTROL), ofGetKeyPressed(OF_KEY_SHIFT), ofGetKeyPressed(OF_KEY_ALT));
+    datEvent.InitEvent(vp, ev, worldPoint, ofGetKeyPressed(OF_KEY_CONTROL), ofGetKeyPressed(OF_KEY_SHIFT), ofGetKeyPressed(OF_KEY_ALT));
 
 
     if (ofMouseEventArgs::Type::Pressed == ev.type && ev.button == OF_MOUSE_BUTTON_MIDDLE) {

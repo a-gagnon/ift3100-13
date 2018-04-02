@@ -45,6 +45,15 @@ datGeometry::datGeometry(ofxAssimpModelLoader const& model) :
     CalculateBoundingBox();
 }
 
+
+datGeometry::datGeometry(ofLight const& light) :
+    m_type(GeometryType::Light),
+    m_lightData(light) {
+    m_transform.makeIdentityMatrix();
+    CalculateBoundingBox();
+}
+
+
 datGeometry::datGeometry(datGeometry const& rhs) {
     memcpy(this, &rhs, sizeof(datGeometry));
 }
@@ -77,6 +86,12 @@ std::unique_ptr<datGeometry> datGeometry::Create(datImage const& image) {
 
 std::unique_ptr<datGeometry> datGeometry::Create(ofxAssimpModelLoader const& model) {
     auto ptr = std::unique_ptr<datGeometry>(new datGeometry(model));
+    return std::move(ptr);
+}
+
+
+std::unique_ptr<datGeometry> datGeometry::Create(ofLight const& light) {
+    auto ptr = std::unique_ptr<datGeometry>(new datGeometry(light));
     return std::move(ptr);
 }
 
@@ -120,6 +135,11 @@ void datGeometry::CalculateBoundingBox() {
             m_boundingBox.Translate(m_modelData.getPosition());
             break;
         }
+        case GeometryType::Light: {
+            m_boundingBox.Init(m_lightData.getPosition());
+            m_boundingBox.Expand(2.0);
+            break;
+        }
     }
 }
 
@@ -157,6 +177,9 @@ void datGeometry::draw() const {
         case GeometryType::AssimpModel:
             const_cast<ofxAssimpModelLoader&>(m_modelData).drawFaces();
             break;
+        case GeometryType::Light:
+            m_lightData.draw();
+            break;
     }
 
     ofPopMatrix();
@@ -165,6 +188,7 @@ void datGeometry::draw() const {
 
 void datGeometry::drawWithDisplayParams() const {
 
+    ofPushStyle();
     ofSetLineWidth(m_displayParams.lineWidth);
 
     ofFill();
@@ -176,4 +200,5 @@ void datGeometry::drawWithDisplayParams() const {
     ofSetColor(m_displayParams.lineColor);
 
     draw();
+    ofPopStyle();
 }

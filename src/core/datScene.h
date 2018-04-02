@@ -23,8 +23,6 @@ struct datScene : datNonCopyableClass {
 
 private:
     uint32_t m_nextId;
-    datTransform m_worldToView;
-    datTransform m_viewToWorld;
 
     std::vector<GeometryMap> m_undoStack;
     std::vector<GeometryMap> m_redoStack;
@@ -45,10 +43,6 @@ public:
     datScene();
     ~datScene();
 
-    datTransform const& GetViewToWorld() const { return m_viewToWorld; }
-    datTransform const& GetWorldToView() const { return m_worldToView; }
-    void SetWorldToView(datTransform const& transform);
-    
     datGeometry const* GetGeometry(datId id) const;
     datId InsertGeometry(std::unique_ptr<datGeometry>&& geometry);
     void UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>>&& geometries);

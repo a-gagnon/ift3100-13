@@ -54,7 +54,7 @@ datView* datViewManager::FindTargetView(ofVec2f const& point) const {
             }
         }
 
-        if (0 == i || i == pView->m_views.size())
+        if (pView->m_views.empty() || i == pView->m_views.size())
             break;
     }
     return pView;
@@ -153,5 +153,7 @@ void datViewManager::DoDrawInternal(datRenderer& renderer, datView& view) const 
 void datViewManager::DoDraw(datRenderer& renderer) {
 
     ofDisableDepthTest();
+    ofDisableLighting();
+
     DoDrawInternal(renderer, GetMainView());
 }

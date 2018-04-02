@@ -149,6 +149,9 @@ void datRenderer::DrawCursorType() const {
 
 void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
 
+    ofPushStyle();
+    ofNoFill();
+
     ofPushMatrix();
     ofMultMatrix(geometry.GetTransform());
 
@@ -164,12 +167,23 @@ void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
     ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
 
     ofPopMatrix();
+    ofPopStyle();
 }
 
 
 void datRenderer::Render() {
 
+    ofPushStyle();
+
     ofEnableDepthTest();
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+    ofEnableLighting();
+
+    // Setup material
+    ofMaterial mat;
+    mat.setShininess(50.0);
+    mat.setSpecularColor(ofColor(255, 255, 255));
+    mat.begin();
 
     for (auto& vp : m_viewports) {
 
@@ -199,6 +213,8 @@ void datRenderer::Render() {
 
         // Redraw elements that are selected. Just put their outline in a different color
         if (!selectedGeometries.empty()) {
+
+            ofPushStyle();
             ofSetColor(ofColor::darkBlue);
             ofNoFill();
             ofSetLineWidth(20.0);
@@ -206,6 +222,8 @@ void datRenderer::Render() {
             for (auto const& geometry : selectedGeometries) {
                 geometry->draw();
             }
+
+            ofPopStyle();
         }
 
         // Draw bounding box
@@ -222,6 +240,10 @@ void datRenderer::Render() {
         vp.camera.end();
     }
 
+    mat.end();
+
+    ofDisableLighting();
+    ofDisableBlendMode();
     ofDisableDepthTest();
 
     ofNoFill();
@@ -232,6 +254,7 @@ void datRenderer::Render() {
         ofDrawRectangle(vp.rect);
     }
 
-
     DrawCursorType();
+
+    ofPopStyle();
 }

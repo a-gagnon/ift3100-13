@@ -14,12 +14,7 @@ namespace {
     void setCursorType3() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::X); }
     void setCursorType4() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Cross); }
     void setCursorType5() { datApplication::GetApp().GetRenderer().SetActiveCursorType(datRenderer::CursorType::Triangle); }
-    void setCameraType1() { datApplication::GetApp().GetRenderer().SetUseOrthoCamera(true); }
-    void setCameraType2() { datApplication::GetApp().GetRenderer().SetUseOrthoCamera(false); }
-
-
     ofEvent<ofxButton> selectCursorTypeEvent;
-    ofEvent<ofxButton> selectCameraTypeEvent;
 };
 
 datSelectTool::datSelectTool() :
@@ -30,9 +25,7 @@ datSelectTool::datSelectTool() :
     m_cursorTypeRadio2(setCursorType2, selectCursorTypeEvent),
     m_cursorTypeRadio3(setCursorType3, selectCursorTypeEvent),
     m_cursorTypeRadio4(setCursorType4, selectCursorTypeEvent),
-    m_cursorTypeRadio5(setCursorType5, selectCursorTypeEvent),
-    m_cameraTypeRadio1(setCameraType1, selectCameraTypeEvent),
-    m_cameraTypeRadio2(setCameraType2, selectCameraTypeEvent) {
+    m_cursorTypeRadio5(setCursorType5, selectCursorTypeEvent) {
 }
 
 
@@ -41,20 +34,17 @@ datSelectTool::~datSelectTool() {
 }
 
 
-void datSelectTool::selectObjectsAndClearState() {
+void datSelectTool::selectObjectsAndClearState(datMouseEvent const& ev) {
 
     m_isMouseDrag = false;
     m_hasFirstPoint = false;
 
-    // Do actual picking
-    datBoundingBox selectionBox;
-    selectionBox.Extend(m_rectangle.getTopLeft());
-    selectionBox.Extend(m_rectangle.getBottomRight());
-    selectionBox.Expand(0.05);
+#if 0
+    size_t viewportIdx = GetRenderer().GetViewportIndex(ev.GetViewPoint());
+    datViewport& vp = GetRenderer().GetViewport(viewportIdx);
+
 
     datScene& scene = GetRenderer().GetScene();
-    scene.GetViewToWorld().Multiply(selectionBox);
-
     std::vector<datGeometry const*> geometries = scene.QueryGeometries(selectionBox, (SelectionMode::Window == m_mode));
 
     std::set<datId> selectedIds;
@@ -62,16 +52,25 @@ void datSelectTool::selectObjectsAndClearState() {
         selectedIds.insert(geometry->GetId());
 
     scene.SetSelection(selectedIds);
+#endif
 }
 
 
 void datSelectTool::updateRectangle(datMouseEvent const& ev) {
 
     assert(m_hasFirstPoint);
-    m_rectangle.x = std::min(m_downPoint.x, ev.GetViewPoint().x);
-    m_rectangle.y = std::min(m_downPoint.y, ev.GetViewPoint().y);
-    m_rectangle.width = std::abs(m_downPoint.x - ev.GetViewPoint().x);
-    m_rectangle.height = std::abs(m_downPoint.y - ev.GetViewPoint().y);
+
+    ofPoint viewPoint = ev.GetViewPoint();
+    ofPoint vpOrigin = m_downPointRect.getTopLeft();
+    ofPoint vpCorner = m_downPointRect.getBottomRight();
+
+    viewPoint.x = CLAMP(viewPoint.x, vpOrigin.x, vpCorner.x);
+    viewPoint.y = CLAMP(viewPoint.y, vpOrigin.y, vpCorner.y);
+
+    m_rectangle.x = std::min(m_downPoint.x, viewPoint.x);
+    m_rectangle.y = std::min(m_downPoint.y, viewPoint.y);
+    m_rectangle.width = std::abs(m_downPoint.x - viewPoint.x);
+    m_rectangle.height = std::abs(m_downPoint.y - viewPoint.y);
 }
 
 
@@ -97,17 +96,10 @@ void datSelectTool::onStartTool() {
     m_panel.add(m_cursorTypeRadio5.setup(datLocalization::SelectTool_CursorTriangle()));
     m_panel.add(m_appBackgroundColor.set(datLocalization::SelectTool_BackgroundColor(),
         GetRenderer().GetBackgroundColor(), ofColor(0, 0, 0), ofColor(255, 255, 255)));
-    m_panel.add(m_boundingBoxDisplay.set(datLocalization::SelectTool_BoundingBox(),
-        GetRenderer().GetDrawBoundingBox()));
-    m_panel.add(m_cameraTypeRadio1.setup(datLocalization::SelectTool_CameraOrtho(), 200));
-    m_panel.add(m_cameraTypeRadio2.setup(datLocalization::SelectTool_CameraPerspective(), 200));
-    m_panel.add(m_twoViewports.set(datLocalization::SelectTool_TwoViewports(), GetRenderer().GetUseTwoViewports()));
 
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_appBackgroundColor.addListener(this, &datSelectTool::setBackgroundColor);
-    m_boundingBoxDisplay.addListener(this, &datSelectTool::setBoundingBoxDisplay);
-    m_twoViewports.addListener(this, &datSelectTool::setUseTwoViewports);
 
     const datRenderer::CursorType currentCursorType = GetRenderer().GetActiveCursorType();
     switch (currentCursorType) {
@@ -127,17 +119,11 @@ void datSelectTool::onStartTool() {
             ofNotifyEvent(selectCursorTypeEvent, m_cursorTypeRadio5);
             break;
     }
-
-    if (GetRenderer().GetFirstViewport().camera.getOrtho())
-        ofNotifyEvent(selectCameraTypeEvent, m_cameraTypeRadio1);
-    else
-        ofNotifyEvent(selectCameraTypeEvent, m_cameraTypeRadio2);
 }
 
 
 void datSelectTool::onExitTool() {
     m_appBackgroundColor.removeListener(this, &datSelectTool::setBackgroundColor);
-    m_boundingBoxDisplay.removeListener(this, &datSelectTool::setBoundingBoxDisplay);
 }
 
 
@@ -147,11 +133,12 @@ void datSelectTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
         updateRectangle(ev);
         updateSelectionMode(ev);
-        selectObjectsAndClearState();
+        selectObjectsAndClearState(ev);
         return;
     }
 
     m_downPoint = ev.GetViewPoint();
+    m_downPointRect = ev.GetViewport().rect;
     m_hasFirstPoint = true;
 }
 
@@ -161,7 +148,7 @@ void datSelectTool::onLeftMouseButtonUp(datMouseEvent const& ev) {
     if (m_hasFirstPoint) {
         updateRectangle(ev);
         updateSelectionMode(ev);
-        selectObjectsAndClearState();
+        selectObjectsAndClearState(ev);
     }
 }
 
@@ -200,12 +187,6 @@ void datSelectTool::onKeyPressed(ofKeyEventArgs const& ev) {
         break;
     case '5':
         ofNotifyEvent(selectCursorTypeEvent, m_cursorTypeRadio5);
-        break;
-    case '6':
-        ofNotifyEvent(selectCameraTypeEvent, m_cameraTypeRadio1);
-        break;
-    case '7':
-        ofNotifyEvent(selectCameraTypeEvent, m_cameraTypeRadio2);
         break;
     default:
         break;

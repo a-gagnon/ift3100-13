@@ -63,11 +63,22 @@ void datView::onDraw() {
 }
 
 
+void datView::onViewAdded() {
+
+}
+
+
+void datView::onViewRemoved() {
+
+}
+
+
 void datView::AddView(datView* pView) {
 
     if (nullptr != pView && nullptr == pView->GetParentView()) {
         pView->m_pParentView = this;
         m_views.push_back(std::unique_ptr<datView>(pView));
+        onViewAdded();
     }
 }
 
@@ -81,6 +92,7 @@ void datView::RemoveView(datView* pView) {
             if (m_views[i].get() == pView) {
                 IViewRemovedListener::NotifyViewRemoved(*m_views[i]);
                 m_views.erase(m_views.begin() + i);
+                onViewRemoved();
                 return;
             }
         }
