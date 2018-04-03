@@ -36,6 +36,24 @@ void datScene::RecalculateBVHierarchy() {
 }
 
 
+void datScene::SetLightsState(GeometryMap& map, bool enabledDisabled) {
+
+    for (auto& entry : map) {
+
+        if (datGeometry::GeometryType::Light == entry.second->GetType()) {
+            ofLight& light = entry.second->GetAsLight();
+
+            if (enabledDisabled)
+                light.enable();
+            else
+                light.disable();
+        }
+    }
+
+}
+
+
+
 datGeometry const* datScene::GetGeometry(datId id) const {
 
     auto it = m_geometryMap.find(id);
@@ -103,9 +121,11 @@ void datScene::DeleteMultipleGeometries(std::set<datId> const& ids) {
 void datScene::Undo() {
 
     if (!m_undoStack.empty()) {
-        m_redoStack.push_back(std::move(m_geometryMap));
-        m_geometryMap = std::move(m_undoStack.back());
-        m_undoStack.pop_back();
+        SetLightsState(m_geometryMap, false);               // Turn off lights
+        m_redoStack.push_back(std::move(m_geometryMap));    // move geometries to redo stack
+        m_geometryMap = std::move(m_undoStack.back());      // restore geometries from undo stack
+        m_undoStack.pop_back();                             // remove entry from undo stack
+        SetLightsState(m_geometryMap, true);                // Turn on active lights
         RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }
@@ -115,9 +135,11 @@ void datScene::Undo() {
 void datScene::Redo() {
 
     if (!m_redoStack.empty()) {
-        m_undoStack.push_back(std::move(m_geometryMap));
-        m_geometryMap = std::move(m_redoStack.back());
-        m_redoStack.pop_back();
+        SetLightsState(m_geometryMap, false);               // Turn off lights
+        m_undoStack.push_back(std::move(m_geometryMap));    // move geometries to undo stack
+        m_geometryMap = std::move(m_redoStack.back());      // restore geometries from redo stack
+        m_redoStack.pop_back();                             // remove entry from redo stack
+        SetLightsState(m_geometryMap, true);                // Turn on active lights
         RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }

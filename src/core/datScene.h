@@ -38,6 +38,7 @@ private:
     datId GetNextId();
     void CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) const;
     void RecalculateBVHierarchy();
+    void SetLightsState(GeometryMap& map, bool enabledDisabled);
     
 public:
     datScene();

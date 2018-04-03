@@ -17,6 +17,7 @@ private:
 
     ofPoint m_position;
     ofLight m_light;
+    bool m_createdLight;
 
     ofxPanel m_panel;
     datofxRadioButton m_radioPointLight;

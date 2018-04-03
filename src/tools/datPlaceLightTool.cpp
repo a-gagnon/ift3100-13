@@ -23,7 +23,8 @@ datPlaceLightTool::datPlaceLightTool() :
     m_radioPointLight(onPointLightSelected, selectTypeEvent),
     m_radioSpotLight(onSpotLightSelected, selectTypeEvent),
     m_radioAreaLight(onAreaLightSelected, selectTypeEvent),
-    m_radioDirectionalLight(onDirectionalLightSelected, selectTypeEvent)
+    m_radioDirectionalLight(onDirectionalLightSelected, selectTypeEvent),
+    m_createdLight(false)
     {
     s_tool = this;
     m_light.setPointLight();
@@ -60,6 +61,14 @@ void datPlaceLightTool::onExitTool() {
     m_colorDiffuse.removeListener(this, &datPlaceLightTool::setColorDiffuse);
     m_colorSpecular .removeListener(this, &datPlaceLightTool::setColorSpecular);
 
+
+    if (!m_createdLight) {
+        if (nullptr != m_transient)
+            m_transient->GetAsLight().disable();
+
+        m_light.disable();
+    }
+
     GetRenderer().ClearTransients();
 }
 
@@ -68,6 +77,7 @@ void datPlaceLightTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
     m_light.setGlobalPosition(m_position);
     std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_light);
     GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+    m_createdLight = true;
     _ExitTool();
 }
 
