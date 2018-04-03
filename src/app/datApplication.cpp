@@ -335,6 +335,7 @@ bool datApplication::SendMouseEvent(ofMouseEventArgs& ev) {
     ray[0] = vp.camera.screenToWorld(ray[0], vp.rect);
     ray[1] = vp.camera.screenToWorld(ray[1], vp.rect);
 
+    ofPoint worldPoint = vp.camera.screenToWorld(ofVec3f(ev.x, ev.y, 0.9), vp.rect);
 
     datMouseEvent datEvent(ev);
     datEvent.InitEvent(vp, ev, worldPoint, ofGetKeyPressed(OF_KEY_CONTROL), ofGetKeyPressed(OF_KEY_SHIFT), ofGetKeyPressed(OF_KEY_ALT));

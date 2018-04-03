@@ -13,7 +13,7 @@ int main() {
 
     //ofSetupOpenGL(1024, 768, OF_WINDOW); // setup gl context
 	ofSetWindowTitle("IFT-3100 Equipe 13");
-    ofSetBackgroundColor(ofColor::whiteSmoke);
+    ofSetBackgroundColor(ofColor::midnightBlue);
 
     // Infinite loop!
     std::shared_ptr<datApplication> datApp(new datApplication());//

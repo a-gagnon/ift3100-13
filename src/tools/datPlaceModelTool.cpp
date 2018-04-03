@@ -80,7 +80,7 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev.GetViewPoint();
+    m_position = ev.GetWorldPoint();
 }
 
 

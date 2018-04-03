@@ -27,6 +27,15 @@ struct datLocalization {
     static std::string PlaceLightTool_ColorAmbient()    { return "Color ambient"; }
     static std::string PlaceLightTool_ColorDiffuse()    { return "Color diffuse"; }
     static std::string PlaceLightTool_ColorSpecular()   { return "Color specular"; }
+    static std::string PlaceLightTool_AttenuationConstant()     { return "Attenuation (constant)"; }
+    static std::string PlaceLightTool_AttenuationLinear()       { return "Attenuation (linear)"; }
+    static std::string PlaceLightTool_AttenuationQuadratic()    { return "Attenuation (quadratric)"; }
+    static std::string PlaceLightTool_SpotCutoff()              { return "Cutoff"; }
+    static std::string PlaceLightTool_SpotConcentration()       { return "Concentration"; }
+    static std::string PlaceLightTool_Direction()               { return "Direction"; }
+    static std::string PlaceLightTool_Width()                   { return "Width"; }
+    static std::string PlaceLightTool_Height()                  { return "Height"; }
+
 
     static std::string PlaceModelTool_Tooltip()     { return "Place model tool"; }
     static std::string PlacePolylineTool_Tooltip()  { return "Place polyline tool"; }
