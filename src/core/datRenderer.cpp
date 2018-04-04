@@ -6,6 +6,25 @@
 
 USING_DAT_NAMESPACE
 
+datBoundingBox datViewport::GetWorldBox() const {
+    
+    ofPoint pFarLeft = camera.cameraToWorld(ofVec3f(-1, -1, 1), rect);
+    ofPoint pFarRight = camera.cameraToWorld(ofVec3f(1, 1, 1), rect);
+
+    float scale = std::abs(camera.getFarClip()) + std::abs(camera.getNearClip());
+    ofPoint pCloseLeft = scale * camera.getZAxis() + pFarLeft;
+    ofPoint pCloseRight = scale * camera.getZAxis() + pFarRight;
+
+    datBoundingBox box;
+    box.Extend(pFarLeft);
+    box.Extend(pFarRight);
+    box.Extend(pCloseLeft);
+    box.Extend(pCloseRight);
+    return box;
+}
+
+
+
 datRenderer::datRenderer(datScene& scene) :
     m_scene(scene),
     m_activeCursorType(CursorType::Normal),
@@ -187,7 +206,9 @@ void datRenderer::Render() {
 
     for (auto& vp : m_viewports) {
 
-        std::vector<datGeometry const*> geometries = m_scene.QueryAllGeometries(); //&&AG needswork change that to get query with bounding box
+        datBoundingBox bbox = vp.GetWorldBox();
+
+        std::vector<datGeometry const*> geometries = m_scene.QueryGeometries(bbox, false);
         std::vector<datGeometry const*> selectedGeometries;
         std::vector<datGeometry const*> bBoxGeometries;
 

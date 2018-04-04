@@ -20,7 +20,8 @@ public:
     ofEasyCam camera;
     ofRectangle rect;
 
-    ofPoint GetCenter() const { return rect.getCenter(); }
+    ofPoint GetRectCenter() const { return rect.getCenter(); }
+    datBoundingBox GetWorldBox() const;
 };
 
 //=======================================================================================

@@ -48,9 +48,9 @@ void datBoundingBox::InitInvalid() {
 
 
 bool datBoundingBox::IsValid() const {
-    return low.x > high.x &&
-           low.y > high.y &&
-           low.z > high.z;
+    return low.x <= high.x &&
+           low.y <= high.y &&
+           low.z <= high.z;
 }
 
 void datBoundingBox::Extend(ofPoint const& point) {
@@ -149,9 +149,11 @@ bool datBoundingBox::ContainsInclusive(datBoundingBox const& box) const {
 
 bool datBoundingBox::Intersects(datBoundingBox const& box, bool strictlyInsideOrEqual) const {
 
-    if (high.x < box.low.x || low.x > box.high.x ||
-        high.y < box.low.y || low.y > box.high.y ||
-        high.z < box.low.z || high.z > box.high.z)
+    if (high.x < box.low.x || low.x > box.high.x)
+        return false;
+    if (high.y < box.low.y || low.y > box.high.y)
+        return false;
+    if (high.z < box.low.z || low.z > box.high.z)
         return false;
 
     if (!strictlyInsideOrEqual)
