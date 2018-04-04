@@ -6,6 +6,28 @@
 
 USING_DAT_NAMESPACE
 
+
+datBoundingBox datViewport::GetWorldBox(ofPoint viewMin, ofPoint viewMax) const {
+    
+    viewMin.z = 1.0;
+    viewMax.z = 1.0;
+
+    ofPoint pFarLeft = camera.screenToWorld(viewMin, rect);
+    ofPoint pFarRight = camera.screenToWorld(viewMax, rect);
+
+    float scale = std::abs(camera.getFarClip()) + std::abs(camera.getNearClip());
+    ofPoint pCloseLeft = scale * camera.getZAxis() + pFarLeft;
+    ofPoint pCloseRight = scale * camera.getZAxis() + pFarRight;
+
+    datBoundingBox box;
+    box.Extend(pFarLeft);
+    box.Extend(pFarRight);
+    box.Extend(pCloseLeft);
+    box.Extend(pCloseRight);
+    return box;
+}
+
+
 datBoundingBox datViewport::GetWorldBox() const {
     
     ofPoint pFarLeft = camera.cameraToWorld(ofVec3f(-1, -1, 1), rect);
@@ -198,11 +220,13 @@ void datRenderer::Render() {
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofEnableLighting();
 
+#if 0 //&&AG needswork material
     // Setup material
     ofMaterial mat;
     mat.setShininess(50.0);
     mat.setSpecularColor(ofColor(255, 255, 255));
     mat.begin();
+#endif
 
     for (auto& vp : m_viewports) {
 
@@ -232,17 +256,31 @@ void datRenderer::Render() {
                 bBoxGeometries.push_back(geometry);
         }
 
+        // Draw transient graphics
+        for (auto const& pTransient : m_transients) {
+            pTransient->drawWithDisplayParams();
+        }
+
+
+
         // Redraw elements that are selected. Just put their outline in a different color
         if (!selectedGeometries.empty()) {
 
             ofPushStyle();
-            ofSetColor(ofColor::darkBlue);
-            ofNoFill();
+            ofSetColor(ofColor::yellow);
+            ofFill();
             ofSetLineWidth(20.0);
+
+            ofPushMatrix();
+
+            // Push geometry towards the eye
+            ofTranslate(vp.camera.getZAxis() * 0.5);
 
             for (auto const& geometry : selectedGeometries) {
                 geometry->draw();
             }
+
+            ofPopMatrix();
 
             ofPopStyle();
         }
@@ -253,15 +291,12 @@ void datRenderer::Render() {
                 DrawBoundingBox(*geometry);
         }
 
-        // Draw transient graphics
-        for (auto const& pTransient : m_transients) {
-            pTransient->drawWithDisplayParams();
-        }
-
         vp.camera.end();
     }
 
+#if 0 //&&AG needswork material
     mat.end();
+#endif
 
     ofDisableLighting();
     ofDisableBlendMode();

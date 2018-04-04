@@ -21,6 +21,7 @@ public:
     ofRectangle rect;
 
     ofPoint GetRectCenter() const { return rect.getCenter(); }
+    datBoundingBox GetWorldBox(ofPoint viewMin, ofPoint viewMax) const;
     datBoundingBox GetWorldBox() const;
 };
 
