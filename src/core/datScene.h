@@ -6,29 +6,27 @@
 
 #include "datId.h"
 #include "datNonCopyableClass.h"
+#include "datElement.h"
 #include "datEvents.h"
-#include "datGeometry.h"
-#include "datTransform.h"
 #include "datBVHierarchy.h"
 
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-// Scene holds every geometry that is in memory
-// Scene keeps the current transforms
+// Scene holds every element that is in memory
 //=======================================================================================
 struct datScene : datNonCopyableClass {
 
-    typedef std::map<datId, std::unique_ptr<datGeometry>> GeometryMap;
+    typedef std::map<datId, std::unique_ptr<datElement>> ElementMap;
 
 private:
     uint32_t m_nextId;
 
-    std::vector<GeometryMap> m_undoStack;
-    std::vector<GeometryMap> m_redoStack;
+    std::vector<ElementMap> m_undoStack;
+    std::vector<ElementMap> m_redoStack;
     ofEvent<void> m_onUndoRedoStatusChangedEvent;
 
-    GeometryMap m_geometryMap;
+    ElementMap m_elementMap;
     datBVHierarchy m_boundingVolumeHierarchy;
 
     std::set<datId> m_selectionSet;
@@ -36,18 +34,18 @@ private:
 
 private:
     datId GetNextId();
-    void CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) const;
+    void CloneSourceInDest(ElementMap& dest, ElementMap const& source) const;
     void RecalculateBVHierarchy();
-    void SetLightsState(GeometryMap& map, bool enabledDisabled);
+    void SetLightsState(ElementMap& map, bool enabledDisabled);
     
 public:
     datScene();
     ~datScene();
 
-    datGeometry const* GetGeometry(datId id) const;
-    datId InsertGeometry(std::unique_ptr<datGeometry>&& geometry);
-    void UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>>&& geometries);
-    void DeleteMultipleGeometries(std::set<datId> const& ids);
+    datElement const* GetElement(datId id) const;
+    datId InsertElement(std::unique_ptr<datElement>&& element);
+    void UpdateElements(std::vector<std::unique_ptr<datElement>>&& elements);
+    void DeleteElements(std::set<datId> const& ids);
 
     bool CanUndo() const { return !m_undoStack.empty(); }
     bool CanRedo() const { return !m_redoStack.empty(); }
@@ -63,8 +61,8 @@ public:
     void SetSelection(std::set<datId> const& ids);
     void ClearSelection();
 
-    std::vector<datGeometry const*> QueryAllGeometries() const;
-    std::vector<datGeometry const*> QueryGeometries(datBoundingBox const& box, bool strictlyInside) const;
+    std::vector<datElement const*> QueryAllElements() const;
+    std::vector<datElement const*> QueryElements(datBoundingBox const& box, bool strictlyInside) const;
 };
 
 END_DAT_NAMESPACE

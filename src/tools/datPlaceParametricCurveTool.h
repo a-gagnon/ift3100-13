@@ -1,32 +1,32 @@
 //=======================================================================================
-// datPlaceImageTool.h
+// datPlaceParametricCurveTool.h
 // IFT3100-13
 //=======================================================================================
 #pragma once
 
 #include "datTool.h"
+#include "../ui/datofxRadioButton.h"
 
 BEGIN_DAT_NAMESPACE
 
 //=======================================================================================
-// Tool to place images in the scene
-//=======================================================================================
-struct datPlaceImageTool : datEditTool {
+struct datPlaceParametricCurveTool : datEditTool {
 
 private:
-    std::unique_ptr<datImage> m_transient;
-    std::vector<ofImage> m_imagesToPlace;
-    std::unique_ptr<datMouseEvent> m_lastMouseEvent;
+    datParametricCurve::Type m_type;
+    std::unique_ptr<datParametricCurve> m_transient;
+
+    std::vector<ofPoint> m_controlPoints;
 
     ofxPanel m_panel;
-    ofParameter<int> m_paramWidth;
-    ofParameter<int> m_paramHeight;
+    datofxRadioButton m_typeBezier;
+    datofxRadioButton m_typeHermite;
+    datofxRadioButton m_typeBSpline;
+    datofxRadioButton m_typeCatmullRom;
 
 private:
-    void updateParameters();
-    void onWidthChanged(int& value) { updateTransient(); }
-    void onHeightChanged(int& value) { updateTransient(); }
-    void updateTransient();
+    void updateTransient(datMouseEvent const* pMouseEvent = nullptr);
+    void saveCurve(datMouseEvent const& ev);
 
 protected:
     virtual void onStartTool() override;
@@ -36,12 +36,11 @@ protected:
     virtual void onMouseMotion(datMouseEvent const& ev) override;
     virtual void onDraw() override;
 
-
 public:
-    void SetImagesToPlace(std::vector<ofImage> const& images) { m_imagesToPlace = images; }
+    datPlaceParametricCurveTool();
+    virtual ~datPlaceParametricCurveTool();
 
-    datPlaceImageTool();
-    virtual ~datPlaceImageTool();
+    void SetType(datParametricCurve::Type type) { m_type = type; updateTransient(); }
 };
 
 END_DAT_NAMESPACE

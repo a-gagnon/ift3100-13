@@ -45,11 +45,11 @@ void datSelectTool::selectObjectsAndClearState(datMouseEvent const& ev) {
     datBoundingBox selectionBox = vp.GetWorldBox(m_downPoint, ev.GetViewPoint());
 
     datScene& scene = GetRenderer().GetScene();
-    std::vector<datGeometry const*> geometries = scene.QueryGeometries(selectionBox, (SelectionMode::Window == m_mode));
+    std::vector<datElement const*> elements = scene.QueryElements(selectionBox, (SelectionMode::Window == m_mode));
 
     std::set<datId> selectedIds;
-    for (auto const& geometry : geometries)
-        selectedIds.insert(geometry->GetId());
+    for (auto const& element : elements)
+        selectedIds.insert(element->GetId());
 
     scene.SetSelection(selectedIds);
 }

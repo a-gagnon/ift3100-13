@@ -7,6 +7,7 @@
 USING_DAT_NAMESPACE
 
 datPlacePolylineTool::datPlacePolylineTool() {
+    m_isClosed = false;
 }
 
 
@@ -33,34 +34,36 @@ void datPlacePolylineTool::onExitTool() {
     m_paramLineColor.removeListener(this, &datPlacePolylineTool::onLineColorChanged);
     m_paramLineWidth.removeListener(this, &datPlacePolylineTool::onLineWidthChanged);
     m_paramFillColor.removeListener(this, &datPlacePolylineTool::onFillColorChanged);
+    GetRenderer().ClearTransients();
 }
 
 
 void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
 
-    if (2 <= m_polyline.size()) {
+    if (2 <= m_points.size()) {
 
-        ofPoint const& secondToLast = m_polyline[m_polyline.size() - 2];
-        ofPoint const& last = m_polyline[m_polyline.size() - 1];
+        ofPoint const& secondToLast = m_points[m_points.size() - 2];
+        ofPoint const& last = m_points.back();
 
         // Remove duplicate point if any
         if (datEpsilon > secondToLast.squareDistance(last)) {
-            m_polyline.resize(m_polyline.size() - 1);
+            m_points.pop_back();
         }
     }
 
-    if (3 <= m_polyline.size() && closeShape) {
-        m_polyline.addVertex(m_polyline[0]);
-        m_polyline.setClosed(true);
+    if (3 <= m_points.size() && closeShape) {
+        m_points.push_back(m_points.front());
+        m_isClosed = true;
     }
 
-    if (2 <= m_polyline.size()) {
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_polyline);
-        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
-        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+    if (2 <= m_points.size()) {
+        std::unique_ptr<datPolyline> element = datPolyline::Create(m_points, m_isClosed);
+        element->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+        GetRenderer().GetScene().InsertElement(std::move(element));
     }
 
-    m_polyline.clear();
+    m_isClosed = false;
+    m_points.clear();
     GetRenderer().ClearTransients();
     m_transient = nullptr;
 }
@@ -68,16 +71,16 @@ void datPlacePolylineTool::saveAndClearShape(bool closeShape) {
 
 void datPlacePolylineTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-    if (2 <= m_polyline.size() && datEpsilon > m_polyline[m_polyline.size() - 2].squareDistance(ev.GetWorldPoint())) {
+    if (2 <= m_points.size() && datEpsilon > m_points[m_points.size() - 2].squareDistance(ev.GetWorldPoint())) {
         saveAndClearShape(false);
         return;
     }
 
     // Add first point twice and use the last one as dynamic
-    if (0 == m_polyline.size())
-        m_polyline.addVertex(ev.GetWorldPoint());
+    if (0 == m_points.size())
+        m_points.push_back(ev.GetWorldPoint());
 
-    m_polyline.addVertex(ev.GetWorldPoint());
+    m_points.push_back(ev.GetWorldPoint());
     updateTransient();
 }
 
@@ -85,8 +88,8 @@ void datPlacePolylineTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 void datPlacePolylineTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
     // Remove the dynamic point
-    if (0 < m_polyline.size())
-        m_polyline.resize(m_polyline.size() - 1);
+    if (0 < m_points.size())
+        m_points.pop_back();
 
     saveAndClearShape(true);
 }
@@ -94,8 +97,8 @@ void datPlacePolylineTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 
-    if (0 < m_polyline.size()) {
-        m_polyline[m_polyline.size() - 1] = ev.GetWorldPoint();
+    if (0 < m_points.size()) {
+        m_points.back() = ev.GetWorldPoint();
         updateTransient();
     }
 }
@@ -104,15 +107,15 @@ void datPlacePolylineTool::onMouseMotion(datMouseEvent const& ev) {
 void datPlacePolylineTool::updateTransient() {
 
     if (nullptr == m_transient) {
-        m_transient = datGeometry::Create(m_polyline);
+        m_transient = datPolyline::Create(m_points, m_isClosed);
         GetRenderer().AddTransient(m_transient.get());
     }
 
-    m_transient->GetAsPolyline() = m_polyline;
+    m_transient->SetPoints(m_points);
     m_transient->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
 }
+
 
 void datPlacePolylineTool::onDraw() {
     m_panel.draw();
 }
-

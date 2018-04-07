@@ -7,6 +7,7 @@
 #include "../core/datCore.h"
 #include "../tools/datToolManager.h"
 #include "../tools/datPlacePolylineTool.h"
+#include "../tools/datPlaceParametricCurveTool.h"
 #include "../tools/datPlaceLightTool.h"
 #include "../tools/datPlaceTextTool.h"
 #include "../tools/datSelectTool.h"

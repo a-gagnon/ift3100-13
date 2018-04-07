@@ -13,7 +13,7 @@ BEGIN_DAT_NAMESPACE
 struct datPlaceLightTool : datEditTool {
 
 private:
-    std::unique_ptr<datGeometry> m_transient;
+    std::unique_ptr<datLight> m_transient;
 
     ofPoint m_position;
     ofLight m_light;

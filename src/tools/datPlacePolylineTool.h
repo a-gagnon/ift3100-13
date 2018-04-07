@@ -12,8 +12,9 @@ BEGIN_DAT_NAMESPACE
 struct datPlacePolylineTool : datEditTool {
 
 private:
-    std::unique_ptr<datGeometry> m_transient;
-    ofPolyline m_polyline;
+    std::vector<ofPoint> m_points;
+    bool m_isClosed;
+    std::unique_ptr<datPolyline> m_transient;
 
     ofxPanel m_panel;
     ofParameter<ofColor> m_paramLineColor;

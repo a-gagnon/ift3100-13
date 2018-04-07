@@ -12,18 +12,19 @@ BEGIN_DAT_NAMESPACE
 struct datPlaceTextTool : datEditTool {
 
 private:
-    std::string m_text;
+    std::unique_ptr<datTextString> m_transient;
+
     ofTrueTypeFont m_font;
-    ofPoint m_position;
+    std::string m_text;
 
     ofxPanel m_panel;
-    ofParameter<ofColor> m_paramLineColor;
+    ofParameter<ofColor> m_paramFillColor;
 
 private:
-    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; }
-
+    void onFillColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().fillColor = color; updateTransient(); }
     void SetPlaceholderText();
     bool IsPlaceholderText() const;
+    void updateTransient(datMouseEvent const* pMouseEvent = nullptr);
 
 protected:
     virtual void onStartTool() override;

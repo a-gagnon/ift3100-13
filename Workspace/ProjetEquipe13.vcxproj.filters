@@ -20,9 +20,6 @@
     <ClCompile Include="..\src\core\datUtilities.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\core\datGeometry.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ui\datView.cpp">
       <Filter>ui</Filter>
     </ClCompile>
@@ -33,12 +30,6 @@
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="..\src\core\datRenderer.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\core\datTextString.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\core\datImage.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp">
@@ -95,9 +86,6 @@
     <ClCompile Include="..\src\tools\datPlaceModelTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\core\datTransform.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\core\datScene.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -115,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="..\src\ui\datMenu.cpp">
       <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\datElement.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceParametricCurveTool.cpp">
+      <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -180,16 +174,7 @@
     <ClInclude Include="..\src\core\datEvents.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\core\datGeometry.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\core\datRenderer.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\core\datTextString.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\core\datImage.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core\datCore.h">
@@ -261,9 +246,6 @@
     <ClInclude Include="..\src\core\datScene.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\core\datTransform.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\core\datId.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -281,6 +263,12 @@
     </ClInclude>
     <ClInclude Include="..\src\ui\datMenu.h">
       <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datElement.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceParametricCurveTool.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

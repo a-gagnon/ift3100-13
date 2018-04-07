@@ -188,15 +188,9 @@ void datRenderer::DrawCursorType() const {
 }
 
 
-void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
+void datRenderer::DrawBoundingBox(datElement const& element) const {
 
-    ofPushStyle();
-    ofNoFill();
-
-    ofPushMatrix();
-    ofMultMatrix(geometry.GetTransform());
-
-    datBoundingBox const& box = geometry.GetBoundingBox();
+    datBoundingBox box = element.CalculateBoundingBox();
     const ofPoint center = box.GetCenter();
 
     ofSetColor(ofColor::darkMagenta);
@@ -206,15 +200,41 @@ void datRenderer::DrawBoundingBox(datGeometry const& geometry) const {
     ofSetColor(ofColor::white);
     ofSetLineWidth(1.0);
     ofDrawBox(center.x, center.y, center.z, box.GetXLength(), box.GetYLength(), box.GetZLength());
-
-    ofPopMatrix();
-    ofPopStyle();
 }
 
+
+void datRenderer::RenderElement(datElement const& element, bool useDisplayParams) {
+
+    datDisplayParams const* pDisplayParams = (nullptr == element.ToSupportDisplayParams()) ?
+        nullptr : &element.ToSupportDisplayParams()->GetDisplayParams();
+
+    if (useDisplayParams && nullptr != pDisplayParams) {
+        ofPushStyle();
+        ofSetLineWidth(pDisplayParams->lineWidth);
+
+        // Do a first draw call with fill enabled
+        if (pDisplayParams->isFilled) {
+            ofSetColor(pDisplayParams->fillColor);
+            ofFill();
+            element.Draw();
+        }
+        ofNoFill();
+        ofSetColor(pDisplayParams->lineColor);
+    }
+
+    // Draw element
+    element.Draw();
+
+    if (useDisplayParams && nullptr != pDisplayParams) {
+        ofPopStyle();
+    }
+}
 
 void datRenderer::Render() {
 
     ofPushStyle();
+    ofSetColor(m_activeDisplayParams.lineColor);
+    ofSetLineWidth(m_activeDisplayParams.lineWidth);
 
     ofEnableDepthTest();
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
@@ -232,39 +252,43 @@ void datRenderer::Render() {
 
         datBoundingBox bbox = vp.GetWorldBox();
 
-        std::vector<datGeometry const*> geometries = m_scene.QueryGeometries(bbox, false);
-        std::vector<datGeometry const*> selectedGeometries;
-        std::vector<datGeometry const*> bBoxGeometries;
+        std::vector<datElement const*> elements = m_scene.QueryElements(bbox, false);
+        std::vector<datElement const*> selectedElements;
+        std::vector<datElement const*> bboxElements;
 
         vp.camera.begin(vp.rect);
+
+        // Draw node at (0, 0, 0)
+        ofNode node;
+        node.setGlobalPosition(ofPoint(0, 0, 0));
+        node.draw();
 
         // Draw cameras
         for (auto const& vp : m_viewports)
             vp.camera.draw();
 
-        for (auto const& geometry : geometries) {
+        for (auto const& element : elements) {
 
-            if (IsNeverDraw(geometry->GetId()))
+            // Should not draw this element
+            if (IsNeverDraw(element->GetId()))
                 continue;
 
-            geometry->drawWithDisplayParams();
+            RenderElement(*element, true);
 
-            if (m_drawSelectedInHilite && m_scene.IsSelected(geometry->GetId()))
-                selectedGeometries.push_back(geometry);
+            if (m_drawSelectedInHilite && m_scene.IsSelected(element->GetId()))
+                selectedElements.push_back(element);
 
             if (m_drawBoundingBox)
-                bBoxGeometries.push_back(geometry);
+                bboxElements.push_back(element);
         }
 
         // Draw transient graphics
         for (auto const& pTransient : m_transients) {
-            pTransient->drawWithDisplayParams();
+            RenderElement(*pTransient, true);
         }
 
-
-
         // Redraw elements that are selected. Just put their outline in a different color
-        if (!selectedGeometries.empty()) {
+        if (!selectedElements.empty()) {
 
             ofPushStyle();
             ofSetColor(ofColor::yellow);
@@ -272,23 +296,25 @@ void datRenderer::Render() {
             ofSetLineWidth(20.0);
 
             ofPushMatrix();
+            ofTranslate(vp.camera.getZAxis() * 0.5); // Push geometry towards the eye a bit
 
-            // Push geometry towards the eye
-            ofTranslate(vp.camera.getZAxis() * 0.5);
-
-            for (auto const& geometry : selectedGeometries) {
-                geometry->draw();
+            for (auto const& element : selectedElements) {
+                RenderElement(*element, false);
             }
 
             ofPopMatrix();
-
             ofPopStyle();
         }
 
         // Draw bounding box
-        if (!bBoxGeometries.empty()) {
-            for (auto const& geometry : bBoxGeometries)
-                DrawBoundingBox(*geometry);
+        if (!bboxElements.empty()) {
+            ofPushStyle();
+            ofNoFill();
+
+            for (auto const& element : bboxElements)
+                DrawBoundingBox(*element);
+
+            ofPopStyle();
         }
 
         vp.camera.end();
@@ -302,6 +328,7 @@ void datRenderer::Render() {
     ofDisableBlendMode();
     ofDisableDepthTest();
 
+    // Draw viewport outline
     ofNoFill();
     ofSetColor(ofColor::black);
     ofSetLineWidth(10.0);

@@ -24,20 +24,20 @@ void datBVHierarchy::Clear() {
     m_right.reset();
 }
 
-void datBVHierarchy::Build(std::vector<datGeometry const*> geometries) {
+void datBVHierarchy::Build(std::vector<datElement const*> elements) {
 
     Clear();
 
-    if (geometries.empty())
+    if (elements.empty())
         return;
 
-    for (auto const& geometry : geometries) {
-        m_box.Extend(geometry->GetBoundingBox());
+    for (auto const& element : elements) {
+        m_box.Extend(element->CalculateBoundingBox());
     }
 
 
-    if (1 == geometries.size()) {
-        m_id = geometries.front()->GetId();
+    if (1 == elements.size()) {
+        m_id = elements.front()->GetId();
         return;
     }
     
@@ -47,30 +47,30 @@ void datBVHierarchy::Build(std::vector<datGeometry const*> geometries) {
     const float zLength = m_box.GetZLength();
 
     if (xLength > yLength && xLength > zLength) {
-        std::sort(geometries.begin(), geometries.end(), [](datGeometry const* lhs, datGeometry const* rhs)
-        { return lhs->GetBoundingBox().GetCenter().x < rhs->GetBoundingBox().GetCenter().x; });
+        std::sort(elements.begin(), elements.end(), [](datElement const* lhs, datElement const* rhs)
+        { return lhs->CalculateBoundingBox().GetCenter().x < rhs->CalculateBoundingBox().GetCenter().x; });
     }
     else if (yLength > xLength && yLength > zLength) {
-        std::sort(geometries.begin(), geometries.end(), [](datGeometry const* lhs, datGeometry const* rhs)
-        { return lhs->GetBoundingBox().GetCenter().y < rhs->GetBoundingBox().GetCenter().y; });
+        std::sort(elements.begin(), elements.end(), [](datElement const* lhs, datElement const* rhs)
+        { return lhs->CalculateBoundingBox().GetCenter().y < rhs->CalculateBoundingBox().GetCenter().y; });
     }
     else { // zLength
-        std::sort(geometries.begin(), geometries.end(), [](datGeometry const* lhs, datGeometry const* rhs)
-        { return lhs->GetBoundingBox().GetCenter().z < rhs->GetBoundingBox().GetCenter().z; });
+        std::sort(elements.begin(), elements.end(), [](datElement const* lhs, datElement const* rhs)
+        { return lhs->CalculateBoundingBox().GetCenter().z < rhs->CalculateBoundingBox().GetCenter().z; });
     }
 
     
-    size_t halfSize = geometries.size() / 2;
-    std::vector<datGeometry const*> leftGeometries;
-    leftGeometries.insert(leftGeometries.end(), geometries.begin(), geometries.begin() + halfSize);
-    std::vector<datGeometry const*> rightGeometries;
-    rightGeometries.insert(rightGeometries.end(), geometries.begin() + halfSize, geometries.end());
+    size_t halfSize = elements.size() / 2;
+    std::vector<datElement const*> leftElements;
+    std::vector<datElement const*> rightElements;
+    leftElements.insert(leftElements.end(), elements.begin(), elements.begin() + halfSize);
+    rightElements.insert(rightElements.end(), elements.begin() + halfSize, elements.end());
 
     m_left = std::make_unique<datBVHierarchy>();
-    m_left->Build(leftGeometries);
+    m_left->Build(leftElements);
 
     m_right = std::make_unique<datBVHierarchy>();
-    m_right->Build(rightGeometries);
+    m_right->Build(rightElements);
 }
 
 

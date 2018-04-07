@@ -16,7 +16,7 @@ private:
     ofShader m_shader;
     ofFbo m_fbo;
 
-    std::vector<std::unique_ptr<datGeometry>> m_geometries;
+    std::vector<std::unique_ptr<datElement>> m_elements;
 
     void applyTexture();
 

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "datDependencies.h"
-#include "datGeometry.h"
+#include "datElement.h"
 #include "datBoundingBox.h"
 
 BEGIN_DAT_NAMESPACE
@@ -29,7 +29,7 @@ public:
     ~datBVHierarchy();
 
     void Clear();
-    void Build(std::vector<datGeometry const*> geometries);
+    void Build(std::vector<datElement const*> elements);
 
     std::set<datId> Query(datBoundingBox const& box, bool strictlyInside) const;
 };

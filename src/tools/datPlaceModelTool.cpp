@@ -6,20 +6,13 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceModelTool::datPlaceModelTool() :
-    m_position(0, 0, 0) {
+datPlaceModelTool::datPlaceModelTool() {
+
 }
 
 
 datPlaceModelTool::~datPlaceModelTool() {
 
-}
-
-
-void datPlaceModelTool::UpdateParameters() {
-
-    assert(!m_modelsToPlace.empty());
-    ofxAssimpModelLoader const& model = m_modelsToPlace.back();
 }
 
 
@@ -36,29 +29,49 @@ void datPlaceModelTool::onStartTool() {
                 m_modelsToPlace.push_back(std::move(model));
         }
     }
+}
 
-    if (!m_modelsToPlace.empty()) {
-        m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-        m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-        UpdateParameters();
+
+void datPlaceModelTool::onExitTool() {
+    GetRenderer().ClearTransients();
+}
+
+
+void datPlaceModelTool::updateTransient(datMouseEvent const& ev) {
+
+    ofNode node;
+    node.setPosition(ev.GetWorldPoint());
+    node.setGlobalOrientation(ev.GetViewport().camera.getGlobalOrientation());
+
+    if (nullptr == m_transient) {
+        m_transient = datAssimpModel::Create(m_modelsToPlace.back(), node);
+        GetRenderer().AddTransient(m_transient.get());
+    }
+    else {
+        m_transient->SetNode(node);
     }
 }
+
 
 
 void datPlaceModelTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
     if (!m_modelsToPlace.empty()) {
 
-        ofxAssimpModelLoader const& model = m_modelsToPlace.back();
-        const ofVec2f position = ev.GetViewPoint();
+        ofNode node;
+        node.setPosition(ev.GetWorldPoint());
+        node.setGlobalOrientation(ev.GetViewport().camera.getGlobalOrientation());
 
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(model);
-        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+        std::unique_ptr<datAssimpModel> model = datAssimpModel::Create(m_modelsToPlace.back(), node);
+        GetRenderer().GetScene().InsertElement(std::move(model));
 
         m_modelsToPlace.pop_back();
 
-        if (!m_modelsToPlace.empty())
-            UpdateParameters();
+        if (!m_modelsToPlace.empty()) {
+            GetRenderer().ClearTransients();
+            m_transient = nullptr;
+            updateTransient(ev);
+        }
         else
             _ExitTool();
     }
@@ -71,8 +84,11 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
         m_modelsToPlace.pop_back();
 
-        if (!m_modelsToPlace.empty())
-            UpdateParameters();
+        if (!m_modelsToPlace.empty()) {
+            GetRenderer().ClearTransients();
+            m_transient = nullptr;
+            updateTransient(ev);
+        }
         else
             _ExitTool();
     }
@@ -80,7 +96,11 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev.GetWorldPoint();
+
+    if (!m_modelsToPlace.empty())
+        updateTransient(ev);
+    else
+        _ExitTool();
 }
 
 
@@ -90,21 +110,5 @@ void datPlaceModelTool::onDraw() {
         _ExitTool();
         return;
     }
-
-    const ofColor currentColor = ofGetStyle().color;
-
-    // Copy current color and add some transparency
-    ofColor color = currentColor;
-    color.a = 128;
-    ofSetColor(color);
-
-    // Draw image using original size
-    ofxAssimpModelLoader& model = m_modelsToPlace.back();
-    model.setPosition(m_position.x, m_position.y, m_position.z);
-    model.draw(ofPolyRenderMode::OF_MESH_FILL);
-
-    // Put back original color
-    ofSetColor(currentColor);
-    m_panel.draw();
 }
 

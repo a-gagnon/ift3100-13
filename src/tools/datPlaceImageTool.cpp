@@ -6,22 +6,12 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceImageTool::datPlaceImageTool() :
-    m_position(0, 0, 0) {
+datPlaceImageTool::datPlaceImageTool() {
 }
 
 
 datPlaceImageTool::~datPlaceImageTool() {
 
-}
-
-
-void datPlaceImageTool::UpdateParameters() {
-
-    assert(!m_imagesToPlace.empty());
-    ofImage& img = m_imagesToPlace.back();
-    m_paramWidth.set("width", img.getWidth(), 0.0, 2.0 * img.getWidth());
-    m_paramHeight.set("heigth", img.getHeight(), 0.0, 2.0 * img.getHeight());
 }
 
 
@@ -44,26 +34,43 @@ void datPlaceImageTool::onStartTool() {
         m_panel.add(m_paramWidth);
         m_panel.add(m_paramHeight);
         m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
-        UpdateParameters();
+        updateParameters();
+
+        m_paramWidth.addListener(this, &datPlaceImageTool::onWidthChanged);
+        m_paramHeight.addListener(this, &datPlaceImageTool::onHeightChanged);
     }
 }
+
+
+void datPlaceImageTool::onExitTool() {
+    m_paramWidth.removeListener(this, &datPlaceImageTool::onWidthChanged);
+    m_paramHeight.removeListener(this, &datPlaceImageTool::onHeightChanged);
+
+    GetRenderer().ClearTransients();
+    m_transient = nullptr;
+}
+
 
 
 void datPlaceImageTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
     if (!m_imagesToPlace.empty()) {
 
-        ofImage const& image = m_imagesToPlace.back();
-        const ofVec2f position = ev.GetViewPoint();
-        datImage wrappedImage(image, position, m_paramWidth, m_paramHeight);
+        ofNode node;
+        node.setPosition(ev.GetWorldPoint());
+        node.setOrientation(ev.GetViewport().camera.getGlobalOrientation());
 
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(wrappedImage);
-        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+        std::unique_ptr<datImage> image = datImage::Create(m_imagesToPlace.back(), m_paramWidth, m_paramHeight, node);
+        GetRenderer().GetScene().InsertElement(std::move(image));
 
         m_imagesToPlace.pop_back();
 
-        if (!m_imagesToPlace.empty())
-            UpdateParameters();
+        if (!m_imagesToPlace.empty()) {
+            GetRenderer().ClearTransients();
+            m_transient = nullptr;
+            updateParameters();
+            updateTransient();
+        }
         else
             _ExitTool();
     }
@@ -76,8 +83,12 @@ void datPlaceImageTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
         m_imagesToPlace.pop_back();
 
-        if (!m_imagesToPlace.empty())
-            UpdateParameters();
+        if (!m_imagesToPlace.empty()) {
+            GetRenderer().ClearTransients();
+            m_transient = nullptr;
+            updateParameters();
+            updateTransient();
+        }
         else
             _ExitTool();
     }
@@ -85,9 +96,36 @@ void datPlaceImageTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 
 void datPlaceImageTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev.GetViewPoint();
+    m_lastMouseEvent.reset(new datMouseEvent(ev));
+    updateTransient();
 }
 
+void datPlaceImageTool::updateParameters() {
+
+    assert(!m_imagesToPlace.empty());
+    ofImage& img = m_imagesToPlace.back();
+    m_paramWidth.set("width", img.getWidth(), 0.0, 2.0 * img.getWidth());
+    m_paramHeight.set("heigth", img.getHeight(), 0.0, 2.0 * img.getHeight());
+}
+
+void datPlaceImageTool::updateTransient() {
+
+    if (nullptr == m_lastMouseEvent || m_imagesToPlace.empty())
+        return;
+
+    ofNode node;
+    node.setPosition(m_lastMouseEvent->GetWorldPoint());
+    node.setOrientation(m_lastMouseEvent->GetViewport().camera.getGlobalOrientation());
+
+    if (nullptr == m_transient) {
+        m_transient = datImage::Create(m_imagesToPlace.back(), m_paramWidth, m_paramHeight, node);
+        GetRenderer().AddTransient(m_transient.get());
+    }
+
+    m_transient->SetNode(node);
+    m_transient->SetWidth(m_paramWidth);
+    m_transient->SetHeight(m_paramHeight);
+}
 
 void datPlaceImageTool::onDraw() {
 
@@ -95,20 +133,6 @@ void datPlaceImageTool::onDraw() {
         _ExitTool();
         return;
     }
-
-    const ofColor currentColor = ofGetStyle().color;
-
-    // Copy current color and add some transparency
-    ofColor color = currentColor;
-    color.a = 128;
-    ofSetColor(color);
-
-    // Draw image using original size
-    ofImage const& image = m_imagesToPlace.back();
-    image.draw(m_position.x, m_position.y, m_paramWidth, m_paramHeight);
-
-    // Put back original color
-    ofSetColor(currentColor);
 
     m_panel.draw();
 }

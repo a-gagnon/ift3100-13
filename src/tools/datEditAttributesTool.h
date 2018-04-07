@@ -12,8 +12,8 @@ BEGIN_DAT_NAMESPACE
 struct datEditAttributesTool : datEditTool {
 
 private:
-    std::vector<std::unique_ptr<datGeometry>> m_geometries;
-    std::vector<datTransform> m_originalTransforms;
+    std::vector<std::unique_ptr<datElement>> m_elements;
+    std::vector<ofNode> m_originalTransforms;
 
     ofxPanel m_panel;
     ofxGuiGroup m_styleGroup;

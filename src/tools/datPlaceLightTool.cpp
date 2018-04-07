@@ -100,7 +100,7 @@ void datPlaceLightTool::onExitTool() {
 
     if (!m_createdLight) {
         if (nullptr != m_transient)
-            m_transient->GetAsLight().disable();
+            m_transient->SetEnabled(false);
 
         m_light.disable();
     }
@@ -111,8 +111,8 @@ void datPlaceLightTool::onExitTool() {
 void datPlaceLightTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
     m_light.setGlobalPosition(m_position);
-    std::unique_ptr<datGeometry> geometry = datGeometry::Create(m_light);
-    GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+    std::unique_ptr<datLight> light = datLight::Create(m_light);
+    GetRenderer().GetScene().InsertElement(std::move(light));
     m_createdLight = true;
     _ExitTool();
 }
@@ -127,11 +127,11 @@ void datPlaceLightTool::onMouseMotion(datMouseEvent const& ev) {
 void datPlaceLightTool::updateTransient() {
 
     if (nullptr == m_transient) {
-        m_transient = datGeometry::Create(m_light);
+        m_transient = datLight::Create(m_light);
         GetRenderer().AddTransient(m_transient.get());
     }
 
-    m_transient->GetAsLight() = m_light;
+    m_transient->GetOfLightR() = m_light;
 }
 
 void datPlaceLightTool::onDraw() {

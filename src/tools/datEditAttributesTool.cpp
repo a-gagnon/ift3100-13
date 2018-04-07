@@ -30,14 +30,14 @@ void datEditAttributesTool::onStartTool() {
 
     // Take a cloned copy of selected elements, and a copy of the current transform
     for (auto const& id : selectedIds) {
-        m_geometries.push_back(scene.GetGeometry(id)->Clone());
-        m_originalTransforms.push_back(m_geometries.back()->GetTransform());
-        GetRenderer().AddTransient(m_geometries.back().get());
+        m_elements.push_back(scene.GetElement(id)->Clone());
+        m_originalTransforms.push_back(m_elements.back()->GetNode());
+        GetRenderer().AddTransient(m_elements.back().get());
     }
 
     GetRenderer().SetNeverDraw(selectedIds);
 
-    assert(!m_geometries.empty());
+    assert(!m_elements.empty());
 
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
     m_panel.add(m_styleGroup.setup(datLocalization::DisplayParams()));
@@ -63,7 +63,7 @@ void datEditAttributesTool::onStartTool() {
 void datEditAttributesTool::onExitTool() {
 
     // Commit changes to elements
-    GetRenderer().GetScene().UpdateMultipleGeometries(std::move(m_geometries));
+    GetRenderer().GetScene().UpdateElements(std::move(m_elements));
     GetRenderer().ClearNeverDraw();
     GetRenderer().ClearTransients();
 
@@ -77,23 +77,29 @@ void datEditAttributesTool::onExitTool() {
 
 
 void datEditAttributesTool::onLineColorChanged(ofColor& color) {
-    for (auto const& geometry : m_geometries) {
+#if 0
+    for (auto const& geometry : m_elements) {
         geometry->GetDisplayParamsR().lineColor = color;
     }
+#endif
 }
 
 
 void datEditAttributesTool::onLineWidthChanged(float& value) {
-    for (auto const& geometry : m_geometries) {
+#if 0
+    for (auto const& geometry : m_elements) {
         geometry->GetDisplayParamsR().lineWidth = value;
     }
+#endif
 }
 
 
 void datEditAttributesTool::onFillColorChanged(ofColor& color) {
-    for (auto const& geometry : m_geometries) {
+#if 0
+    for (auto const& geometry : m_elements) {
         geometry->GetDisplayParamsR().fillColor = color;
     }
+#endif
 }
 
 
@@ -112,7 +118,8 @@ void datEditAttributesTool::onTranslationChanged(ofVec2f& value) {
 
 void datEditAttributesTool::applyTransforms() {
 
-    for (size_t i = 0; i < m_geometries.size(); ++i) {
+#if 0
+    for (size_t i = 0; i < m_elements.size(); ++i) {
 
         datTransform transform = m_originalTransforms[i];
         transform.scale(m_paramScale, m_paramScale, m_paramScale);
@@ -123,10 +130,10 @@ void datEditAttributesTool::applyTransforms() {
         translation.y += m_paramTranslate.get().y;
         transform.setTranslation(translation);
 
-        datGeometry* pGeometry = m_geometries[i].get();
+        datGeometry* pGeometry = m_elements[i].get();
         pGeometry->SetTransform(transform);
     }
-
+#endif
 }
 
 

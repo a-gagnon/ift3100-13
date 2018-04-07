@@ -6,8 +6,7 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceTextTool::datPlaceTextTool() :
-    m_position(0, 0, 0) {
+datPlaceTextTool::datPlaceTextTool() {
 
     std::string fullPath = datUtilities::GetAssetsFolder();
     fullPath.append("arial.ttf");
@@ -24,15 +23,16 @@ datPlaceTextTool::~datPlaceTextTool() {
 
 void datPlaceTextTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
-    m_paramLineColor.addListener(this, &datPlaceTextTool::onLineColorChanged);
+    m_paramFillColor.addListener(this, &datPlaceTextTool::onFillColorChanged);
 }
 
 
 void datPlaceTextTool::onExitTool() {
-    m_paramLineColor.removeListener(this, &datPlaceTextTool::onLineColorChanged);
+    m_paramFillColor.removeListener(this, &datPlaceTextTool::onFillColorChanged);
+    GetRenderer().ClearTransients();
 }
 
 
@@ -46,25 +46,56 @@ bool datPlaceTextTool::IsPlaceholderText() const {
 }
 
 
+void datPlaceTextTool::updateTransient(datMouseEvent const* pEvent) {
+
+    if (nullptr == m_transient) {
+        m_transient = datTextString::Create(m_font, m_text, ofNode());
+        GetRenderer().AddTransient(m_transient.get());
+    }
+
+    if (nullptr != pEvent) {
+        ofNode node;
+        node.setGlobalPosition(pEvent->GetWorldPoint());
+        node.setGlobalOrientation(pEvent->GetViewport().camera.getGlobalOrientation());
+        m_transient->SetNode(node);
+    }
+
+    m_transient->SetText(m_text);
+    m_transient->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+}
+
+
+
 void datPlaceTextTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
     if (!m_text.empty()) {
-        datTextString textString(m_font, m_text, m_position);
-        std::unique_ptr<datGeometry> geometry = datGeometry::Create(textString);
-        geometry->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
-        GetRenderer().GetScene().InsertGeometry(std::move(geometry));
+        
+        ofNode node;
+        node.setPosition(ev.GetWorldPoint());
+        node.setGlobalOrientation(ev.GetViewport().camera.getGlobalOrientation());
+
+        std::unique_ptr<datTextString> textString = datTextString::Create(m_font, m_text, node);
+        textString->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+        GetRenderer().GetScene().InsertElement(std::move(textString));
+
+        GetRenderer().ClearTransients();
+        m_transient = nullptr;
     }
 
     SetPlaceholderText();
+    updateTransient(&ev);
 }
 
 
 void datPlaceTextTool::onMouseMotion(datMouseEvent const& ev) {
-    m_position = ev.GetViewPoint();
+    updateTransient(&ev);
 }
 
 
 void datPlaceTextTool::onKeyPressed(ofKeyEventArgs const& ev) {
+
+    if (ofGetKeyPressed(OF_KEY_SHIFT))
+        return;
 
     if (IsPlaceholderText()) {
         m_text.clear();
@@ -77,15 +108,11 @@ void datPlaceTextTool::onKeyPressed(ofKeyEventArgs const& ev) {
         char key = static_cast<char>(ev.key);
         m_text += key;
     }
+
+    updateTransient();
 }
 
 
 void datPlaceTextTool::onDraw() {
-
-    if (!m_text.empty()) {
-        ofSetColor(m_paramLineColor);
-        m_font.drawStringAsShapes(m_text, m_position.x, m_position.y);
-    }
-
     m_panel.draw();
 }

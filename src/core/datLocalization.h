@@ -35,7 +35,7 @@ struct datLocalization {
     static std::string PlaceLightTool_Direction()               { return "Direction"; }
     static std::string PlaceLightTool_Width()                   { return "Width"; }
     static std::string PlaceLightTool_Height()                  { return "Height"; }
-
+    static std::string PlaceParametricCurve_Tooltip()           { return "Place Parametric Curve"; }
 
     static std::string PlaceModelTool_Tooltip()     { return "Place model tool"; }
     static std::string PlacePolylineTool_Tooltip()  { return "Place polyline tool"; }
@@ -51,6 +51,11 @@ struct datLocalization {
     static std::string TwoViewports_Tooltip()       { return "Toggle two viewports"; }
     static std::string BoundingBox_ToolTip()        { return "Toggle bounding box display"; }
     static std::string Orthographic_Tooltip()       { return "Toggle orthographic camera"; }
+
+    static std::string Bezier()                     { return "Bezier"; }
+    static std::string Hermite()                    { return "Hermite"; }
+    static std::string BSpline()                    { return "B-Spline"; }
+    static std::string CatmullRom()                 { return "Catmull-Rom"; }
 
     static std::string Redo()                       { return "Redo"; }
     static std::string Undo()                       { return "Undo"; }

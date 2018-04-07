@@ -25,7 +25,7 @@ void datAddTextureTool::onStartTool() {
 
     // Take a cloned copy of selected elements, and a copy of the current transform
     for (auto const& id : selectedIds) {
-        m_geometries.push_back(scene.GetGeometry(id)->Clone());
+        m_elements.push_back(scene.GetElement(id)->Clone());
     }
 
     if (nullptr == m_mask) {
@@ -45,7 +45,7 @@ void datAddTextureTool::onStartTool() {
             datUtilities::GetAssetsFolder().append("composition_330_fs.glsl"));
 
         GetRenderer().SetNeverDraw(selectedIds);
-        assert(!m_geometries.empty());
+        assert(!m_elements.empty());
         applyTexture();
     }
 }
@@ -54,7 +54,7 @@ void datAddTextureTool::onStartTool() {
 void datAddTextureTool::onExitTool() {
 
     // Commit changes to elements
-    GetRenderer().GetScene().UpdateMultipleGeometries(std::move(m_geometries));
+    GetRenderer().GetScene().UpdateElements(std::move(m_elements));
     GetRenderer().ClearNeverDraw();
 
     m_shader.unload();
@@ -62,7 +62,8 @@ void datAddTextureTool::onExitTool() {
 
 void datAddTextureTool::applyTexture() {
 
-    for (auto const& geometry : m_geometries) {
+#if 0
+    for (auto const& geometry : m_elements) {
         if (geometry->GetType() == datGeometry::GeometryType::Image) {
             datImage image = geometry->GetAsImage();
             m_mask->resize(image.m_width, image.m_height);
@@ -86,6 +87,7 @@ void datAddTextureTool::applyTexture() {
             geometry->GetAsImage().m_image = img;
         }
     }
+#endif
 
     m_mask = nullptr;
 }

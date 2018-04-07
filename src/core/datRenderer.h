@@ -5,8 +5,8 @@
 #pragma once
 
 #include "datNonCopyableClass.h"
+#include "datElement.h"
 #include "datEvents.h"
-#include "datGeometry.h"
 #include "datScene.h"
 
 BEGIN_DAT_NAMESPACE
@@ -43,7 +43,7 @@ public:
 
 private:
     datScene& m_scene;
-    std::vector<datGeometry*> m_transients;
+    std::vector<datElement*> m_transients;
     std::vector<datViewport> m_viewports;
 
     std::set<datId> m_neverDraw;
@@ -55,7 +55,7 @@ private:
 private:
     void AddViewport();
     void DrawCursorType() const;
-    void DrawBoundingBox(datGeometry const& geometry) const;
+    void DrawBoundingBox(datElement const& element) const;
 
 public:
     datRenderer(datScene& scene);
@@ -71,10 +71,10 @@ public:
     void ResizeViewports();
     void SetUseOrthoCamera(bool yesNo); // true = orthographic, false = perspective
 
-
+    void RenderElement(datElement const& element, bool useDisplayParams);
     void Render();
 
-    void AddTransient(datGeometry* transient) { m_transients.push_back(transient); }
+    void AddTransient(datElement* transient) { m_transients.push_back(transient); }
     void ClearTransients() { m_transients.clear(); }
 
     void SetNeverDraw(std::set<datId> const& ids) { m_neverDraw = ids; }

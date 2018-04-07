@@ -21,13 +21,12 @@ public:
 public:
     // Creates an invalid range (with inverted low/high)
     datBoundingBox();
-    datBoundingBox(ofPoint const& point);
-    datBoundingBox(ofPolyline const& polyline);
-    datBoundingBox(ofMesh const& mesh);
 
-    void Init(ofPoint const& point);
     void InitInvalid();
     bool IsValid() const;
+
+    static datBoundingBox FromPoints(std::vector<ofPoint> points, ofMatrix4x4 const* pTransform = nullptr);
+
 
     void Extend(ofPoint const& point);
     void Extend(datBoundingBox const& box);

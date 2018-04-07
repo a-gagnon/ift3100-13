@@ -23,7 +23,7 @@ datId datScene::GetNextId() {
 }
 
 
-void datScene::CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) const {
+void datScene::CloneSourceInDest(ElementMap& dest, ElementMap const& source) const {
     for (auto const& entry : source) {
         dest[entry.first] = entry.second->Clone();
     }
@@ -31,52 +31,48 @@ void datScene::CloneSourceInDest(GeometryMap& dest, GeometryMap const& source) c
 
 
 void datScene::RecalculateBVHierarchy() {
-    const std::vector<datGeometry const*> geometries = QueryAllGeometries();
-    m_boundingVolumeHierarchy.Build(geometries);
+    const std::vector<datElement const*> elements = QueryAllElements();
+    m_boundingVolumeHierarchy.Build(elements);
 }
 
 
-void datScene::SetLightsState(GeometryMap& map, bool enabledDisabled) {
+void datScene::SetLightsState(ElementMap& map, bool enabledDisabled) {
 
     for (auto& entry : map) {
 
-        if (datGeometry::GeometryType::Light == entry.second->GetType()) {
-            ofLight& light = entry.second->GetAsLight();
+        if (nullptr == entry.second->ToLightElement())
+            continue;
 
-            if (enabledDisabled)
-                light.enable();
-            else
-                light.disable();
-        }
+    datLight* pLight = static_cast<datLight*>(entry.second.get());
+    pLight->SetEnabled(enabledDisabled);
     }
-
 }
 
 
 
-datGeometry const* datScene::GetGeometry(datId id) const {
+datElement const* datScene::GetElement(datId id) const {
 
-    auto it = m_geometryMap.find(id);
-    if (it != m_geometryMap.end())
+    auto it = m_elementMap.find(id);
+    if (it != m_elementMap.end())
         return it->second.get();
 
     return nullptr;
 }
 
 
-datId datScene::InsertGeometry(std::unique_ptr<datGeometry>&& geometry) {
+datId datScene::InsertElement(std::unique_ptr<datElement>&& element) {
 
-    assert(!geometry->GetId().IsValid());
+    assert(!element->GetId().IsValid());
 
-    GeometryMap copy;
-    CloneSourceInDest(copy, m_geometryMap);
+    ElementMap copy;
+    CloneSourceInDest(copy, m_elementMap);
     m_undoStack.push_back(std::move(copy));
     m_redoStack.clear();
 
     const datId id = GetNextId();
-    geometry->AssignId(id);
-    m_geometryMap.insert(std::make_pair(id, std::move(geometry)));
-    geometry.reset();
+    element->AssignId(id);
+    m_elementMap.insert(std::make_pair(id, std::move(element)));
+    element.reset();
 
     RecalculateBVHierarchy();
     ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
@@ -84,33 +80,33 @@ datId datScene::InsertGeometry(std::unique_ptr<datGeometry>&& geometry) {
 }
 
 
-void datScene::UpdateMultipleGeometries(std::vector<std::unique_ptr<datGeometry>>&& geometries) {
+void datScene::UpdateElements(std::vector<std::unique_ptr<datElement>>&& elements) {
 
-    GeometryMap copy;
-    CloneSourceInDest(copy, m_geometryMap);
+    ElementMap copy;
+    CloneSourceInDest(copy, m_elementMap);
     m_undoStack.push_back(std::move(copy));
     m_redoStack.clear();
     
-    for (auto& geometry : geometries) {
-        assert(geometry->GetId().IsValid());
-        m_geometryMap[geometry->GetId()] = std::move(geometry);
+    for (auto& element : elements) {
+        assert(element->GetId().IsValid());
+        m_elementMap[element->GetId()] = std::move(element);
     }
 
-    geometries.clear();
+    elements.clear();
     RecalculateBVHierarchy();
     ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
 }
 
 
-void datScene::DeleteMultipleGeometries(std::set<datId> const& ids) {
+void datScene::DeleteElements(std::set<datId> const& ids) {
 
-    GeometryMap copy;
-    CloneSourceInDest(copy, m_geometryMap);
+    ElementMap copy;
+    CloneSourceInDest(copy, m_elementMap);
     m_undoStack.push_back(std::move(copy));
     m_redoStack.clear();
 
     for (auto const& id : ids) {
-        m_geometryMap.erase(id);
+        m_elementMap.erase(id);
     }
 
     RecalculateBVHierarchy();
@@ -121,11 +117,11 @@ void datScene::DeleteMultipleGeometries(std::set<datId> const& ids) {
 void datScene::Undo() {
 
     if (!m_undoStack.empty()) {
-        SetLightsState(m_geometryMap, false);               // Turn off lights
-        m_redoStack.push_back(std::move(m_geometryMap));    // move geometries to redo stack
-        m_geometryMap = std::move(m_undoStack.back());      // restore geometries from undo stack
+        SetLightsState(m_elementMap, false);                // Turn off lights
+        m_redoStack.push_back(std::move(m_elementMap));     // move elements to redo stack
+        m_elementMap = std::move(m_undoStack.back());       // restore elements from undo stack
         m_undoStack.pop_back();                             // remove entry from undo stack
-        SetLightsState(m_geometryMap, true);                // Turn on active lights
+        SetLightsState(m_elementMap, true);                 // Turn on active lights
         RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }
@@ -135,11 +131,11 @@ void datScene::Undo() {
 void datScene::Redo() {
 
     if (!m_redoStack.empty()) {
-        SetLightsState(m_geometryMap, false);               // Turn off lights
-        m_undoStack.push_back(std::move(m_geometryMap));    // move geometries to undo stack
-        m_geometryMap = std::move(m_redoStack.back());      // restore geometries from redo stack
+        SetLightsState(m_elementMap, false);                // Turn off lights
+        m_undoStack.push_back(std::move(m_elementMap));     // move elements to undo stack
+        m_elementMap = std::move(m_redoStack.back());       // restore elements from redo stack
         m_redoStack.pop_back();                             // remove entry from redo stack
-        SetLightsState(m_geometryMap, true);                // Turn on active lights
+        SetLightsState(m_elementMap, true);                 // Turn on active lights
         RecalculateBVHierarchy();
         ofNotifyEvent(m_onUndoRedoStatusChangedEvent);
     }
@@ -188,11 +184,11 @@ void datScene::ClearSelection() {
 }
 
 
-std::vector<datGeometry const*> datScene::QueryAllGeometries() const {
+std::vector<datElement const*> datScene::QueryAllElements() const {
 
-    std::vector<datGeometry const*> results;
+    std::vector<datElement const*> results;
 
-    for (auto const& entry : m_geometryMap) {
+    for (auto const& entry : m_elementMap) {
         results.push_back(entry.second.get());
     }
 
@@ -200,13 +196,13 @@ std::vector<datGeometry const*> datScene::QueryAllGeometries() const {
 }
 
 
-std::vector<datGeometry const*> datScene::QueryGeometries(datBoundingBox const& box, bool strictlyInside) const {
+std::vector<datElement const*> datScene::QueryElements(datBoundingBox const& box, bool strictlyInside) const {
 
     const std::set<datId> ids = m_boundingVolumeHierarchy.Query(box, strictlyInside);
-    std::vector<datGeometry const*> results;
+    std::vector<datElement const*> results;
 
     for (auto const& id : ids) {
-        results.push_back(m_geometryMap.find(id)->second.get());
+        results.push_back(m_elementMap.find(id)->second.get());
     }
 
     return results;

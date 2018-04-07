@@ -17,6 +17,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
 #define DAT_BUTTON_NAME_ADDTEXTURE "btn_addTextureTool"
 #define DAT_BUTTON_NAME_PLACELIGHT "btn_placeLightTool"
+#define DAT_BUTTON_NAME_PLACEPARAMETRICCURVE "btn_PlaceParametricCurve"
 
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 #define DAT_BUTTON_NAME_UNDO "btn_undo"
@@ -38,6 +39,11 @@ namespace {
     void onPlacePolylineToolStarted(datEditTool& editTool) {
         datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEPOLYLINE);
         static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlacePolylineTool*>(&editTool));
+    }
+
+    void onPlaceParametricCurveToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACEPARAMETRICCURVE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceParametricCurveTool*>(&editTool));
     }
 
     void onPlaceLightToolStarted(datEditTool& editTool) {
@@ -82,6 +88,10 @@ namespace {
 
     void onStartPlacePolylineToolPressed(datButton& button) {
         datApplication::GetApp().GetToolManager().StartTool(new datPlacePolylineTool());
+    }
+
+    void onStartPlaceParametricCurveToolPressed(datButton& button) {
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceParametricCurveTool());
     }
 
     void onStartPlaceLightToolPressed(datButton& button) {
@@ -134,7 +144,7 @@ namespace {
         std::set<datId> ids = scene.GetSelection();
 
         scene.ClearSelection();
-        scene.DeleteMultipleGeometries(ids);
+        scene.DeleteElements(ids);
         datApplication::GetApp().SupplyDefaultEditTool();
     }
 
@@ -154,7 +164,7 @@ namespace {
 
         bool hasImage = false;
         for (auto const& id : selectedIds) {
-            if (datGeometry::GeometryType::Image == scene.GetGeometry(id)->GetType()) {
+            if (nullptr != scene.GetElement(id)->ToImageElement()) {
                 hasImage = true;
                 break;
             }
@@ -229,6 +239,9 @@ void datApplication::SetupUI() {
     datButton* pPolylineToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACEPOLYLINE, datLocalization::PlacePolylineTool_Tooltip(), "pencil.png");
     ofAddListener(pPolylineToolButton->GetOnPressedEvent(), onStartPlacePolylineToolPressed);
 
+    datButton* pParametricCurveToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACEPARAMETRICCURVE, datLocalization::PlaceParametricCurve_Tooltip(), "scribble.png");
+    ofAddListener(pParametricCurveToolButton->GetOnPressedEvent(), onStartPlaceParametricCurveToolPressed);
+
     datButton* pPlaceLightToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACELIGHT, datLocalization::PlaceLightTool_Tooltip(), "add_light.png");
     ofAddListener(pPlaceLightToolButton->GetOnPressedEvent(), onStartPlaceLightToolPressed);
 
@@ -281,6 +294,7 @@ void datApplication::SetupUI() {
     // Register all events
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onSelectToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceParametricCurveToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceLightToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceTextToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceModelToolStarted);

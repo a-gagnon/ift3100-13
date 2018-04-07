@@ -104,13 +104,10 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
   <ItemGroup>
     <ClCompile Include="..\src\app\datApplication.cpp" />
     <ClCompile Include="..\src\core\datBoundingBox.cpp" />
-    <ClCompile Include="..\src\core\datGeometry.cpp" />
-    <ClCompile Include="..\src\core\datImage.cpp" />
+    <ClCompile Include="..\src\core\datElement.cpp" />
     <ClCompile Include="..\src\core\datBVHierarchy.cpp" />
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datScene.cpp" />
-    <ClCompile Include="..\src\core\datTextString.cpp" />
-    <ClCompile Include="..\src\core\datTransform.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp" />
@@ -131,6 +128,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceLightTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceModelTool.cpp" />
+    <ClCompile Include="..\src\tools\datPlaceParametricCurveTool.cpp" />
     <ClCompile Include="..\src\tools\datPlacePolylineTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceTextTool.cpp" />
     <ClCompile Include="..\src\tools\datSelectTool.cpp" />
@@ -153,16 +151,13 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datCore.h" />
     <ClInclude Include="..\src\core\datDependencies.h" />
     <ClInclude Include="..\src\core\datEvents.h" />
-    <ClInclude Include="..\src\core\datGeometry.h" />
+    <ClInclude Include="..\src\core\datElement.h" />
     <ClInclude Include="..\src\core\datId.h" />
-    <ClInclude Include="..\src\core\datImage.h" />
     <ClInclude Include="..\src\core\datLocalization.h" />
     <ClInclude Include="..\src\core\datNonCopyableClass.h" />
     <ClInclude Include="..\src\core\datBVHierarchy.h" />
     <ClInclude Include="..\src\core\datRenderer.h" />
     <ClInclude Include="..\src\core\datScene.h" />
-    <ClInclude Include="..\src\core\datTextString.h" />
-    <ClInclude Include="..\src\core\datTransform.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h" />
@@ -184,6 +179,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceLightTool.h" />
     <ClInclude Include="..\src\tools\datPlaceModelTool.h" />
+    <ClInclude Include="..\src\tools\datPlaceParametricCurveTool.h" />
     <ClInclude Include="..\src\tools\datPlacePolylineTool.h" />
     <ClInclude Include="..\src\tools\datPlaceTextTool.h" />
     <ClInclude Include="..\src\tools\datSelectTool.h" />

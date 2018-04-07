@@ -13,34 +13,6 @@ datBoundingBox::datBoundingBox() {
 }
 
 
-datBoundingBox::datBoundingBox(ofPoint const& point) {
-    Init(point);
-}
-
-
-datBoundingBox::datBoundingBox(ofPolyline const& polyline) {
-    InitInvalid();
-    for (uint32_t i = 0; i < polyline.size(); ++i) {
-        Extend(polyline[i]);
-    }
-}
-
-
-datBoundingBox::datBoundingBox(ofMesh const& mesh) {
-    InitInvalid();
-    std::vector<ofPoint> const& vertices = mesh.getVertices();
-    for (auto const& vertex : vertices) {
-        Extend(vertex);
-    }
-}
-
-
-void datBoundingBox::Init(ofPoint const& point) {
-    low = point;
-    high = point;
-}
-
-
 void datBoundingBox::InitInvalid() {
     low.x = low.y = low.z = std::numeric_limits<float>::max();
     high.x = high.y = high.z = std::numeric_limits<float>::lowest();
@@ -52,6 +24,23 @@ bool datBoundingBox::IsValid() const {
            low.y <= high.y &&
            low.z <= high.z;
 }
+
+
+datBoundingBox datBoundingBox::FromPoints(std::vector<ofPoint> points, ofMatrix4x4 const* pTransform) {
+    
+    datBoundingBox box;
+
+    if (nullptr != pTransform) {
+        for (auto& point : points) {
+            point = point * (*pTransform);
+            box.Extend(point);
+        }
+    }
+    return box;
+}
+
+
+
 
 void datBoundingBox::Extend(ofPoint const& point) {
 
