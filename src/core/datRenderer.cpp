@@ -57,6 +57,7 @@ datRenderer::datRenderer(datScene& scene) :
     m_activeDisplayParams.lineColor = ofColor(160, 160, 160, 255);
     m_activeDisplayParams.lineWidth = 4.0f;
 
+    InitMaterials();
     AddViewport();
     ResizeViewports();
 }
@@ -124,6 +125,24 @@ void datRenderer::SetUseOrthoCamera(bool yesNo) {
         else
             vp.camera.disableOrtho();
     }
+}
+
+
+void datRenderer::InitMaterials() {
+
+    m_material1.setAmbientColor(ofColor(0.f, 0.f, 0.f));
+    m_material1.setDiffuseColor(ofColor(0.f, 255.f, 0.f));
+    m_material1.setSpecularColor(ofColor(255.f, 255.f, 0.f));
+    m_material1.setShininess(10);
+
+    m_material2.setAmbientColor(ofColor(0.f, 0.f, 0.f));
+    m_material2.setDiffuseColor(ofColor(255.f, 0.f, 0.f));
+    m_material2.setSpecularColor(ofColor(255.f, 0.f, 255.f));
+    m_material2.setShininess(24);
+
+    m_material3.setAmbientColor(ofColor(0.0, 225.f, 0.0));
+    m_material3.setEmissiveColor(ofColor(0.0, 225.f, 0.0));
+    m_material3.setShininess(60);
 }
 
 
@@ -205,8 +224,14 @@ void datRenderer::DrawBoundingBox(datElement const& element) const {
 
 void datRenderer::RenderElement(datElement const& element, bool useDisplayParams) {
 
+    ISupportMaterial const* pMaterialSupport = element.ToSupportMaterial();
+
     datDisplayParams const* pDisplayParams = (nullptr == element.ToSupportDisplayParams()) ?
         nullptr : &element.ToSupportDisplayParams()->GetDisplayParams();
+
+    if (nullptr != pMaterialSupport && pMaterialSupport->GetUseMaterial()) {
+        pMaterialSupport->GetMaterial().begin();
+    }
 
     if (useDisplayParams && nullptr != pDisplayParams) {
         ofPushStyle();
@@ -228,6 +253,10 @@ void datRenderer::RenderElement(datElement const& element, bool useDisplayParams
     if (useDisplayParams && nullptr != pDisplayParams) {
         ofPopStyle();
     }
+
+    if (nullptr != pMaterialSupport && pMaterialSupport->GetUseMaterial()) {
+        pMaterialSupport->GetMaterial().end();
+    }
 }
 
 void datRenderer::Render() {
@@ -239,14 +268,6 @@ void datRenderer::Render() {
     ofEnableDepthTest();
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofEnableLighting();
-
-#if 0 //&&AG needswork material
-    // Setup material
-    ofMaterial mat;
-    mat.setShininess(50.0);
-    mat.setSpecularColor(ofColor(255, 255, 255));
-    mat.begin();
-#endif
 
     for (auto& vp : m_viewports) {
 
@@ -319,10 +340,6 @@ void datRenderer::Render() {
 
         vp.camera.end();
     }
-
-#if 0 //&&AG needswork material
-    mat.end();
-#endif
 
     ofDisableLighting();
     ofDisableBlendMode();

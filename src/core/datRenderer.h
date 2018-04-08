@@ -52,7 +52,12 @@ private:
     bool m_drawBoundingBox;
     bool m_drawSelectedInHilite;
 
+    ofMaterial m_material1;
+    ofMaterial m_material2;
+    ofMaterial m_material3;
+
 private:
+    void InitMaterials();
     void AddViewport();
     void DrawCursorType() const;
     void DrawBoundingBox(datElement const& element) const;
@@ -95,6 +100,10 @@ public:
     void SetDrawBoundingBox(bool yesNo) { m_drawBoundingBox = yesNo; }
 
     void SetDrawSelectedInHilite(bool yesNo) { m_drawSelectedInHilite = yesNo;  }
+
+    ofMaterial const& GetMaterial1() const { return m_material1; }
+    ofMaterial const& GetMaterial2() const { return m_material2; }
+    ofMaterial const& GetMaterial3() const { return m_material3; }
 };
 
 END_DAT_NAMESPACE

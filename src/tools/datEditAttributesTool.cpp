@@ -15,11 +15,30 @@ USING_DAT_NAMESPACE
 #define TRANSLATE_MIN -500
 #define TRANSLATE_MAX 500
 
-datEditAttributesTool::datEditAttributesTool() {
+
+namespace {
+
+    static datEditAttributesTool* s_tool = nullptr;
+
+    void setNoMaterial() { s_tool->applyMaterial(0); }
+    void setMaterial1() { s_tool->applyMaterial(1); }
+    void setMaterial2() { s_tool->applyMaterial(2); }
+    void setMaterial3() { s_tool->applyMaterial(3); }
+    ofEvent<ofxButton> setMaterialEvent;
+};
+
+
+datEditAttributesTool::datEditAttributesTool():
+    m_radioNoMaterial(setNoMaterial, setMaterialEvent),
+    m_radioMaterial1(setMaterial1, setMaterialEvent),
+    m_radioMaterial2(setMaterial2, setMaterialEvent),
+    m_radioMaterial3(setMaterial3, setMaterialEvent) {
+    s_tool = this;
 }
 
 
 datEditAttributesTool::~datEditAttributesTool() {
+    s_tool = nullptr;
 }
 
 
@@ -39,16 +58,39 @@ void datEditAttributesTool::onStartTool() {
 
     assert(!m_elements.empty());
 
-    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_styleGroup.setup(datLocalization::DisplayParams()));
-    m_styleGroup.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
-    m_styleGroup.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, LINEWIDTH_MIN, LINEWIDTH_MAX));
-    m_styleGroup.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    bool hasStyleGroup = false;
+    bool hasMaterialGroup = false;
 
+    for (auto const& element : m_elements) {
+        if (nullptr != element->ToSupportDisplayParams())
+            hasStyleGroup = true;
+
+        if (nullptr != element->ToSupportMaterial())
+            hasMaterialGroup = true;
+    }
+
+    m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
     m_panel.add(m_geometryGroup.setup(datLocalization::GeometryParams()));
     m_geometryGroup.add(m_paramScale.set(datLocalization::GeometryParams_Scale(), 1.0, SCALE_MIN, SCALE_MAX));
     m_geometryGroup.add(m_paramRotate.set(datLocalization::GeometryParams_Rotate(), 0.0, ROTATE_MIN, ROTATE_MAX));
-    m_geometryGroup.add(m_paramTranslate.set(datLocalization::GeometryParams_Translate(), ofVec2f(0, 0), ofVec2f(TRANSLATE_MIN, TRANSLATE_MIN), ofVec2f(TRANSLATE_MAX, TRANSLATE_MAX)));
+    m_geometryGroup.add(m_paramTranslate.set(datLocalization::GeometryParams_Translate(),
+        ofVec3f(0, 0), ofVec3f(TRANSLATE_MIN, TRANSLATE_MIN, TRANSLATE_MIN), ofVec3f(TRANSLATE_MAX, TRANSLATE_MAX, TRANSLATE_MAX)));
+
+    if (hasStyleGroup) {
+        m_panel.add(m_styleGroup.setup(datLocalization::DisplayParams()));
+        m_styleGroup.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+        m_styleGroup.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, LINEWIDTH_MIN, LINEWIDTH_MAX));
+        m_styleGroup.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    }
+
+    if (hasMaterialGroup) {
+        m_panel.add(m_materialGroup.setup(datLocalization::Materials()));
+        m_materialGroup.add(m_radioNoMaterial.setup(datLocalization::NoMaterial()));
+        m_materialGroup.add(m_radioMaterial1.setup(datLocalization::Material1()));
+        m_materialGroup.add(m_radioMaterial2.setup(datLocalization::Material2()));
+        m_materialGroup.add(m_radioMaterial3.setup(datLocalization::Material3()));
+    }
+
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_paramLineColor.addListener(this, &datEditAttributesTool::onLineColorChanged);
@@ -77,29 +119,38 @@ void datEditAttributesTool::onExitTool() {
 
 
 void datEditAttributesTool::onLineColorChanged(ofColor& color) {
-#if 0
-    for (auto const& geometry : m_elements) {
-        geometry->GetDisplayParamsR().lineColor = color;
+
+    for (auto const& element : m_elements) {
+        if (auto pSupport = dynamic_cast<ISupportDisplayParams*>(element.get())) {
+            datDisplayParams params = pSupport->GetDisplayParams();
+            params.lineColor = color;
+            pSupport->SetDisplayParams(params);
+        }
     }
-#endif
 }
 
 
 void datEditAttributesTool::onLineWidthChanged(float& value) {
-#if 0
-    for (auto const& geometry : m_elements) {
-        geometry->GetDisplayParamsR().lineWidth = value;
+
+    for (auto const& element : m_elements) {
+        if (auto pSupport = dynamic_cast<ISupportDisplayParams*>(element.get())) {
+            datDisplayParams params = pSupport->GetDisplayParams();
+            params.lineWidth = value;
+            pSupport->SetDisplayParams(params);
+        }
     }
-#endif
 }
 
 
 void datEditAttributesTool::onFillColorChanged(ofColor& color) {
-#if 0
-    for (auto const& geometry : m_elements) {
-        geometry->GetDisplayParamsR().fillColor = color;
+
+    for (auto const& element : m_elements) {
+        if (auto pSupport = dynamic_cast<ISupportDisplayParams*>(element.get())) {
+            datDisplayParams params = pSupport->GetDisplayParams();
+            params.fillColor = color;
+            pSupport->SetDisplayParams(params);
+        }
     }
-#endif
 }
 
 
@@ -111,29 +162,47 @@ void datEditAttributesTool::onRotationChanged(float& value) {
     applyTransforms();
 }
 
-void datEditAttributesTool::onTranslationChanged(ofVec2f& value) {
+void datEditAttributesTool::onTranslationChanged(ofVec3f& value) {
     applyTransforms();
 }
 
 
 void datEditAttributesTool::applyTransforms() {
 
-#if 0
     for (size_t i = 0; i < m_elements.size(); ++i) {
 
-        datTransform transform = m_originalTransforms[i];
-        transform.scale(m_paramScale, m_paramScale, m_paramScale);
-        transform.rotate(m_paramRotate, 0, 0, 1.0);
+        ofNode node = m_originalTransforms[i];
+        node.setScale(m_paramScale * node.getScale());
+        node.rotate(m_paramRotate, 0.0, 0.0, 1.0);
+        node.move(m_paramTranslate);
 
-        ofPoint translation = transform.getTranslation();
-        translation.x += m_paramTranslate.get().x;
-        translation.y += m_paramTranslate.get().y;
-        transform.setTranslation(translation);
-
-        datGeometry* pGeometry = m_elements[i].get();
-        pGeometry->SetTransform(transform);
+        m_elements[i]->SetNode(node);
     }
-#endif
+}
+
+
+void datEditAttributesTool::applyMaterial(int value) {
+
+    for (auto const& element : m_elements) {
+        if (auto pSupport = dynamic_cast<ISupportMaterial*>(element.get())) {
+
+            if (0 == value) {
+                pSupport->SetUseMaterial(false);
+            }
+            else if (1 == value) {
+                pSupport->SetUseMaterial(true);
+                pSupport->SetMaterial(GetRenderer().GetMaterial1());
+            }
+            else if (2 == value) {
+                pSupport->SetUseMaterial(true);
+                pSupport->SetMaterial(GetRenderer().GetMaterial2());
+            }
+            else if (3 == value) {
+                pSupport->SetUseMaterial(true);
+                pSupport->SetMaterial(GetRenderer().GetMaterial3());
+            }
+        }
+    }
 }
 
 

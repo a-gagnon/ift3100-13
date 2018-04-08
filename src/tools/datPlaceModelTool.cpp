@@ -6,7 +6,8 @@
 
 USING_DAT_NAMESPACE
 
-datPlaceModelTool::datPlaceModelTool() {
+datPlaceModelTool::datPlaceModelTool():
+    m_hasStarted(false) {
 
 }
 
@@ -26,9 +27,10 @@ void datPlaceModelTool::onStartTool() {
 
             ofxAssimpModelLoader model;
             if (model.loadModel(filePath))
-                m_modelsToPlace.push_back(std::move(model));
+                m_modelsToPlace.push_back(model);
         }
     }
+    m_hasStarted = true;
 }
 
 
@@ -97,10 +99,12 @@ void datPlaceModelTool::onRightMouseButtonDown(datMouseEvent const& ev) {
 
 void datPlaceModelTool::onMouseMotion(datMouseEvent const& ev) {
 
-    if (!m_modelsToPlace.empty())
-        updateTransient(ev);
-    else
-        _ExitTool();
+    if (m_hasStarted) {
+        if (!m_modelsToPlace.empty())
+            updateTransient(ev);
+        else
+            _ExitTool();
+    }
 }
 
 

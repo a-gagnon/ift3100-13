@@ -224,6 +224,8 @@ datApplication::~datApplication() {
 
 void datApplication::SetupUI() {
     ofDisableArbTex();
+    ofSetColor(120, 120, 120);
+
     datView& mainView = GetViewManager().GetMainView();
     mainView.setPosition(0, 0);
     mainView.setWidth(ofGetWidth());

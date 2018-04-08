@@ -52,11 +52,15 @@ struct datLocalization {
     static std::string BoundingBox_ToolTip()        { return "Toggle bounding box display"; }
     static std::string Orthographic_Tooltip()       { return "Toggle orthographic camera"; }
 
-    static std::string Bezier()                     { return "Bezier"; }
-    static std::string Hermite()                    { return "Hermite"; }
-    static std::string BSpline()                    { return "B-Spline"; }
     static std::string CatmullRom()                 { return "Catmull-Rom"; }
-
+    static std::string Bezier()                     { return "Bezier"; }
+    static std::string BSpline()                    { return "B-Spline"; }
+    static std::string Hermite()                    { return "Hermite"; }
+    static std::string Materials()                  { return "Materials"; }
+    static std::string Material1()                  { return "Material 1"; }
+    static std::string Material2()                  { return "Material 2"; }
+    static std::string Material3()                  { return "Material 3"; }
+    static std::string NoMaterial()                 { return "No Material"; }
     static std::string Redo()                       { return "Redo"; }
     static std::string Undo()                       { return "Undo"; }
 

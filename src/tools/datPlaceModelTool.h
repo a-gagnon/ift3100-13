@@ -16,6 +16,7 @@ struct datPlaceModelTool : datEditTool {
 private:
     std::unique_ptr<datAssimpModel> m_transient;
     std::vector<ofxAssimpModelLoader> m_modelsToPlace;
+    bool m_hasStarted;
 
 protected:
     virtual void onStartTool() override;

@@ -50,6 +50,27 @@ public:
     datDisplayParams const& GetDisplayParams() const { return m_displayParams; }
 };
 
+//=======================================================================================
+// Interface class for elements that support materials
+//=======================================================================================
+struct ISupportMaterial
+{
+protected:
+    ofMaterial m_material;
+    bool m_useMaterial;
+
+protected:
+    ISupportMaterial() : m_useMaterial(false) {}
+    virtual void _OnMaterialSet() {}
+
+public:
+    void SetMaterial(ofMaterial const& material) { m_material = material; }
+    ofMaterial const& GetMaterial() const { return m_material; }
+
+    void SetUseMaterial(bool yesNo) { m_useMaterial = yesNo; }
+    bool GetUseMaterial() const { return m_useMaterial; }
+};
+
 
 //=======================================================================================
 // Base class for 3d scene objects
@@ -73,6 +94,8 @@ protected:
     virtual void _SetNode(ofNode const& node) { m_node = node; }
 
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const { return nullptr; }
+    virtual ISupportMaterial const* _ToSupportMaterial() const { return nullptr; }
+
     virtual datPolyline const* _ToPolylineElement() const { return nullptr; }
     virtual datImage const* _ToImageElement() const { return nullptr; }
     virtual datTextString const* _ToTextStringElement() const { return nullptr; }
@@ -97,6 +120,8 @@ public:
 
 
     ISupportDisplayParams const* ToSupportDisplayParams() const { return _ToSupportDisplayParams(); }
+    ISupportMaterial const* ToSupportMaterial() const { return _ToSupportMaterial(); }
+
     datPolyline const* ToPolylineElement() const { return _ToPolylineElement(); }
     datImage const* ToImageElement() const { return _ToImageElement(); }
     datTextString const* ToTextStringElement() const { return _ToTextStringElement(); }
@@ -109,7 +134,7 @@ public:
 //=======================================================================================
 // Polyline object
 //=======================================================================================
-struct datPolyline : datElement, ISupportDisplayParams {
+struct datPolyline : datElement, ISupportDisplayParams, ISupportMaterial {
 DEFINE_T_SUPER(datElement)
 
 protected:
@@ -123,6 +148,7 @@ protected:
     virtual void _Draw() const override;
     virtual void _OnDisplayParamsSet() override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
+    virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
     virtual datPolyline const* _ToPolylineElement() const override final { return this; }
 
 public:
@@ -136,7 +162,7 @@ public:
 //=======================================================================================
 // Image object
 //=======================================================================================
-struct datImage : datElement {
+struct datImage : datElement, ISupportMaterial {
 
 DEFINE_T_SUPER(datElement)
 
@@ -151,6 +177,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
     virtual datImage const* _ToImageElement() const override final { return this; }
 
 public:
@@ -164,7 +191,7 @@ public:
 //=======================================================================================
 // TextString object
 //=======================================================================================
-struct datTextString : datElement, ISupportDisplayParams {
+struct datTextString : datElement, ISupportDisplayParams, ISupportMaterial {
 
 DEFINE_T_SUPER(datElement)
 
@@ -179,6 +206,7 @@ protected:
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
+    virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
     virtual datTextString const* _ToTextStringElement() const override final { return this; }
 
 public:
