@@ -19,13 +19,18 @@ private:
     std::vector<ofPoint> m_controlPoints;
 
     ofxPanel m_panel;
+    ofParameter<ofColor> m_paramLineColor;
+    ofParameter<float> m_paramLineWidth;
     datofxRadioButton m_typeBezier;
     datofxRadioButton m_typeHermite;
     datofxRadioButton m_typeBSpline;
     datofxRadioButton m_typeCatmullRom;
 
 private:
+    void onLineColorChanged(ofColor& color) { GetRenderer().GetActiveDisplayParamsR().lineColor = color; updateStyle(); }
+    void onLineWidthChanged(float& value) { GetRenderer().GetActiveDisplayParamsR().lineWidth = value; updateStyle(); }
     void updateTransient(datMouseEvent const* pMouseEvent = nullptr);
+    void updateStyle();
     void saveCurve(datMouseEvent const& ev);
 
 protected:

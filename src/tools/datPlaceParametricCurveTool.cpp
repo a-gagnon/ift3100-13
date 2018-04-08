@@ -35,17 +35,24 @@ datPlaceParametricCurveTool::~datPlaceParametricCurveTool() {
 
 void datPlaceParametricCurveTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
+    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
     m_panel.add(m_typeBezier.setup(datLocalization::Bezier()));
     m_panel.add(m_typeHermite.setup(datLocalization::Hermite()));
     m_panel.add(m_typeBSpline.setup(datLocalization::BSpline()));
     m_panel.add(m_typeCatmullRom.setup(datLocalization::CatmullRom()));
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
+    m_paramLineColor.addListener(this, &datPlaceParametricCurveTool::onLineColorChanged);
+    m_paramLineWidth.addListener(this, &datPlaceParametricCurveTool::onLineWidthChanged);
     ofNotifyEvent(typeEvent, m_typeHermite);
 }
 
 
 void datPlaceParametricCurveTool::onExitTool() {
+    m_paramLineColor.removeListener(this, &datPlaceParametricCurveTool::onLineColorChanged);
+    m_paramLineWidth.removeListener(this, &datPlaceParametricCurveTool::onLineWidthChanged);
+
     GetRenderer().ClearTransients();
 }
 
@@ -85,6 +92,12 @@ void datPlaceParametricCurveTool::updateTransient(datMouseEvent const* pEvent) {
     }
 }
 
+void datPlaceParametricCurveTool::updateStyle() {
+    if (nullptr != m_transient) {
+        m_transient->SetDisplayParams(GetRenderer().GetActiveDisplayParams());
+    }
+}
+
 
 
 void datPlaceParametricCurveTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
@@ -119,6 +132,7 @@ void datPlaceParametricCurveTool::saveCurve(datMouseEvent const& ev) {
 
         m_controlPoints.clear();
         updateTransient(nullptr); // Unregister transient from renderer and clears it
+        _ExitTool();
     }
 }
 

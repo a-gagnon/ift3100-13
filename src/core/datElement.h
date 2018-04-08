@@ -32,6 +32,13 @@ public:
     ofColor lineColor;
     float lineWidth;
     bool isFilled;
+
+    datDisplayParams():
+        fillColor(0,0,0),
+        lineColor(0,0,0),
+        lineWidth(4.0),
+        isFilled(false){
+    }
 };
 
 //=======================================================================================
