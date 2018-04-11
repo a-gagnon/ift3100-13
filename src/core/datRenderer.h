@@ -51,6 +51,7 @@ private:
     CursorType m_activeCursorType;
     bool m_drawBoundingBox;
     bool m_drawSelectedInHilite;
+    bool m_isLightingEnabled;
 
     ofMaterial m_material1;
     ofMaterial m_material2;
@@ -100,6 +101,9 @@ public:
     void SetDrawBoundingBox(bool yesNo) { m_drawBoundingBox = yesNo; }
 
     void SetDrawSelectedInHilite(bool yesNo) { m_drawSelectedInHilite = yesNo;  }
+
+    bool GetIsLightingEnabled() const { return m_isLightingEnabled; }
+    void SetLighting(bool yesNo) { m_isLightingEnabled = yesNo; }
 
     ofMaterial const& GetMaterial1() const { return m_material1; }
     ofMaterial const& GetMaterial2() const { return m_material2; }

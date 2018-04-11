@@ -306,7 +306,7 @@ protected:
     ofPoint EvaluateCatmullRom(ofPoint const* pPoints, float t) const;
 
 public:
-    static std::unique_ptr<datParametricCurve> CreateBezier(std::vector<ofPoint> const& controlPoints);
+    static std::unique_ptr<datParametricCurve> CreateBezier(std::vector<ofPoint> controlPoints);
     static std::unique_ptr<datParametricCurve> CreateHermite(ofPoint const& p1, ofPoint const& p2, ofVec3f const& v1, ofVec3f const& v2);
     static std::unique_ptr<datParametricCurve> CreateBSpline(std::vector<ofPoint> const& controlPoints);
     static std::unique_ptr<datParametricCurve> CreateCatmullRom(std::vector<ofPoint> const& controlPoints);

@@ -48,6 +48,7 @@ struct datLocalization {
     static std::string SelectTool_CursorX()         { return "'3': X"; }
     static std::string SelectTool_CursorCross()     { return "'4': Cross"; }
     static std::string SelectTool_CursorTriangle()  { return "'5': Triangle"; }
+    static std::string ToggleLighting_Tooltip()     { return "Toggle lighting"; }
     static std::string TwoViewports_Tooltip()       { return "Toggle two viewports"; }
     static std::string BoundingBox_ToolTip()        { return "Toggle bounding box display"; }
     static std::string Orthographic_Tooltip()       { return "Toggle orthographic camera"; }

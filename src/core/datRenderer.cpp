@@ -51,7 +51,8 @@ datRenderer::datRenderer(datScene& scene) :
     m_scene(scene),
     m_activeCursorType(CursorType::Normal),
     m_drawBoundingBox(false),
-    m_drawSelectedInHilite(true) {
+    m_drawSelectedInHilite(true),
+    m_isLightingEnabled(true) {
 
     m_activeDisplayParams.fillColor = ofColor(120, 120, 120, 255);
     m_activeDisplayParams.lineColor = ofColor(160, 160, 160, 255);
@@ -267,7 +268,9 @@ void datRenderer::Render() {
 
     ofEnableDepthTest();
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-    ofEnableLighting();
+
+    if (m_isLightingEnabled)
+        ofEnableLighting();
 
     for (auto& vp : m_viewports) {
 

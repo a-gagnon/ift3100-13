@@ -23,7 +23,7 @@ datPlaceParametricCurveTool::datPlaceParametricCurveTool():
     m_typeHermite(setHermite, typeEvent),
     m_typeBSpline(setBSpline, typeEvent),
     m_typeCatmullRom(setCatmullRom, typeEvent) {
-    m_type = datParametricCurve::Type::Hermite; //&&AG put back to bezier when it's done
+    m_type = datParametricCurve::Type::Bezier;
     s_tool = this;
 }
 
@@ -45,7 +45,7 @@ void datPlaceParametricCurveTool::onStartTool() {
 
     m_paramLineColor.addListener(this, &datPlaceParametricCurveTool::onLineColorChanged);
     m_paramLineWidth.addListener(this, &datPlaceParametricCurveTool::onLineWidthChanged);
-    ofNotifyEvent(typeEvent, m_typeHermite);
+    ofNotifyEvent(typeEvent, m_typeBezier);
 }
 
 
@@ -66,9 +66,15 @@ void datPlaceParametricCurveTool::updateTransient(datMouseEvent const* pEvent) {
     if (points.empty() || nullptr == pEvent)
         return;
 
-    // We need to have a multiples of 4 points for bspline and catmull rom
-    while (0 != (points.size() % 4)) {
+    // We need at least 4 points for any kind of curve
+    while (4 > points.size()) {
         points.push_back(points.back());
+    }
+
+    // We need 4 + 3n points for BSpline/CatmullRom
+    if (datParametricCurve::Type::BSpline == m_type || datParametricCurve::Type::CatmullRom == m_type) {
+        while (0 != ((points.size() - 1) % 3))
+            points.push_back(points.back());
     }
 
     switch (m_type) {
@@ -102,8 +108,27 @@ void datPlaceParametricCurveTool::updateStyle() {
 
 void datPlaceParametricCurveTool::onLeftMouseButtonDown(datMouseEvent const& ev) {
 
-    if (4 < m_controlPoints.size() && datEpsilon > m_controlPoints[m_controlPoints.size() - 2].squareDistance(ev.GetWorldPoint())) {
-        saveCurve(ev);
+    if (2 <= m_controlPoints.size()) {
+
+        bool trySaveAndExit = false;
+
+        if (datEpsilon > m_controlPoints[m_controlPoints.size() - 2].squareDistance(ev.GetWorldPoint())) {
+            // User clicked over the last data point
+            trySaveAndExit = true;
+        }
+        else if (m_controlPoints.size() == 4 && (datParametricCurve::Type::Bezier == m_type || datParametricCurve::Type::Hermite == m_type)) {
+            // Max. 4 input points
+            trySaveAndExit = true;
+        }
+
+        if (trySaveAndExit && saveCurve(ev))
+            return;
+    }
+
+    if (2 <= m_controlPoints.size() && datEpsilon > m_controlPoints[m_controlPoints.size() - 2].squareDistance(ev.GetWorldPoint())) {
+
+        if (saveCurve(ev))
+            return;
     }
 
     // Add first point twice and use the last one as dynamic
@@ -120,7 +145,7 @@ void datPlaceParametricCurveTool::onRightMouseButtonDown(datMouseEvent const& ev
 }
 
 
-void datPlaceParametricCurveTool::saveCurve(datMouseEvent const& ev) {
+bool datPlaceParametricCurveTool::saveCurve(datMouseEvent const& ev) {
 
     // Cheat. transient already does all the work, so just update and clone it.
     updateTransient(&ev);
@@ -133,7 +158,9 @@ void datPlaceParametricCurveTool::saveCurve(datMouseEvent const& ev) {
         m_controlPoints.clear();
         updateTransient(nullptr); // Unregister transient from renderer and clears it
         _ExitTool();
+        return true;
     }
+    return false;
 }
 
 

@@ -31,7 +31,7 @@ private:
     void onLineWidthChanged(float& value) { GetRenderer().GetActiveDisplayParamsR().lineWidth = value; updateStyle(); }
     void updateTransient(datMouseEvent const* pMouseEvent = nullptr);
     void updateStyle();
-    void saveCurve(datMouseEvent const& ev);
+    bool saveCurve(datMouseEvent const& ev);
 
 protected:
     virtual void onStartTool() override;

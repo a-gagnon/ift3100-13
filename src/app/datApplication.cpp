@@ -22,6 +22,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 #define DAT_BUTTON_NAME_UNDO "btn_undo"
 #define DAT_BUTTON_NAME_REDO "btn_redo"
+#define DAT_BUTTON_NAME_TOGGLELIGHTING "btn_ToggleLighting"
 #define DAT_BUTTON_NAME_VIEWPORTS "btn_Viewports"
 #define DAT_BUTTON_NAME_BBOX "btn_BoundingBox"
 #define DAT_BUTTON_NAME_ORTHO_CAM "btn_Orthographic"
@@ -120,6 +121,11 @@ namespace {
 
     void onStartAddTextureToolPressed(datButton& button) {
         datApplication::GetApp().GetToolManager().StartTool(new datAddTextureTool());
+    }
+
+    void onToggleLightingPressed(datButton& button) {
+        datApplication::GetApp().GetRenderer().SetLighting(!button.IsToggled());
+        button.SetToggle(!button.IsToggled());
     }
 
     void onViewportsButtonPressed(datButton& button) {
@@ -263,6 +269,10 @@ void datApplication::SetupUI() {
     // Menu for contextual actions/tools
     datMenu* pContextMenu = new datMenu(60, 10, datMenu::Layout::Horizontal);
     mainView.AddView(pContextMenu);
+
+    datButton* pLightingButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_TOGGLELIGHTING, datLocalization::ToggleLighting_Tooltip(), "lightbulb.png");
+    ofAddListener(pLightingButton->GetOnPressedEvent(), onToggleLightingPressed);
+    pLightingButton->SetToggle(true);
 
     datButton* pViewportsButton = pContextMenu->AddToolButton(DAT_BUTTON_NAME_VIEWPORTS, datLocalization::TwoViewports_Tooltip(), "screen.png");
     ofAddListener(pViewportsButton->GetOnPressedEvent(), onViewportsButtonPressed);

@@ -280,10 +280,12 @@ datParametricCurve::datParametricCurve(Type type) :
 }
 
 
-std::unique_ptr<datParametricCurve> datParametricCurve::CreateBezier(std::vector<ofPoint> const& controlPoints) {
+std::unique_ptr<datParametricCurve> datParametricCurve::CreateBezier(std::vector<ofPoint> controlPoints) {
 
     if (4 > controlPoints.size())
         return nullptr;
+
+    controlPoints.resize(4);
 
     auto ptr = std::unique_ptr<datParametricCurve>(new datParametricCurve(Type::Bezier));
     ptr->AssignPointsAndEvaluate(controlPoints);
@@ -357,27 +359,21 @@ void datParametricCurve::_Draw() const {
 
 void datParametricCurve::AssignPointsAndEvaluate(std::vector<ofPoint> const& controlPoints) {
 
-    assert(0 == (controlPoints.size() % 4));
+    assert(4 <= controlPoints.size());
 
     m_controlPoints = controlPoints;
     m_polyline.clear();
 
-    size_t nSets = controlPoints.size() / 4;
-
-    // We only evaluate the first set of 4 points for theses 2 types of curve
-    if (Type::Bezier == m_type || Type::Hermite == m_type) {
-        nSets = 1;
-    }
-
     static size_t s_nSamples = 100;
 
+    size_t nSets = (controlPoints.size() - 1) / 3;
     size_t samplesPerSet = s_nSamples / nSets;
     float step = 1.0 / (samplesPerSet - 1);
 
     for (size_t i = 0; i < nSets; ++i) {
 
         for (size_t j = 0; j < samplesPerSet; ++j) {
-            ofPoint point = Evaluate(&controlPoints[(4 * i) - (0 < i)], j * step);
+            ofPoint point = Evaluate(&controlPoints[3 * i], j * step);
             m_polyline.addVertex(point);
         }
     }
@@ -449,9 +445,18 @@ ofPoint datParametricCurve::EvaluateBSpline(ofPoint const* pPoints, float t) con
 
 ofPoint datParametricCurve::EvaluateCatmullRom(ofPoint const* pPoints, float t) const {
 
+    ofPoint const& p1 = pPoints[0];
+    ofPoint const& p2 = pPoints[1];
+    ofPoint const& p3 = pPoints[2];
+    ofPoint const& p4 = pPoints[3];
 
+    // q(t) = 0.5 *((2 * P2) + (-P1 + P3) * t + (2 * P1 - 5 * P2 + 4 * P3 - P4) * t2 + (-P1 + 3 * P2 - 3 * P3 + P4) * t3)
+    ofPoint result1 = 2 * p2;
+    ofPoint result2 = (-1 * p1 + p3) * t;
+    ofPoint result3 = (2 * p1 - 5 * p2 + 4 * p3 - p4) * t * t;
+    ofPoint result4 = (-1 * p1 + 3 * p2 - 3 * p3 + p4) * t * t * t;
 
-    //&&AG TODO
-    return ofPoint();
+    ofPoint result = 0.5 * (result1 + result2 + result3 + result4);
+    return result;
 }
 
