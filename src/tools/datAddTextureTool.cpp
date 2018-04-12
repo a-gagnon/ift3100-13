@@ -93,8 +93,5 @@ void datAddTextureTool::applyTexture() {
 }
 
 void datAddTextureTool::onDraw() {
-
-    //&&AG needswork. I need to fix onStartTool so the tool can exit inside that method.
-    // for now, exit tool on first draw call to avoid any issues
     _ExitTool();
 }

@@ -23,6 +23,13 @@ struct datUtilities {
     // fileMustExist when false, allow picking non-existing files. useful for exporting
     // @returns true if user picked a path, false if the user cancelled the dialog
     static bool OpenFileDialog(std::string& filePath, bool fileMustExist);
+
+    // Executes the program whose path is provided in argument
+    // @remarks returns false if the program could not be stared
+    static bool ExecuteProgram(std::string const& relativePathToExe);
+
+    // Opens the file using the Windows default program list
+    static bool OpenWithDefaultProgram(std::string const& relativePathToFile);
 };
 
 END_DAT_NAMESPACE

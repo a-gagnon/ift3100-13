@@ -60,3 +60,38 @@ bool datUtilities::OpenFileDialog(std::string& filePath, bool fileMustExist) {
     filePath = std::string(chars);
     return true;
 }
+
+
+bool datUtilities::ExecuteProgram(std::string const& relativePathToExe) {
+
+    std::string relPath = ofFilePath::getCurrentExeDir() + relativePathToExe;
+    std::string absPath = ofFilePath::getAbsolutePath(relPath);
+
+    // additional information
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+
+    // set the size of the structures
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    // start the program up
+    if (!CreateProcessA(absPath.c_str(), nullptr, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+        return false;
+
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    return true;
+}
+
+
+bool datUtilities::OpenWithDefaultProgram(std::string const& relativePathToFile) {
+
+    std::string relPath = ofFilePath::getCurrentExeDir() + relativePathToFile;
+    std::string absPath = ofFilePath::getAbsolutePath(relPath);
+
+    std::wstring wstr = std::wstring(absPath.begin(), absPath.end());
+    return ShellExecute(0, 0, wstr.c_str(), 0, 0, SW_SHOW);
+}

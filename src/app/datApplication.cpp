@@ -18,6 +18,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_ADDTEXTURE "btn_addTextureTool"
 #define DAT_BUTTON_NAME_PLACELIGHT "btn_placeLightTool"
 #define DAT_BUTTON_NAME_PLACEPARAMETRICCURVE "btn_PlaceParametricCurve"
+#define DAT_BUTTON_NAME_GENERATESCENERAYTRACING "btn_GenerateSceneRayTracing"
 
 #define DAT_BUTTON_NAME_DELETESELECTED "btn_deleteSelected"
 #define DAT_BUTTON_NAME_UNDO "btn_undo"
@@ -113,6 +114,19 @@ namespace {
 
     void onStartExportImageToolPressed(datButton& button) {
         datApplication::GetApp().GetToolManager().StartTool(new datExportImageTool());
+    }
+
+    void onGenerateSceneRayTracingPressed(datButton& button) {
+
+        if (!datUtilities::ExecuteProgram("../../prebuilt/raytracer.exe")) {
+            ofLog() << "Failed to start raytracer program";
+            return;
+        }
+
+        if (!datUtilities::OpenWithDefaultProgram("../../assets/add_image.png")) { //&&AG todo use the output path of the raytracer
+            ofLog() << "Failed to start default program to open raytracer output image";
+            return;
+        }
     }
 
     void onStartEditAttributesToolPressed(datButton& button) {
@@ -265,6 +279,8 @@ void datApplication::SetupUI() {
     datButton* pExportImageToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_EXPORTIMAGE, datLocalization::ExportImageTool_Tooltip(), "export_image.png");
     ofAddListener(pExportImageToolButton->GetOnPressedEvent(), onStartExportImageToolPressed);
 
+    datButton* pGenerateSceneRayTracing = pToolMenu->AddToolButton(DAT_BUTTON_NAME_GENERATESCENERAYTRACING, datLocalization::GenerateSceneRayTracing_Tooltip(), "project.png");
+    ofAddListener(pGenerateSceneRayTracing->GetOnPressedEvent(), onGenerateSceneRayTracingPressed);
 
     // Menu for contextual actions/tools
     datMenu* pContextMenu = new datMenu(60, 10, datMenu::Layout::Horizontal);
