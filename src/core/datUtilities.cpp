@@ -62,10 +62,17 @@ bool datUtilities::OpenFileDialog(std::string& filePath, bool fileMustExist) {
 }
 
 
-bool datUtilities::ExecuteProgram(std::string const& relativePathToExe) {
+bool datUtilities::ExecuteProgram(std::string const& pathToExe, bool isRelative) {
 
-    std::string relPath = ofFilePath::getCurrentExeDir() + relativePathToExe;
-    std::string absPath = ofFilePath::getAbsolutePath(relPath);
+    std::string absPath;
+
+    if (isRelative) {
+        std::string relPath = ofFilePath::getCurrentExeDir() + pathToExe;
+        absPath = ofFilePath::getAbsolutePath(relPath);
+    }
+    else
+        absPath = pathToExe;
+
 
     // additional information
     STARTUPINFOA si;
@@ -84,6 +91,13 @@ bool datUtilities::ExecuteProgram(std::string const& relativePathToExe) {
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
     return true;
+}
+
+
+bool datUtilities::ExecuteRayTracer() {
+    std::string relPath = ofFilePath::getCurrentExeDir() + "/raytracer/RayTracer.exe";
+    std::string absPath = ofFilePath::getAbsolutePath(relPath);
+    return ExecuteProgram(absPath, false/*isRelative*/);
 }
 
 

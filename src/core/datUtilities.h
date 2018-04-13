@@ -26,7 +26,10 @@ struct datUtilities {
 
     // Executes the program whose path is provided in argument
     // @remarks returns false if the program could not be stared
-    static bool ExecuteProgram(std::string const& relativePathToExe);
+    static bool ExecuteProgram(std::string const& pathToExe, bool isRelative);
+    
+    // Executes the ray tracer. Returns when the program ends
+    static bool ExecuteRayTracer();
 
     // Opens the file using the Windows default program list
     static bool OpenWithDefaultProgram(std::string const& relativePathToFile);

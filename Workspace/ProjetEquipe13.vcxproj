@@ -144,6 +144,9 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ProjectReference Include="..\src\libs\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
     </ProjectReference>
+    <ProjectReference Include="RayTracer.vcxproj">
+      <Project>{98a470af-73e4-4b77-88f1-606e41913939}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\app\datApplication.h" />

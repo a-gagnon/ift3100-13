@@ -56,7 +56,7 @@ struct datLocalization {
     static std::string CatmullRom()                 { return "Catmull-Rom"; }
     static std::string Bezier()                     { return "Bezier"; }
     static std::string BSpline()                    { return "B-Spline"; }
-    static std::string GenerateSceneRayTracing_Tooltip() { return "Generate scene using Ray tracing technique"; }
+    static std::string GenerateSceneRayTracing_Tooltip() { return "Generate scene using Ray tracing technique \nThis may take a while"; }
     static std::string Hermite()                    { return "Hermite"; }
     static std::string Materials()                  { return "Materials"; }
     static std::string Material1()                  { return "Material 1"; }

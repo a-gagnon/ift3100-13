@@ -118,12 +118,12 @@ namespace {
 
     void onGenerateSceneRayTracingPressed(datButton& button) {
 
-        if (!datUtilities::ExecuteProgram("../../prebuilt/raytracer.exe")) {
+        if (!datUtilities::ExecuteRayTracer()) {
             ofLog() << "Failed to start raytracer program";
             return;
         }
 
-        if (!datUtilities::OpenWithDefaultProgram("../../assets/add_image.png")) { //&&AG todo use the output path of the raytracer
+        if (!datUtilities::OpenWithDefaultProgram("/raytracer/result.bmp")) { //&&AG todo use the output path of the raytracer
             ofLog() << "Failed to start default program to open raytracer output image";
             return;
         }
