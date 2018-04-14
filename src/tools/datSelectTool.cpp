@@ -45,7 +45,25 @@ void datSelectTool::selectObjectsAndClearState(datMouseEvent const& ev) {
     datBoundingBox selectionBox = vp.GetWorldBox(m_downPoint, ev.GetViewPoint());
 
     datScene& scene = GetRenderer().GetScene();
-    std::vector<datElement const*> elements = scene.QueryElements(selectionBox, (SelectionMode::Window == m_mode));
+    std::vector<datElement const*> elements;
+    
+    if (SelectionMode::Hit == m_mode) {
+
+        // Define ray in screen space, with NDC z
+        ofPoint rayPts[2];
+        rayPts[0] = ofVec3f(ev.GetViewPoint().x, ev.GetViewPoint().y, -1);
+        rayPts[1] = ofVec3f(ev.GetViewPoint().x, ev.GetViewPoint().y, 1);
+
+        // Transform ray into world space
+        rayPts[0] = vp.camera.screenToWorld(rayPts[0], vp.rect);
+        rayPts[1] = vp.camera.screenToWorld(rayPts[1], vp.rect);
+        
+        datRay ray(rayPts[0], rayPts[1] - rayPts[0]);
+        elements = scene.QueryHitElements(ray);
+    }
+    else {
+        elements = scene.QueryElements(selectionBox, (SelectionMode::Window == m_mode));
+    }
 
     std::set<datId> selectedIds;
     for (auto const& element : elements)

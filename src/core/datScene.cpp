@@ -208,3 +208,23 @@ std::vector<datElement const*> datScene::QueryElements(datBoundingBox const& box
     return results;
 }
 
+
+std::vector<datElement const*> datScene::QueryHitElements(datRay const& ray) const {
+
+    // Quickly eliminate some geometries that would not intersect anyway
+    datBoundingBox box;
+    box.Extend(ray.GetOrigin());
+    box.Extend(ray.GetOrigin() + (1E10 * ray.GetDirection()));
+
+    std::vector<datElement  const*> candidateResults = QueryElements(box, false);
+    std::vector<datElement const*> results;
+
+    for (auto const& candidateResult : candidateResults) {
+
+        if (candidateResult->IsHitByRay(ray)) {
+            results.push_back(candidateResult);
+        }
+    }
+
+    return results;
+}

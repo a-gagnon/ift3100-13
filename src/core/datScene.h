@@ -63,6 +63,7 @@ public:
 
     std::vector<datElement const*> QueryAllElements() const;
     std::vector<datElement const*> QueryElements(datBoundingBox const& box, bool strictlyInside) const;
+    std::vector<datElement const*> QueryHitElements(datRay const& ray) const;
 };
 
 END_DAT_NAMESPACE

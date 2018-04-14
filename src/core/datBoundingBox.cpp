@@ -40,8 +40,6 @@ datBoundingBox datBoundingBox::FromPoints(std::vector<ofPoint> points, ofMatrix4
 }
 
 
-
-
 void datBoundingBox::Extend(ofPoint const& point) {
 
     low.x = MIN(low.x, point.x);
@@ -73,25 +71,6 @@ void datBoundingBox::Expand(float delta) {
 }
 
 
-void datBoundingBox::Multiply(float factor) {
-    low.x *= factor;
-    low.y *= factor;
-    low.z *= factor;
-    high.x *= factor;
-    high.y *= factor;
-    high.z *= factor;
-}
-
-
-void datBoundingBox::Translate(ofPoint const& offset) {
-    low.x += offset.x;
-    low.y += offset.y;
-    low.z += offset.z;
-    high.x += offset.x;
-    high.y += offset.y;
-    high.z += offset.z;
-}
-
 ofPoint datBoundingBox::GetCenter() const {
 
     ofPoint pt;
@@ -99,40 +78,6 @@ ofPoint datBoundingBox::GetCenter() const {
     pt.y = 0.5 * (low.y + high.y);
     pt.z = 0.5 * (low.z + high.z);
     return pt;
-}
-
-
-std::vector<ofPoint> datBoundingBox::Get8Corners() const {
-
-    std::vector<ofPoint> result;
-    result.reserve(8);
-
-    ofPoint pts[2];
-    pts[0] = low;
-    pts[1] = high;
-
-    for (uint32_t z = 0; z < 2; ++z) {
-        for (uint32_t y = 0; y < 2; ++y) {
-            for (uint32_t x = 0; x < 2; ++x) {
-                result.push_back(ofPoint(pts[x].x, pts[y].y, pts[z].z));
-            }
-        }
-    }
-
-    return result;
-    }
-
-
-bool datBoundingBox::ContainsInclusive(ofPoint const& point) const {
-
-    return  low.x <= point.x && point.x <= high.x &&
-            low.y <= point.y && point.y <= high.y &&
-            low.z <= point.z && point.z <= high.z;
-}
-
-
-bool datBoundingBox::ContainsInclusive(datBoundingBox const& box) const {
-    return Intersects(box, true);
 }
 
 
@@ -152,5 +97,3 @@ bool datBoundingBox::Intersects(datBoundingBox const& box, bool strictlyInsideOr
         low.y <= box.low.y && box.high.y <= high.y &&
         low.z <= box.low.z && box.high.z <= high.z;
 }
-
-

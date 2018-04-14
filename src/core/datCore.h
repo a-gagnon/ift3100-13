@@ -9,6 +9,7 @@
 #include "datBoundingBox.h"
 #include "datElement.h"
 #include "datEvents.h"
+#include "datGeometry.h"
 #include "datId.h"
 #include "datLocalization.h"
 #include "datNonCopyableClass.h"

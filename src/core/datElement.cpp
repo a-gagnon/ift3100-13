@@ -61,6 +61,32 @@ void datPolyline::_Draw() const {
 }
 
 
+
+bool datPolyline::_IsHitByRay(datRay const& ray) const {
+
+    static float s_threshold = 0.5;
+
+    const ofMatrix4x4 transform = GetElementToWorldTransform();
+    std::vector<ofPoint> vertices = m_polyline.getVertices();
+
+    for (auto& vertex : vertices) {
+        vertex = vertex * transform;
+    }
+
+    for (size_t i = 1; i < vertices.size(); ++i) {
+
+        ofVec3f direction = vertices[i] - vertices[i - 1];
+        datRay lineRay(vertices[i - 1], direction);
+
+        float distance = ray.DistanceLineLine(lineRay);
+        if (s_threshold > distance)
+            return true;
+    }
+
+    return false;
+}
+
+
 void datPolyline::_OnDisplayParamsSet() {
     // Make sure display params are consistent with the geometry structure
     m_displayParams.isFilled = m_polyline.isClosed();
@@ -123,6 +149,30 @@ void datImage::_Draw() const {
 }
 
 
+bool datImage::_IsHitByRay(datRay const& ray) const {
+
+    ofPoint origin = m_node.getGlobalPosition();
+    ofPoint normal = m_node.getZAxis();
+    datPlane plane(origin, normal);
+
+    ofPoint intersectionPoint;
+    if (!ray.IntersectPlane(plane, &intersectionPoint))
+        return false;
+
+    // make the intersection point relative to the plane origin
+    ofPoint relPoint = intersectionPoint - origin;
+
+    float xDist = m_node.getXAxis().dot(relPoint);
+    if (xDist < 0 || xDist > m_width)
+        return false;
+
+    float yDist = m_node.getYAxis().dot(relPoint);
+    if (yDist < 0 || yDist > m_height)
+        return false;
+
+    return true;
+}
+
 
 //---------------------------------------------------------------------------------------
 // datTextString
@@ -173,6 +223,13 @@ void datTextString::_Draw() const {
     m_trueTypeFont.drawString(m_text, 0, 0);
 
     ofPopMatrix();
+}
+
+
+bool datTextString::_IsHitByRay(datRay const& ray) const {
+
+    datBoundingBox aabb = CalculateBoundingBox();
+    return ray.IntersectBox(aabb);
 }
 
 
@@ -232,6 +289,13 @@ void datAssimpModel::_Draw() const {
 }
 
 
+bool datAssimpModel::_IsHitByRay(datRay const& ray) const {
+
+    datBoundingBox aabb = CalculateBoundingBox();
+    return ray.IntersectBox(aabb);
+}
+
+
 
 //---------------------------------------------------------------------------------------
 // datLight
@@ -267,6 +331,13 @@ datBoundingBox datLight::_CalculateBoundingBox() const {
 
 void datLight::_Draw() const {
     m_light.draw();
+}
+
+
+bool datLight::_IsHitByRay(datRay const& ray) const {
+
+    datBoundingBox aabb = CalculateBoundingBox();
+    return ray.IntersectBox(aabb);
 }
 
 
@@ -354,6 +425,31 @@ void datParametricCurve::_Draw() const {
     }
 
     m_polyline.draw();
+}
+
+
+bool datParametricCurve::_IsHitByRay(datRay const& ray) const {
+
+    static float s_threshold = 0.5;
+
+    const ofMatrix4x4 transform = GetElementToWorldTransform();
+    std::vector<ofPoint> vertices = m_polyline.getVertices();
+
+    for (auto& vertex : vertices) {
+        vertex = vertex * transform;
+    }
+
+    for (size_t i = 1; i < vertices.size(); ++i) {
+
+        ofVec3f direction = vertices[i] - vertices[i - 1];
+        datRay lineRay(vertices[i - 1], direction);
+
+        float distance = ray.DistanceLineLine(lineRay);
+        if (s_threshold > distance)
+            return true;
+    }
+
+    return false;
 }
 
 

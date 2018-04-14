@@ -8,11 +8,9 @@
 #include "datBoundingBox.h"
 #include "datId.h"
 #include "datNonCopyableClass.h"
+#include "datGeometry.h"
 
 BEGIN_DAT_NAMESPACE
-
-// Small tolerance for comparisons
-#define datEpsilon 1e-03
 
 struct datElement;
 struct datPolyline;
@@ -96,6 +94,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const = 0;
     virtual datBoundingBox _CalculateBoundingBox() const = 0;
     virtual void _Draw() const = 0;
+    virtual bool _IsHitByRay(datRay const& ray) const = 0;
 
     virtual ofNode& _GetNode() { return m_node; }
     virtual void _SetNode(ofNode const& node) { m_node = node; }
@@ -116,6 +115,9 @@ public:
     std::unique_ptr<datElement> Clone() const { return _Clone(); }
     datBoundingBox CalculateBoundingBox() const { return _CalculateBoundingBox(); }
     void Draw() const { return _Draw(); }
+
+    // Determines if the ray hits the element
+    bool IsHitByRay(datRay const& ray) const { return _IsHitByRay(ray); }
 
     // only scene should call this
     void AssignId(datId id) { m_id = id; }
@@ -153,6 +155,8 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
+
     virtual void _OnDisplayParamsSet() override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
@@ -184,6 +188,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
     virtual datImage const* _ToImageElement() const override final { return this; }
 
@@ -212,6 +217,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
     virtual datTextString const* _ToTextStringElement() const override final { return this; }
@@ -239,6 +245,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual datAssimpModel const* _ToAssimpModelElement() const override final { return this; }
 
 public:
@@ -262,6 +269,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ofNode& _GetNode() override { return m_light; }
     virtual void _SetNode(ofNode const& node) override { static_cast<ofNode&>(m_light) = node; }
     virtual datLight const* _ToLightElement() const override final { return this; }
@@ -295,6 +303,7 @@ protected:
     virtual std::unique_ptr<datElement> _Clone() const override;
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual datParametricCurve const* _ToParametricCurveElement() const override final { return this; }
 

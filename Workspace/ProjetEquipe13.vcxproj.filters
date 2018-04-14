@@ -110,6 +110,9 @@
     <ClCompile Include="..\src\tools\datPlaceParametricCurveTool.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\datGeometry.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -269,6 +272,9 @@
     </ClInclude>
     <ClInclude Include="..\src\tools\datPlaceParametricCurveTool.h">
       <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\datGeometry.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

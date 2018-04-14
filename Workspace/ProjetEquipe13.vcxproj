@@ -106,6 +106,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\core\datBoundingBox.cpp" />
     <ClCompile Include="..\src\core\datElement.cpp" />
     <ClCompile Include="..\src\core\datBVHierarchy.cpp" />
+    <ClCompile Include="..\src\core\datGeometry.cpp" />
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datScene.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
@@ -155,6 +156,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datDependencies.h" />
     <ClInclude Include="..\src\core\datEvents.h" />
     <ClInclude Include="..\src\core\datElement.h" />
+    <ClInclude Include="..\src\core\datGeometry.h" />
     <ClInclude Include="..\src\core\datId.h" />
     <ClInclude Include="..\src\core\datLocalization.h" />
     <ClInclude Include="..\src\core\datNonCopyableClass.h" />
