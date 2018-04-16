@@ -8,6 +8,7 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
+#include "ofxDelaunay.h"
 
 #include <commdlg.h> // Windows dialog for OpenFileDialog in datUtilities
 

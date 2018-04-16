@@ -59,7 +59,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(OF_ROOT)\..\ofxDelaunay\libs\Delaunay\src\;$(OF_ROOT)\..\ofxDelaunay\src;src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -81,7 +81,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(OF_ROOT)\..\ofxDelaunay\libs\Delaunay\src\;$(OF_ROOT)\..\ofxDelaunay\src;src;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;$(OF_ROOT)\addons\ofxAssimpModelLoader\libs\assimp\license;$(OF_ROOT)\addons\ofxAssimpModelLoader\src;$(OF_ROOT)\addons\ofxGui\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -110,6 +110,8 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\core\datRenderer.cpp" />
     <ClCompile Include="..\src\core\datScene.cpp" />
     <ClCompile Include="..\src\core\datUtilities.cpp" />
+    <ClCompile Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.cpp" />
+    <ClCompile Include="..\src\libs\ofxDelaunay\src\ofxDelaunay.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp" />
     <ClCompile Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.cpp" />
@@ -164,6 +166,8 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\core\datRenderer.h" />
     <ClInclude Include="..\src\core\datScene.h" />
     <ClInclude Include="..\src\core\datUtilities.h" />
+    <ClInclude Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.h" />
+    <ClInclude Include="..\src\libs\ofxDelaunay\src\ofxDelaunay.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h" />
     <ClInclude Include="..\src\libs\of_v0.9.8_vs_release\addons\ofxAssimpModelLoader\src\ofxAssimpModelLoader.h" />

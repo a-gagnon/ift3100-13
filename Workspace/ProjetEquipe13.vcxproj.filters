@@ -113,6 +113,12 @@
     <ClCompile Include="..\src\core\datGeometry.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\libs\ofxDelaunay\src\ofxDelaunay.cpp">
+      <Filter>addons\ofxDelaunay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.cpp">
+      <Filter>addons\ofxDelaunay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -135,6 +141,9 @@
     </Filter>
     <Filter Include="addons\ofxAssimpModelLoader">
       <UniqueIdentifier>{8a6dfe44-f9fd-4151-8063-d0298a23bc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxDelaunay">
+      <UniqueIdentifier>{fbf25720-8c9e-4044-ae62-fa22dcf111e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +284,12 @@
     </ClInclude>
     <ClInclude Include="..\src\core\datGeometry.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\ofxDelaunay\src\ofxDelaunay.h">
+      <Filter>addons\ofxDelaunay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.h">
+      <Filter>addons\ofxDelaunay</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

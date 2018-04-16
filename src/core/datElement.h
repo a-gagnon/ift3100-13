@@ -12,6 +12,7 @@
 
 BEGIN_DAT_NAMESPACE
 
+// Forward declarations
 struct datElement;
 struct datPolyline;
 struct datImage;
@@ -19,6 +20,7 @@ struct datTextString;
 struct datAssimpModel;
 struct datLight;
 struct datParametricCurve;
+struct datMesh;
 
 //=======================================================================================
 // Display parameters for geometries
@@ -108,6 +110,7 @@ protected:
     virtual datAssimpModel const* _ToAssimpModelElement() const { return nullptr; }
     virtual datLight const* _ToLightElement() const { return nullptr; }
     virtual datParametricCurve const* _ToParametricCurveElement() const { return nullptr; }
+    virtual datMesh const* _ToMeshElement() const { return nullptr; }
 
 public:
     virtual ~datElement() {}
@@ -137,6 +140,7 @@ public:
     datAssimpModel const* ToAssimpModelElement() const { return _ToAssimpModelElement(); }
     datLight const* ToLightElement() const { return _ToLightElement(); }
     datParametricCurve const* ToParametricCurveElement() const { return _ToParametricCurveElement(); }
+    datMesh const* ToMeshElement() const { return _ToMeshElement(); }
 };
 
 
@@ -320,6 +324,35 @@ public:
     static std::unique_ptr<datParametricCurve> CreateBSpline(std::vector<ofPoint> const& controlPoints);
     static std::unique_ptr<datParametricCurve> CreateCatmullRom(std::vector<ofPoint> const& controlPoints);
 };
+
+
+//=======================================================================================
+// Mesh scene object
+//=======================================================================================
+struct datMesh : datElement, ISupportDisplayParams, ISupportMaterial {
+    DEFINE_T_SUPER(datElement)
+
+protected:
+    ofMesh m_mesh;
+
+protected:
+    datMesh(ofMesh const& mesh);
+
+    virtual std::unique_ptr<datElement> _Clone() const override;
+    virtual datBoundingBox _CalculateBoundingBox() const override;
+    virtual void _Draw() const override;
+    virtual bool _IsHitByRay(datRay const& ray) const override;
+
+    virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
+    virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
+    virtual datMesh const* _ToMeshElement() const override final { return this; }
+
+public:
+    void SetMesh(ofMesh const& mesh) { m_mesh = mesh; }
+
+    static std::unique_ptr<datMesh> Create(ofMesh const& mesh);
+};
+
 
 
 END_DAT_NAMESPACE

@@ -556,3 +556,57 @@ ofPoint datParametricCurve::EvaluateCatmullRom(ofPoint const* pPoints, float t) 
     return result;
 }
 
+
+
+//---------------------------------------------------------------------------------------
+// datMesh
+//---------------------------------------------------------------------------------------
+datMesh::datMesh(ofMesh const& mesh) :
+    T_Super(),
+    m_mesh(mesh) {
+}
+
+
+std::unique_ptr<datMesh> datMesh::Create(ofMesh const& mesh) {
+    auto ptr = std::unique_ptr<datMesh>(new datMesh(mesh));
+    return std::move(ptr);
+}
+
+
+std::unique_ptr<datElement> datMesh::_Clone() const {
+    auto ptr = std::unique_ptr<datElement>(new datMesh(*this));
+    return std::move(ptr);
+}
+
+
+datBoundingBox datMesh::_CalculateBoundingBox() const {
+
+    std::vector<ofPoint> const& localPoints = m_mesh.getVertices();
+    const ofMatrix4x4 transform = GetElementToWorldTransform();
+    return datBoundingBox::FromPoints(localPoints, &transform);
+}
+
+
+void datMesh::_Draw() const {
+
+    ofPushMatrix();
+    ofMatrix4x4 elementToWorld = GetElementToWorldTransform();
+    ofMultMatrix(elementToWorld);
+
+    if (m_displayParams.isFilled)
+        m_mesh.drawFaces();
+    else
+        m_mesh.drawWireframe();
+
+    ofPopMatrix();
+}
+
+
+bool datMesh::_IsHitByRay(datRay const& ray) const {
+
+    //&&AG might be worth doing per-triangle intersection.
+    // bounding box for now
+    datBoundingBox aabb = CalculateBoundingBox();
+    return ray.IntersectBox(aabb);
+}
+
