@@ -35,8 +35,8 @@ datPlaceParametricCurveTool::~datPlaceParametricCurveTool() {
 
 void datPlaceParametricCurveTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
-    m_panel.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
+    m_panel.add(m_paramLineColor.set(datLocalization::LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineWidth.set(datLocalization::LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
     m_panel.add(m_typeBezier.setup(datLocalization::Bezier()));
     m_panel.add(m_typeHermite.setup(datLocalization::Hermite()));
     m_panel.add(m_typeBSpline.setup(datLocalization::BSpline()));

@@ -18,6 +18,7 @@ struct datLocalization {
     static std::string EditAttributesTool_Tooltip() { return "Edit attributes of selected geometries"; }
 	static std::string AddTextureTool_Tooltip()		{ return "Add texture to image"; }
     static std::string ExportImageTool_Tooltip()    { return "Export image"; }
+    static std::string PlaceCoonsTool_Tooltip()     { return "Place Coons surface"; }
     static std::string PlaceImageTool_Tooltip()     { return "Place image tool"; }
     static std::string PlaceLightTool_Point()       { return "Point"; }
     static std::string PlaceLightTool_Area()        { return "Area"; }
@@ -56,20 +57,24 @@ struct datLocalization {
     static std::string CatmullRom()                 { return "Catmull-Rom"; }
     static std::string Bezier()                     { return "Bezier"; }
     static std::string BSpline()                    { return "B-Spline"; }
+    static std::string FillGeometry()               { return "Fill geometry"; }
+    static std::string FillColor()                  { return "Fill color"; }
     static std::string GenerateSceneRayTracing_Tooltip() { return "Generate scene using Ray tracing technique \nThis may take a while"; }
     static std::string Hermite()                    { return "Hermite"; }
+    static std::string Length()                     { return "Length"; }
+    static std::string LineColor()                  { return "Line color"; }
+    static std::string LineWidth()                  { return "Line width"; }
     static std::string Materials()                  { return "Materials"; }
     static std::string Material1()                  { return "Material 1"; }
     static std::string Material2()                  { return "Material 2"; }
     static std::string Material3()                  { return "Material 3"; }
     static std::string NoMaterial()                 { return "No Material"; }
     static std::string Redo()                       { return "Redo"; }
+    static std::string ToolSettings()               { return "Tool Settings"; }
     static std::string Undo()                       { return "Undo"; }
+    static std::string Width()                      { return "Width"; }
 
     static std::string DisplayParams()              { return "Display parameters"; }
-    static std::string DisplayParams_LineWidth()    { return "Line width"; }
-    static std::string DisplayParams_LineColor()    { return "Line color"; }
-    static std::string DisplayParams_FillColor()    { return "Fill color"; }
     static std::string GeometryParams()             { return "Geometry parameters"; }
     static std::string GeometryParams_Rotate()      { return "Rotate"; }
     static std::string GeometryParams_Scale()       { return "Scale"; }

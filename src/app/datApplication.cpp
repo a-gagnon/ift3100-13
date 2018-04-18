@@ -17,6 +17,7 @@ USING_DAT_NAMESPACE
 #define DAT_BUTTON_NAME_EDITATTRIBUTES "btn_editAttributesTool"
 #define DAT_BUTTON_NAME_ADDTEXTURE "btn_addTextureTool"
 #define DAT_BUTTON_NAME_PLACELIGHT "btn_placeLightTool"
+#define DAT_BUTTON_NAME_PLACECOONSSURFACE "btn_placeCoonsSurface"
 #define DAT_BUTTON_NAME_PLACEPARAMETRICCURVE "btn_PlaceParametricCurve"
 #define DAT_BUTTON_NAME_GENERATESCENERAYTRACING "btn_GenerateSceneRayTracing"
 
@@ -51,6 +52,11 @@ namespace {
     void onPlaceLightToolStarted(datEditTool& editTool) {
         datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACELIGHT);
         static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceLightTool*>(&editTool));
+    }
+
+    void onPlaceCoonsSurfaceToolStarted(datEditTool& editTool) {
+        datView* pView = datApplication::GetApp().GetViewManager().GetViewByName(DAT_BUTTON_NAME_PLACECOONSSURFACE);
+        static_cast<datButton*>(pView)->SetToggle(nullptr != dynamic_cast<datPlaceCoonsSurfaceTool*>(&editTool));
     }
 
     void onPlaceTextToolStarted(datEditTool& editTool) {
@@ -98,6 +104,10 @@ namespace {
 
     void onStartPlaceLightToolPressed(datButton& button) {
         datApplication::GetApp().GetToolManager().StartTool(new datPlaceLightTool());
+    }
+
+    void onStartCoonsSurfaceToolPressed(datButton& button) {
+        datApplication::GetApp().GetToolManager().StartTool(new datPlaceCoonsSurfaceTool());
     }
 
     void onStartPlaceTextToolPressed(datButton& button) {
@@ -184,7 +194,7 @@ namespace {
 
         bool hasImage = false;
         for (auto const& id : selectedIds) {
-            if (nullptr != scene.GetElement(id)->ToImageElement()) {
+            if (auto pImage = dynamic_cast<datImage const*>(scene.GetElement(id))) {
                 hasImage = true;
                 break;
             }
@@ -267,6 +277,9 @@ void datApplication::SetupUI() {
     datButton* pPlaceLightToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACELIGHT, datLocalization::PlaceLightTool_Tooltip(), "add_light.png");
     ofAddListener(pPlaceLightToolButton->GetOnPressedEvent(), onStartPlaceLightToolPressed);
 
+    datButton* pPlaceCoonsSurfaceToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACECOONSSURFACE, datLocalization::PlaceCoonsTool_Tooltip(), "mesh.png");
+    ofAddListener(pPlaceCoonsSurfaceToolButton->GetOnPressedEvent(), onStartCoonsSurfaceToolPressed);
+
     datButton* pWriteTextToolButton = pToolMenu->AddToolButton(DAT_BUTTON_NAME_PLACETEXT, datLocalization::PlaceTextTool_Tooltip(), "write_text.png");
     ofAddListener(pWriteTextToolButton->GetOnPressedEvent(), onStartPlaceTextToolPressed);
 
@@ -324,6 +337,7 @@ void datApplication::SetupUI() {
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlacePolylineToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceParametricCurveToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceLightToolStarted);
+    ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceCoonsSurfaceToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceTextToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceModelToolStarted);
     ofAddListener(GetToolManager().GetOnEditToolStartedEvent(), onPlaceImagetoolStarted);

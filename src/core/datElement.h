@@ -103,14 +103,7 @@ protected:
 
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const { return nullptr; }
     virtual ISupportMaterial const* _ToSupportMaterial() const { return nullptr; }
-
-    virtual datPolyline const* _ToPolylineElement() const { return nullptr; }
-    virtual datImage const* _ToImageElement() const { return nullptr; }
-    virtual datTextString const* _ToTextStringElement() const { return nullptr; }
-    virtual datAssimpModel const* _ToAssimpModelElement() const { return nullptr; }
     virtual datLight const* _ToLightElement() const { return nullptr; }
-    virtual datParametricCurve const* _ToParametricCurveElement() const { return nullptr; }
-    virtual datMesh const* _ToMeshElement() const { return nullptr; }
 
 public:
     virtual ~datElement() {}
@@ -133,14 +126,7 @@ public:
 
     ISupportDisplayParams const* ToSupportDisplayParams() const { return _ToSupportDisplayParams(); }
     ISupportMaterial const* ToSupportMaterial() const { return _ToSupportMaterial(); }
-
-    datPolyline const* ToPolylineElement() const { return _ToPolylineElement(); }
-    datImage const* ToImageElement() const { return _ToImageElement(); }
-    datTextString const* ToTextStringElement() const { return _ToTextStringElement(); }
-    datAssimpModel const* ToAssimpModelElement() const { return _ToAssimpModelElement(); }
     datLight const* ToLightElement() const { return _ToLightElement(); }
-    datParametricCurve const* ToParametricCurveElement() const { return _ToParametricCurveElement(); }
-    datMesh const* ToMeshElement() const { return _ToMeshElement(); }
 };
 
 
@@ -164,7 +150,6 @@ protected:
     virtual void _OnDisplayParamsSet() override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
-    virtual datPolyline const* _ToPolylineElement() const override final { return this; }
 
 public:
     void SetIsClosed(bool yesNo) { m_polyline.setClosed(yesNo); m_displayParams.isFilled = yesNo; }
@@ -194,7 +179,6 @@ protected:
     virtual void _Draw() const override;
     virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
-    virtual datImage const* _ToImageElement() const override final { return this; }
 
 public:
     void SetWidth(uint32_t width) { m_width = width; }
@@ -224,7 +208,6 @@ protected:
     virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
-    virtual datTextString const* _ToTextStringElement() const override final { return this; }
 
 public:
     void SetText(std::string const& text) { m_text = text; }
@@ -250,7 +233,6 @@ protected:
     virtual datBoundingBox _CalculateBoundingBox() const override;
     virtual void _Draw() const override;
     virtual bool _IsHitByRay(datRay const& ray) const override;
-    virtual datAssimpModel const* _ToAssimpModelElement() const override final { return this; }
 
 public:
     static std::unique_ptr<datAssimpModel> Create(ofxAssimpModelLoader const& model, ofNode const& transform);
@@ -309,7 +291,6 @@ protected:
     virtual void _Draw() const override;
     virtual bool _IsHitByRay(datRay const& ray) const override;
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
-    virtual datParametricCurve const* _ToParametricCurveElement() const override final { return this; }
 
     void AssignPointsAndEvaluate(std::vector<ofPoint> const& controlPoints);
     ofPoint Evaluate(ofPoint const* pPoints, float t) const;
@@ -319,6 +300,10 @@ protected:
     ofPoint EvaluateCatmullRom(ofPoint const* pPoints, float t) const;
 
 public:
+    // Evalutes the bezier curve.
+    // returns false if we failed to evaluate
+    bool EvaluateBezier(ofPoint& result, float t) const;
+
     static std::unique_ptr<datParametricCurve> CreateBezier(std::vector<ofPoint> controlPoints);
     static std::unique_ptr<datParametricCurve> CreateHermite(ofPoint const& p1, ofPoint const& p2, ofVec3f const& v1, ofVec3f const& v2);
     static std::unique_ptr<datParametricCurve> CreateBSpline(std::vector<ofPoint> const& controlPoints);
@@ -345,7 +330,6 @@ protected:
 
     virtual ISupportDisplayParams const* _ToSupportDisplayParams() const override final { return this; }
     virtual ISupportMaterial const* _ToSupportMaterial() const override final { return this; }
-    virtual datMesh const* _ToMeshElement() const override final { return this; }
 
 public:
     void SetMesh(ofMesh const& mesh) { m_mesh = mesh; }

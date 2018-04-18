@@ -89,7 +89,7 @@ bool datPolyline::_IsHitByRay(datRay const& ray) const {
 
 void datPolyline::_OnDisplayParamsSet() {
     // Make sure display params are consistent with the geometry structure
-    m_displayParams.isFilled = m_polyline.isClosed();
+    m_polyline.setClosed(m_displayParams.isFilled);
 }
 
 
@@ -510,6 +510,16 @@ ofPoint datParametricCurve::EvaluateBezier(ofPoint const* pPoints, float t) cons
 
     ofPoint result = result1 + result2 + result3 + result4;
     return result;
+}
+
+
+bool datParametricCurve::EvaluateBezier(ofPoint& result, float t) const {
+
+    if (Type::Bezier != m_type)
+        return false;
+
+    result = EvaluateBezier(m_controlPoints.data(), t);
+    return true;
 }
 
 

@@ -18,9 +18,9 @@ datPlacePolylineTool::~datPlacePolylineTool() {
 void datPlacePolylineTool::onStartTool() {
 
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
-    m_panel.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
-    m_panel.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineColor.set(datLocalization::LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramLineWidth.set(datLocalization::LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, 0.01f, 12.0f));
+    m_panel.add(m_paramFillColor.set(datLocalization::FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_paramLineColor.addListener(this, &datPlacePolylineTool::onLineColorChanged);

@@ -119,6 +119,9 @@
     <ClCompile Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.cpp">
       <Filter>addons\ofxDelaunay</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\tools\datPlaceCoonsSurfaceTool.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -290,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="..\src\libs\ofxDelaunay\libs\Delaunay\src\Delaunay.h">
       <Filter>addons\ofxDelaunay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\datPlaceCoonsSurfaceTool.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -128,6 +128,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="..\src\tools\datAddTextureTool.cpp" />
     <ClCompile Include="..\src\tools\datEditAttributesTool.cpp" />
     <ClCompile Include="..\src\tools\datExportImageTool.cpp" />
+    <ClCompile Include="..\src\tools\datPlaceCoonsSurfaceTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceImageTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceLightTool.cpp" />
     <ClCompile Include="..\src\tools\datPlaceModelTool.cpp" />
@@ -185,6 +186,7 @@ if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="..\src\tools\datAddTextureTool.h" />
     <ClInclude Include="..\src\tools\datEditAttributesTool.h" />
     <ClInclude Include="..\src\tools\datExportImageTool.h" />
+    <ClInclude Include="..\src\tools\datPlaceCoonsSurfaceTool.h" />
     <ClInclude Include="..\src\tools\datPlaceImageTool.h" />
     <ClInclude Include="..\src\tools\datPlaceLightTool.h" />
     <ClInclude Include="..\src\tools\datPlaceModelTool.h" />

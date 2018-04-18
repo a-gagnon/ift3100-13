@@ -78,9 +78,10 @@ void datEditAttributesTool::onStartTool() {
 
     if (hasStyleGroup) {
         m_panel.add(m_styleGroup.setup(datLocalization::DisplayParams()));
-        m_styleGroup.add(m_paramLineColor.set(datLocalization::DisplayParams_LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
-        m_styleGroup.add(m_paramLineWidth.set(datLocalization::DisplayParams_LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, LINEWIDTH_MIN, LINEWIDTH_MAX));
-        m_styleGroup.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+        m_styleGroup.add(m_paramFilled.set(datLocalization::FillGeometry(), GetRenderer().GetActiveDisplayParams().isFilled));
+        m_styleGroup.add(m_paramLineColor.set(datLocalization::LineColor(), GetRenderer().GetActiveDisplayParams().lineColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+        m_styleGroup.add(m_paramLineWidth.set(datLocalization::LineWidth(), GetRenderer().GetActiveDisplayParams().lineWidth, LINEWIDTH_MIN, LINEWIDTH_MAX));
+        m_styleGroup.add(m_paramFillColor.set(datLocalization::FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
     }
 
     if (hasMaterialGroup) {
@@ -93,6 +94,7 @@ void datEditAttributesTool::onStartTool() {
 
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
+    m_paramFilled.addListener(this, &datEditAttributesTool::onFillStateChanged);
     m_paramLineColor.addListener(this, &datEditAttributesTool::onLineColorChanged);
     m_paramLineWidth.addListener(this, &datEditAttributesTool::onLineWidthChanged);
     m_paramFillColor.addListener(this, &datEditAttributesTool::onFillColorChanged);
@@ -109,12 +111,25 @@ void datEditAttributesTool::onExitTool() {
     GetRenderer().ClearNeverDraw();
     GetRenderer().ClearTransients();
 
+    m_paramFilled.removeListener(this, &datEditAttributesTool::onFillStateChanged);
     m_paramLineColor.removeListener(this, &datEditAttributesTool::onLineColorChanged);
     m_paramLineWidth.removeListener(this, &datEditAttributesTool::onLineWidthChanged);
     m_paramFillColor.removeListener(this, &datEditAttributesTool::onFillColorChanged);
     m_paramScale.removeListener(this, &datEditAttributesTool::onScaleChanged);
     m_paramRotate.removeListener(this, &datEditAttributesTool::onRotationChanged);
     m_paramTranslate.removeListener(this, &datEditAttributesTool::onTranslationChanged);
+}
+
+
+void datEditAttributesTool::onFillStateChanged(bool& yesNo) {
+
+    for (auto const& element : m_elements) {
+        if (auto pSupport = dynamic_cast<ISupportDisplayParams*>(element.get())) {
+            datDisplayParams params = pSupport->GetDisplayParams();
+            params.isFilled = yesNo;
+            pSupport->SetDisplayParams(params);
+        }
+    }
 }
 
 

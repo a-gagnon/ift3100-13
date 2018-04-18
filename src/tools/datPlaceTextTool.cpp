@@ -23,7 +23,7 @@ datPlaceTextTool::~datPlaceTextTool() {
 
 void datPlaceTextTool::onStartTool() {
     m_panel.setup("Tool settings", "", 0.4 * ofGetWidth());
-    m_panel.add(m_paramFillColor.set(datLocalization::DisplayParams_FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
+    m_panel.add(m_paramFillColor.set(datLocalization::FillColor(), GetRenderer().GetActiveDisplayParams().fillColor, ofColor(0, 0, 0), ofColor(255, 255, 255)));
     m_panel.setPosition(ofGetWidth() - m_panel.getWidth() - 10.0, 10.0);
 
     m_paramFillColor.addListener(this, &datPlaceTextTool::onFillColorChanged);

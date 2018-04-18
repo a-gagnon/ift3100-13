@@ -18,6 +18,7 @@ private:
 
     ofxPanel m_panel;
     ofxGuiGroup m_styleGroup;
+    ofParameter<bool> m_paramFilled;
     ofParameter<ofColor> m_paramLineColor;
     ofParameter<float> m_paramLineWidth;
     ofParameter<ofColor> m_paramFillColor;
@@ -35,6 +36,7 @@ private:
 
 
 private:
+    void onFillStateChanged(bool& yesNo);
     void onLineColorChanged(ofColor& color);
     void onLineWidthChanged(float& value);
     void onFillColorChanged(ofColor& color);

@@ -16,6 +16,7 @@
 #include "../tools/datExportImageTool.h"
 #include "../tools/datEditAttributesTool.h"
 #include "../tools/datAddTextureTool.h"
+#include "../tools/datPlaceCoonsSurfaceTool.h"
 #include "../tools/datViewManipTool.h"
 #include "../ui/datViewManager.h"
 #include "../ui/datButton.h"
